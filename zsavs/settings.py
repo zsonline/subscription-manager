@@ -38,7 +38,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'subscription.apps.SubscriptionConfig',
-    'authentication.apps.AuthenticationConfig',
+    'account.apps.AccountConfig',
 ]
 
 MIDDLEWARE = [
@@ -103,8 +103,10 @@ AUTH_PASSWORD_VALIDATORS = [
 ]
 
 # Register custom user model
-AUTH_USER_MODEL = 'authentication.User'
+AUTH_USER_MODEL = 'account.User'
 
+# Email backend (for development)
+EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
 
 # Internationalization
 # https://docs.djangoproject.com/en/2.0/topics/i18n/
