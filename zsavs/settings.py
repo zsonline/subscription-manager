@@ -108,6 +108,8 @@ AUTH_USER_MODEL = 'account.User'
 # Email backend (for development)
 EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
 
+EMAIL_VERIFICATION_TOKEN_EXPIRATION_DAYS = 7
+
 # Internationalization
 # https://docs.djangoproject.com/en/2.0/topics/i18n/
 

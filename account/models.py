@@ -1,66 +1,69 @@
+from datetime import datetime
+
 from django.db import models
-
 from django.core.exceptions import ValidationError
-from django.contrib.auth.models import AbstractUser, BaseUserManager
+from django.contrib.auth.models import AbstractUser
+from django.utils.crypto import get_random_string
 from django.utils.translation import gettext_lazy as _
+from django.core.mail import send_mail
 
-from datetime import datetime, timedelta
-
-
-class UserManager(BaseUserManager):
-    use_in_migrations = True
-
-    def _create_user(self, email, password, **extra_fields):
-        if not email:
-            raise ValueError('The given email must be set')
-        email = self.normalize_email(email)
-        user = self.model(email=email, **extra_fields)
-        user.set_password(password)
-        user.save(using=self._db)
-        return user
-
-    def create_user(self, email, password=None, **extra_fields):
-        extra_fields.setdefault('is_staff', False)
-        extra_fields.setdefault('is_superuser', False)
-        return self._create_user(email, password, **extra_fields)
-
-    def create_superuser(self, email, password, **extra_fields):
-        extra_fields.setdefault('is_staff', True)
-        extra_fields.setdefault('is_superuser', True)
-
-        if extra_fields.get('is_staff') is not True:
-            raise ValueError('Superuser must have is_staff=True.')
-        if extra_fields.get('is_superuser') is not True:
-            raise ValueError('Superuser must have is_superuser=True.')
-
-        return self._create_user(email, password, **extra_fields)
+from . import managers
 
 
 class User(AbstractUser):
+    """Custom user model that inherits the AbstractUser
+    model from django's default authentication application.
+
+    It removes the username field and replaces it instead by
+    the email address. In order to handle the modifications,
+    it uses a custom UserManager.
+    """
+
+    # Remove username field
     username = None
-    first_name = None
-    last_name = None
-    email = models.OneToOneField('account.EmailAddress', on_delete=models.PROTECT)
 
+    # Substitute username by email address field
+    email = models.EmailField(unique=True)
     USERNAME_FIELD = 'email'
-    REQUIRED_FIELDS = []
 
-    objects = UserManager()
+    # Use custom UserManager for user creation
+    REQUIRED_FIELDS = []
+    objects = managers.UserManager()
+
+
+class LoginToken(models.Model):
+    """Login token model.
+
+    """
+
+    user = models.ForeignKey(
+        User,
+        on_delete=models.CASCADE
+    )
+    token = models.CharField(max_length=32)
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return self.token
 
 
 class EmailAddress(models.Model):
-    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    """Email address model.
+
+    """
+
+    user = models.ForeignKey(
+        User,
+        on_delete=models.CASCADE
+    )
     email = models.EmailField(unique=True)
-    created_at = models.DateTimeField(auto_now_add=True)
-    is_primary = models.BooleanField()
-    verification_token = models.CharField(max_length=32, null=True, blank=True)
+    is_primary = models.BooleanField(default=False)
+    is_verified = models.BooleanField(default=False)
     verified_at = models.DateTimeField(null=True, blank=True)
+    created_at = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
         return self.email
-
-    def is_verified(self):
-        return bool(self.verified_at)
 
     def verify(self, token):
         if self.verification_token == token:
@@ -82,4 +85,45 @@ class EmailAddress(models.Model):
                     email.save()
 
     def send_verification(self):
+        verification_token = EmailVerificationToken.create(self)
+        verification_token.sent_at = datetime.now()
+        verification_token.save()
+        send_mail(
+            'Email address confirmation',
+            verification_token.token,
+            'avs@zs.dev',
+            self.email
+        )
+
+
+class EmailVerificationToken(models.Model):
+    """Email verification token model.
+
+    """
+
+    email_address = models.ForeignKey(
+        EmailAddress,
+        on_delete=models.CASCADE
+    )
+    token = models.CharField(max_length=32)
+    sent_at = models.DateTimeField(
+        blank=True,
+        null=True
+    )
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    object = managers.EmailVerificationTokenManager()
+
+    def __str__(self):
+        return self.token
+
+    @classmethod
+    def create(cls, email_address):
+        token = get_random_string(32)
+        return cls(email_address=email_address, token=token)
+
+    def is_expired(self):
+        pass
+
+    def send(self):
         pass
