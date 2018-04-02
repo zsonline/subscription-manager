@@ -5,6 +5,7 @@ from django.db import models
 from django.utils.crypto import get_random_string
 from django.conf import settings
 
+
 class UserManager(BaseUserManager):
     use_in_migrations = True
 
@@ -13,7 +14,10 @@ class UserManager(BaseUserManager):
             raise ValueError('The given email must be set')
         email = self.normalize_email(email)
         user = self.model(email=email, **extra_fields)
-        user.set_password(password)
+        if not password:
+            user.set_unusable_password()
+        else:
+            user.set_password(password)
         user.save(using=self._db)
         return user
 
@@ -34,7 +38,7 @@ class UserManager(BaseUserManager):
         return self._create_user(email, password, **extra_fields)
 
 
-class EmailVerificationTokenManager(models.Manager):
+class TokenManager(models.Manager):
 
     def all_expired(self):
         """Selects all tokens that have been sent more than seven days ago"""

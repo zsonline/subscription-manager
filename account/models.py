@@ -1,11 +1,19 @@
-from datetime import datetime
+from datetime import timedelta
+import pytz
+from secrets import token_urlsafe
 
 from django.db import models
+from django.conf import settings
 from django.core.exceptions import ValidationError
 from django.contrib.auth.models import AbstractUser
 from django.utils.crypto import get_random_string
 from django.utils.translation import gettext_lazy as _
 from django.core.mail import send_mail
+from django.utils.encoding import force_bytes, force_text
+from django.utils.http import urlsafe_base64_encode, urlsafe_base64_decode
+from django.template.loader import render_to_string
+from django.urls import reverse
+from django.utils.timezone import now
 
 from . import managers
 
@@ -19,7 +27,7 @@ class User(AbstractUser):
     it uses a custom UserManager.
     """
 
-    # Remove username field
+    # Remove username and password field
     username = None
 
     # Substitute username by email address field
@@ -31,7 +39,7 @@ class User(AbstractUser):
     objects = managers.UserManager()
 
 
-class LoginToken(models.Model):
+class Token(models.Model):
     """Login token model.
 
     """
@@ -40,90 +48,68 @@ class LoginToken(models.Model):
         User,
         on_delete=models.CASCADE
     )
-    token = models.CharField(max_length=32)
-    created_at = models.DateTimeField(auto_now_add=True)
-
-    def __str__(self):
-        return self.token
-
-
-class EmailAddress(models.Model):
-    """Email address model.
-
-    """
-
-    user = models.ForeignKey(
-        User,
-        on_delete=models.CASCADE
+    key = models.CharField(
+        unique=True,
+        max_length=32
     )
-    email = models.EmailField(unique=True)
-    is_primary = models.BooleanField(default=False)
-    is_verified = models.BooleanField(default=False)
-    verified_at = models.DateTimeField(null=True, blank=True)
-    created_at = models.DateTimeField(auto_now_add=True)
-
-    def __str__(self):
-        return self.email
-
-    def verify(self, token):
-        if self.verification_token == token:
-            self.verification_token = None
-            self.verified_at = datetime.now()
-            self.save()
-            return self
-        raise ValidationError('Wrong token.')
-
-    def make_primary(self):
-        for email in self.objects.filter(user=self.user):
-            if email == self:
-                if not self.is_primary:
-                    self.is_primary = True
-                    self.save()
-            else:
-                if email.is_primary:
-                    email.is_primary = False
-                    email.save()
-
-    def send_verification(self):
-        verification_token = EmailVerificationToken.create(self)
-        verification_token.sent_at = datetime.now()
-        verification_token.save()
-        send_mail(
-            'Email address confirmation',
-            verification_token.token,
-            'avs@zs.dev',
-            self.email
+    valid_until = models.DateTimeField()
+    type = models.CharField(
+        max_length=20,
+        choices=(
+            ('verification', 'Verification token'),
+            ('login', 'Login token')
         )
-
-
-class EmailVerificationToken(models.Model):
-    """Email verification token model.
-
-    """
-
-    email_address = models.ForeignKey(
-        EmailAddress,
-        on_delete=models.CASCADE
     )
-    token = models.CharField(max_length=32)
-    sent_at = models.DateTimeField(
-        blank=True,
-        null=True
-    )
+    sent_at = models.DateTimeField(blank=True, null=True)
     created_at = models.DateTimeField(auto_now_add=True)
 
-    object = managers.EmailVerificationTokenManager()
-
     def __str__(self):
-        return self.token
+        return '{2} of {1} ({0})'.format(self.key, self.user.email, self.get_type_display())
 
     @classmethod
-    def create(cls, email_address):
-        token = get_random_string(32)
-        return cls(email_address=email_address, token=token)
+    def create(cls, user, type, valid_until=None):
+        if not valid_until:
+            if type == 'verification':
+                valid_until = now() + settings.TOKEN_EXPIRATION['VERIFICATION']
+            elif type == 'login':
+                valid_until = now() + settings.TOKEN_EXPIRATION['LOGIN']
+        key = token_urlsafe(32)
+        return cls(user=user, key=key, type=type, valid_until=valid_until)
+
+    def is_valid(self):
+        return self.valid_until <= now()
 
     def is_expired(self):
-        pass
+        return not self.is_valid()
+
+    def generate_link(self):
+        return 'http://{}{}'.format(
+            settings.DOMAIN,
+            reverse(
+                'verify_token',
+                kwargs={
+                    'uid': urlsafe_base64_encode(force_bytes(self.user.id)).decode(),
+                    'key': self.key
+                }
+            )
+        )
+
+    def save_and_send(self):
+        self.save()
+        self.send()
 
     def send(self):
-        pass
+        subject = '{}: {}'.format(settings.NAME, self.get_type_display())
+        content = render_to_string(
+            'emails/confirm_email.html',
+            {
+                'to_name': self.user.first_name,
+                'from_name': settings.NAME,
+                'link': self.generate_link()
+            }
+        )
+        from_email = settings.EMAIL_FROM_ADDRESS
+        to_email = [self.user.email]
+        self.sent_at = now()
+        self.save()
+        send_mail(subject, content, from_email, to_email)

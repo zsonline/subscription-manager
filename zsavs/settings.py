@@ -11,6 +11,7 @@ https://docs.djangoproject.com/en/2.0/ref/settings/
 """
 
 import os
+from datetime import timedelta
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -105,10 +106,23 @@ AUTH_PASSWORD_VALIDATORS = [
 # Register custom user model
 AUTH_USER_MODEL = 'account.User'
 
-# Email backend (for development)
-EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
+AUTHENTICATION_BACKENDS = [
+    'account.backends.TokenBackend',
+    'django.contrib.auth.backends.ModelBackend'
+]
 
-EMAIL_VERIFICATION_TOKEN_EXPIRATION_DAYS = 7
+# Token expiration (in hours)
+TOKEN_EXPIRATION = {
+    'VERIFICATION': timedelta(days=7),
+    'LOGIN': timedelta(hours=1),
+}
+
+DOMAIN = '127.0.0.1:8000'
+NAME = 'Zürcher Studierendenzeitung'
+
+# Email
+EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
+EMAIL_FROM_ADDRESS = 'noreply@zs.dev'
 
 # Internationalization
 # https://docs.djangoproject.com/en/2.0/topics/i18n/
