@@ -1,6 +1,6 @@
 from django.db import models
 
-from account.models import User
+from authentication.models import User
 
 
 class Address(models.Model):

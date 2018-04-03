@@ -4,6 +4,7 @@ from django.contrib.auth.models import BaseUserManager
 from django.db import models
 from django.utils.crypto import get_random_string
 from django.conf import settings
+from django.utils import timezone
 
 
 class UserManager(BaseUserManager):
@@ -38,7 +39,12 @@ class UserManager(BaseUserManager):
         return self._create_user(email, password, **extra_fields)
 
 
-class TokenManager(models.Manager):
+class LoginTokenManager(models.Manager):
+
+    def create(self, **obj_data):
+        obj_data['valid_until'] = timezone.now() + settings.TOKEN_EXPIRATION
+        obj_data['code'] = get_random_string(settings.TOKEN_LENGTH)
+        return super().create(**obj_data)
 
     def all_expired(self):
         """Selects all tokens that have been sent more than seven days ago"""

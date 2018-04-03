@@ -20,8 +20,13 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/2.0/howto/deployment/checklist/
 
+HOST = '127.0.0.1:8000'
+
 # SECURITY WARNING: keep the secret key used in production secret!
 SECRET_KEY = 'fruh-%ut#q*2av0@d+vf!*gkc=vbnxwox^h6-a-$9avh32z+ya'
+
+USE_SSL = False
+# SECURE_SSL_REDIRECT = True
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
@@ -39,7 +44,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'subscription.apps.SubscriptionConfig',
-    'account.apps.AccountConfig',
+    'authentication.apps.AccountConfig',
 ]
 
 MIDDLEWARE = [
@@ -104,20 +109,19 @@ AUTH_PASSWORD_VALIDATORS = [
 ]
 
 # Register custom user model
-AUTH_USER_MODEL = 'account.User'
+AUTH_USER_MODEL = 'authentication.User'
 
 AUTHENTICATION_BACKENDS = [
-    'account.backends.TokenBackend',
+    'authentication.backends.EmailTokenBackend',
     'django.contrib.auth.backends.ModelBackend'
 ]
 
-# Token expiration (in hours)
-TOKEN_EXPIRATION = {
-    'VERIFICATION': timedelta(days=7),
-    'LOGIN': timedelta(hours=1),
-}
+LOGIN_URL = '/auth/login/'
 
-DOMAIN = '127.0.0.1:8000'
+# Token expiration (in hours)
+TOKEN_EXPIRATION =  timedelta(hours=1)
+TOKEN_LENGTH = 16
+
 NAME = 'Zürcher Studierendenzeitung'
 
 # Email
