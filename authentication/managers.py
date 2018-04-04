@@ -48,7 +48,6 @@ class LoginTokenManager(models.Manager):
         Overrides the default create method. It sets the valid_until
         attribute and generates a random code.
         """
-
         # Set token expiration
         obj_data['valid_until'] = timezone.now() + settings.TOKEN_EXPIRATION
 
@@ -71,7 +70,6 @@ class LoginTokenManager(models.Manager):
         """
         Creates and sends a token object.
         """
-
         token = self.create(**obj_data)
         token.send()
         return token

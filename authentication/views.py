@@ -18,7 +18,6 @@ def signup_view(request):
     Renders or processes the signup form through which
     a user can register himself.
     """
-
     # For POST requests, process the form data
     if request.method == 'POST':
 
@@ -53,7 +52,6 @@ def login_view(request):
     a token is sent and the user redirected to the token verification
     page. Otherwise, the login form is rendered.
     """
-
     # For POST requests, process the form data
     if request.method == 'POST':
 
@@ -85,7 +83,6 @@ def logout_view(request):
     """
     Logs a user out and redirects her to the login page.
     """
-
     logout(request)
     return redirect('login')
 
@@ -115,6 +112,7 @@ class LoginTokenView(View):
         # If email and code parameter is set
         if email is not None and code is not None:
             # Try to authenticate and log in
+            print('hallo')
             if not self.authenticate_and_login(request, email, code):
                 return HttpResponseRedirect(settings.LOGIN_REDIRECT_URL)
             return redirect('verify_token', email_b64=email_b64)
@@ -138,7 +136,6 @@ class LoginTokenView(View):
         Handles POST requests. It tries to log in a user with the
         submitted values. If it fails, the form is rendered.
         """
-
         form = self.form_class(request.POST)
 
         if form.is_valid():
@@ -160,6 +157,8 @@ class LoginTokenView(View):
         """
 
         # Authenticate
+        print(email)
+        print(code)
         user = authenticate(email=email, code=code)
 
         # If authentication is successful, log user in

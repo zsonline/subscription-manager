@@ -19,14 +19,14 @@ from .managers import UserManager, LoginTokenManager
 
 
 class User(AbstractUser):
-    """Custom user model that inherits the AbstractUser
+    """
+    Custom user model that inherits the AbstractUser
     model from django's default authentication application.
 
     It removes the username field and replaces it instead by
     the email address. In order to handle the modifications,
     it uses a custom UserManager.
     """
-
     # Remove username and password field
     username = None
 
@@ -43,10 +43,10 @@ class User(AbstractUser):
 
 
 class LoginToken(models.Model):
-    """Login token model.
+    """
+    Login token model.
 
     """
-
     user = models.ForeignKey(
         User,
         on_delete=models.CASCADE

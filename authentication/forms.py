@@ -11,7 +11,6 @@ class SignUpForm(forms.ModelForm):
     Sign up form. Allows a user to sign up with
     his email address, first name and last name.
     """
-
     # ModelForm generates form fields
     class Meta:
         model = User
@@ -34,7 +33,6 @@ class LoginForm(forms.Form):
         for a given email address exists and adds an error if
         it does not.
         """
-
         # Check default validations
         valid = super().is_valid()
         if not valid:
