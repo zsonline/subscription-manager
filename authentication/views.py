@@ -155,7 +155,6 @@ class LoginTokenView(View):
         Tries to authenticate a user. If the authentication is
         successful, it will log him in.
         """
-
         # Authenticate
         print(email)
         print(code)
