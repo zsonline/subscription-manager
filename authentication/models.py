@@ -1,46 +1,77 @@
+from datetime import timedelta
+import pytz
+
 from django.db import models
-
-from django.contrib.auth.models import AbstractUser, BaseUserManager
+from django.conf import settings
+from django.core.exceptions import ValidationError
+from django.utils.crypto import get_random_string
 from django.utils.translation import gettext_lazy as _
+from django.core.mail import send_mail
+from django.contrib.auth import get_backends, get_user_model
+from django.utils.encoding import force_bytes, force_text, DjangoUnicodeDecodeError
+from django.utils.http import urlsafe_base64_encode, urlsafe_base64_decode
+from django.template.loader import render_to_string
+from django.urls import reverse
+from django.utils import timezone
+
+from .managers import LoginTokenManager
 
 
-class UserManager(BaseUserManager):
-    use_in_migrations = True
+class LoginToken(models.Model):
+    """
+    Login token model.
 
-    def _create_user(self, email, password, **extra_fields):
-        """
-        Create and save a user with the given email and password.
-        """
-        if not email:
-            raise ValueError('The given email must be set')
-        email = self.normalize_email(email)
-        user = self.model(email=email, **extra_fields)
-        user.set_password(password)
-        user.save(using=self._db)
-        return user
+    """
+    user = models.ForeignKey(
+        get_user_model(),
+        on_delete=models.CASCADE
+    )
+    code = models.CharField(
+        unique=True,
+        max_length=32
+    )
+    valid_until = models.DateTimeField()
+    sent_at = models.DateTimeField(blank=True, null=True)
+    created_at = models.DateTimeField(auto_now_add=True)
 
-    def create_user(self, email, password=None, **extra_fields):
-        extra_fields.setdefault('is_staff', False)
-        extra_fields.setdefault('is_superuser', False)
-        return self._create_user(email, password, **extra_fields)
+    objects = LoginTokenManager()
 
-    def create_superuser(self, email, password, **extra_fields):
-        extra_fields.setdefault('is_staff', True)
-        extra_fields.setdefault('is_superuser', True)
+    def __str__(self):
+        return 'Token({}, {})'.format(self.user.email, self.code)
 
-        if extra_fields.get('is_staff') is not True:
-            raise ValueError('Superuser must have is_staff=True.')
-        if extra_fields.get('is_superuser') is not True:
-            raise ValueError('Superuser must have is_superuser=True.')
+    def is_valid(self):
+        return timezone.now() <= self.valid_until
 
-        return self._create_user(email, password, **extra_fields)
+    def is_expired(self):
+        return not self.is_valid()
 
+    @staticmethod
+    def b64_encoded(email):
+        return urlsafe_base64_encode(force_bytes(email)).decode()
 
-class User(AbstractUser):
-    username = None
-    email = models.EmailField(_('email address'), unique=True)
+    @staticmethod
+    def b64_decoded(email_b64):
+        try:
+            return force_text(urlsafe_base64_decode(email_b64))
+        except DjangoUnicodeDecodeError:
+            return None
 
-    USERNAME_FIELD = 'email'
-    REQUIRED_FIELDS = []
+    def login_url(self):
+        return '{}://{}{}'.format(
+            'https' if settings.USE_SSL else 'http',
+            settings.HOST,
+            reverse(
+                'verify_token',
+                kwargs={
+                    'email_b64': LoginToken.b64_encoded(self.user.email),
+                    'code': self.code
+                }
+            )
+        )
 
-    objects = UserManager()
+    def send(self):
+        for backend in get_backends():
+            if hasattr(backend, 'send'):
+                backend.send(self)
+        self.sent_at = timezone.now()
+        self.save()

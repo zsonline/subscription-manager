@@ -11,6 +11,7 @@ https://docs.djangoproject.com/en/2.0/ref/settings/
 """
 
 import os
+from datetime import timedelta
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -19,8 +20,13 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/2.0/howto/deployment/checklist/
 
+HOST = '127.0.0.1:8000'
+
 # SECURITY WARNING: keep the secret key used in production secret!
 SECRET_KEY = 'fruh-%ut#q*2av0@d+vf!*gkc=vbnxwox^h6-a-$9avh32z+ya'
+
+USE_SSL = False
+# SECURE_SSL_REDIRECT = True
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
@@ -37,8 +43,9 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'user.apps.UserConfig',
+    'authentication.apps.AccountConfig',
     'subscription.apps.SubscriptionConfig',
-    'authentication.apps.AuthenticationConfig',
 ]
 
 MIDDLEWARE = [
@@ -103,8 +110,25 @@ AUTH_PASSWORD_VALIDATORS = [
 ]
 
 # Register custom user model
-AUTH_USER_MODEL = 'authentication.User'
+AUTH_USER_MODEL = 'user.User'
 
+AUTHENTICATION_BACKENDS = [
+    'authentication.backends.EmailTokenBackend',
+    'django.contrib.auth.backends.ModelBackend'
+]
+
+LOGIN_URL = '/auth/login/'
+LOGIN_REDIRECT_URL = '/auth/home/'
+
+# Token expiration (in hours)
+TOKEN_EXPIRATION = timedelta(hours=1)
+TOKEN_LENGTH = 16
+
+NAME = 'Zürcher Studierendenzeitung'
+
+# Email
+EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
+EMAIL_FROM_ADDRESS = 'noreply@zs.dev'
 
 # Internationalization
 # https://docs.djangoproject.com/en/2.0/topics/i18n/
