@@ -1,12 +1,11 @@
 from django.db import models
-
-from authentication.models import User
+from django.contrib.auth import get_user_model
 
 
 class Address(models.Model):
 
     user = models.ForeignKey(
-        User,
+        get_user_model(),
         on_delete=models.CASCADE
     )
     street_1 = models.CharField(max_length=50)
