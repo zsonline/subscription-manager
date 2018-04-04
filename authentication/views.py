@@ -1,5 +1,6 @@
 # Django imports
-from django.shortcuts import render, redirect, HttpResponse
+from django.shortcuts import render, redirect, HttpResponse, HttpResponseRedirect
+from django.conf import settings
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
 from django.utils.decorators import method_decorator
@@ -73,7 +74,7 @@ class LoginTokenView(View):
 
         if email is not None and code is not None:
             if self.verify_token(request, email, code):
-                return redirect('home')
+                return HttpResponseRedirect(settings.LOGIN_REDIRECT_URL)
             return redirect('verify_token', email_b64=email_b64)
         elif email is not None:
             form = self.form_class(
@@ -92,7 +93,7 @@ class LoginTokenView(View):
             email = form.cleaned_data['email']
             code = form.cleaned_data['code']
             if self.verify_token(request, email, code):
-                return redirect('home')
+                return HttpResponseRedirect(settings.LOGIN_REDIRECT_URL)
         return render(request, self.template_name, {'form': form})
 
     @staticmethod

@@ -2,7 +2,8 @@
 from functools import wraps
 
 # Django imports
-from django.shortcuts import redirect
+from django.shortcuts import HttpResponseRedirect
+from django.conf import settings
 
 
 def anonymous_required(func):
@@ -12,11 +13,10 @@ def anonymous_required(func):
     """
     @wraps(func)
     def inner(request, *args, **kwargs):
-        #print(request.user)
         # Redirect logged in users to login home
         if hasattr(request, 'user'):
             if request.user.is_authenticated:
-                return redirect('home')
+                return HttpResponseRedirect(settings.LOGIN_REDIRECT_URL)
         # Return function if user is anonymous
         return func(request, *args, **kwargs)
     return inner

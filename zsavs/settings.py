@@ -117,9 +117,10 @@ AUTHENTICATION_BACKENDS = [
 ]
 
 LOGIN_URL = '/auth/login/'
+LOGIN_REDIRECT_URL = '/auth/home/'
 
 # Token expiration (in hours)
-TOKEN_EXPIRATION =  timedelta(hours=1)
+TOKEN_EXPIRATION = timedelta(hours=1)
 TOKEN_LENGTH = 16
 
 NAME = 'Zürcher Studierendenzeitung'
