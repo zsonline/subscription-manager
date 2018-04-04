@@ -6,7 +6,7 @@ from django.contrib.auth.decorators import login_required
 from django.utils.decorators import method_decorator
 from django.views import View
 
-# Project imports
+# Application imports
 from .models import User, LoginToken
 from .forms import SignUpForm, LoginForm, TokenForm
 from .decorators import anonymous_required
@@ -14,52 +14,78 @@ from .decorators import anonymous_required
 
 @anonymous_required
 def signup_view(request):
+    """
+    Renders or processes the signup form through which
+    a user can register himself.
+    """
+
+    # For POST requests, process the form data
     if request.method == 'POST':
+
         form = SignUpForm(request.POST)
+
         if form.is_valid():
+
             # Save user
             user = form.save()
+
+            # If user exists
             if user is not None:
                 # Create and send token
-                token = LoginToken.objects.create(user=user)
-                token.save()
-                token.send()
+                token = LoginToken.objects.create_and_send(user=user)
                 # Redirect to token verification
                 return redirect('verify_token', email_b64=LoginToken.b64_encoded(token.user.email))
+
+            # If user does not exist, redirect to login page
             return redirect('login')
+
+    # If it is another request, instantiate empty form
     else:
         form = SignUpForm()
+
     return render(request, 'authentication/signup.html', {'form': form})
 
 
 @anonymous_required
 def login_view(request):
-    # next = request.GET.get('next', None)
+    """
+    Renders or processes the login form. If the data is valid,
+    a token is sent and the user redirected to the token verification
+    page. Otherwise, the login form is rendered.
+    """
+
+    # For POST requests, process the form data
     if request.method == 'POST':
+
         form = LoginForm(request.POST)
+
         if form.is_valid():
+
             # Get user
             try:
                 user = User.objects.get(email=form.cleaned_data['email'])
             except User.DoesNotExist:
                 user = None
+
+            # If user exists
             if user is not None:
                 # Create and send token
-                token = LoginToken.objects.create(user=user)
-                token.save()
-                token.send()
+                token = LoginToken.objects.create_and_send(user=user)
                 # Redirect to token verification
                 return redirect('verify_token', email_b64=LoginToken.b64_encoded(token.user.email))
+
     else:
         form = LoginForm()
+
     return render(request, 'authentication/login.html', {'form': form})
 
 
 @login_required
 def logout_view(request):
     """
-    Logs a user out.
+    Logs a user out and redirects her to the login page.
     """
+
     logout(request)
     return redirect('login')
 
@@ -112,7 +138,9 @@ class LoginTokenView(View):
         Handles POST requests. It tries to log in a user with the
         submitted values. If it fails, the form is rendered.
         """
+
         form = self.form_class(request.POST)
+
         if form.is_valid():
             # Parse form input
             email = form.cleaned_data['email']
@@ -120,24 +148,31 @@ class LoginTokenView(View):
             # Authenticate and log in
             if not self.authenticate_and_login(request, email, code):
                 pass
+
         # If form not valid are user could not be authenticated, render form
         return render(request, self.template_name, {'form': form})
 
     @staticmethod
     def authenticate_and_login(request, email, code):
         """
-        Tries to authenticate a user. If the authentication is successful,
-        it will log the user in.
+        Tries to authenticate a user. If the authentication is
+        successful, it will log him in.
         """
+
         # Authenticate
         user = authenticate(email=email, code=code)
+
+        # If authentication is successful, log user in
         if user is not None:
-            # If authentication successful, log user in
             login(request, user)
             return True
+
         return False
 
 
 @login_required
 def home_view(request):
+    """
+    Login home view. For test purposes.
+    """
     return HttpResponse(request.user.email)
