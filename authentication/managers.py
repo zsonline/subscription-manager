@@ -15,7 +15,7 @@ class UserManager(BaseUserManager):
             raise ValueError('The given email must be set')
         email = self.normalize_email(email)
         user = self.model(email=email, **extra_fields)
-        if not password:
+        if password is None:
             user.set_unusable_password()
         else:
             user.set_password(password)
@@ -45,6 +45,12 @@ class LoginTokenManager(models.Manager):
         obj_data['valid_until'] = timezone.now() + settings.TOKEN_EXPIRATION
         obj_data['code'] = get_random_string(settings.TOKEN_LENGTH)
         return super().create(**obj_data)
+
+    def create_and_send(self, **obj_data):
+        token = self.create(**obj_data)
+        token.save()
+        token.send()
+        return token
 
     def all_expired(self):
         """Selects all tokens that have been sent more than seven days ago"""
