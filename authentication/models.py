@@ -4,42 +4,17 @@ import pytz
 from django.db import models
 from django.conf import settings
 from django.core.exceptions import ValidationError
-from django.contrib.auth.models import AbstractUser
 from django.utils.crypto import get_random_string
 from django.utils.translation import gettext_lazy as _
 from django.core.mail import send_mail
-from django.contrib.auth import get_backends
+from django.contrib.auth import get_backends, get_user_model
 from django.utils.encoding import force_bytes, force_text, DjangoUnicodeDecodeError
 from django.utils.http import urlsafe_base64_encode, urlsafe_base64_decode
 from django.template.loader import render_to_string
 from django.urls import reverse
 from django.utils import timezone
 
-from .managers import UserManager, LoginTokenManager
-
-
-class User(AbstractUser):
-    """
-    Custom user model that inherits the AbstractUser
-    model from django's default authentication application.
-
-    It removes the username field and replaces it instead by
-    the email address. In order to handle the modifications,
-    it uses a custom UserManager.
-    """
-    # Remove username and password field
-    username = None
-
-    # Substitute username by email address field
-    email = models.EmailField(unique=True)
-    USERNAME_FIELD = 'email'
-
-    # Use custom UserManager for user creation
-    REQUIRED_FIELDS = []
-    objects = UserManager()
-
-    def __str__(self):
-        return 'User({})'.format(self.email)
+from .managers import LoginTokenManager
 
 
 class LoginToken(models.Model):
@@ -48,7 +23,7 @@ class LoginToken(models.Model):
 
     """
     user = models.ForeignKey(
-        User,
+        get_user_model(),
         on_delete=models.CASCADE
     )
     code = models.CharField(

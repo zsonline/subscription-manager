@@ -1,9 +1,7 @@
 # Django imports
 from django import forms
+from django.contrib.auth import get_user_model
 from django.utils.translation import gettext_lazy as _
-
-# Application imports
-from .models import User
 
 
 class SignUpForm(forms.ModelForm):
@@ -13,7 +11,7 @@ class SignUpForm(forms.ModelForm):
     """
     # ModelForm generates form fields
     class Meta:
-        model = User
+        model = get_user_model()
         fields = ('email', 'first_name', 'last_name')
 
 
@@ -40,8 +38,8 @@ class LoginForm(forms.Form):
 
         # Check whether user exists
         try:
-            User.objects.get(email=self.cleaned_data['email'])
-        except User.DoesNotExist:
+            get_user_model().objects.get(email=self.cleaned_data['email'])
+        except get_user_model().DoesNotExist:
             # Add error if user does not exist
             self.add_error('email', _('User does not exist.'))
             return False

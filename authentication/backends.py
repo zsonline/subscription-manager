@@ -4,7 +4,7 @@ from django.core.mail import EmailMultiAlternatives
 from django.template.loader import render_to_string
 from django.utils.translation import gettext_lazy as _
 
-from .models import LoginToken, User
+from .models import LoginToken
 
 
 class TokenBackend(ModelBackend):

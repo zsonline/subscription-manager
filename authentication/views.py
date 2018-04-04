@@ -1,13 +1,13 @@
 # Django imports
 from django.shortcuts import render, redirect, HttpResponse, HttpResponseRedirect
 from django.conf import settings
-from django.contrib.auth import authenticate, login, logout
+from django.contrib.auth import authenticate, login, logout, get_user_model
 from django.contrib.auth.decorators import login_required
 from django.utils.decorators import method_decorator
 from django.views import View
 
 # Application imports
-from .models import User, LoginToken
+from .models import LoginToken
 from .forms import SignUpForm, LoginForm, TokenForm
 from .decorators import anonymous_required
 
@@ -61,8 +61,8 @@ def login_view(request):
 
             # Get user
             try:
-                user = User.objects.get(email=form.cleaned_data['email'])
-            except User.DoesNotExist:
+                user = get_user_model().objects.get(email=form.cleaned_data['email'])
+            except get_user_model().DoesNotExist:
                 user = None
 
             # If user exists

@@ -109,7 +109,7 @@ AUTH_PASSWORD_VALIDATORS = [
 ]
 
 # Register custom user model
-AUTH_USER_MODEL = 'authentication.User'
+AUTH_USER_MODEL = 'user.User'
 
 AUTHENTICATION_BACKENDS = [
     'authentication.backends.EmailTokenBackend',
