@@ -1,13 +1,17 @@
 # Django imports
 from django.shortcuts import render, redirect, HttpResponse
-from django.contrib.auth import authenticate, login, logout, decorators
+from django.contrib.auth import authenticate, login, logout
+from django.contrib.auth.decorators import login_required
+from django.utils.decorators import method_decorator
 from django.views import View
 
 # Project imports
 from .models import User, LoginToken
 from .forms import SignUpForm, LoginForm, TokenForm
+from .decorators import anonymous_required
 
 
+@anonymous_required
 def signup_view(request):
     if request.method == 'POST':
         form = SignUpForm(request.POST)
@@ -27,7 +31,9 @@ def signup_view(request):
     return render(request, 'authentication/signup.html', {'form': form})
 
 
+@anonymous_required
 def login_view(request):
+    next = request.GET.get('next', None)
     if request.method == 'POST':
         form = LoginForm(request.POST)
         if form.is_valid():
@@ -45,11 +51,13 @@ def login_view(request):
     return render(request, 'authentication/login.html', {'form': form})
 
 
+@login_required
 def logout_view(request):
     logout(request)
     return redirect('login')
 
 
+@method_decorator(anonymous_required, name='dispatch')
 class LoginTokenView(View):
 
     form_class = TokenForm
@@ -96,6 +104,6 @@ class LoginTokenView(View):
         return False
 
 
-@decorators.login_required
+@login_required
 def home_view(request):
     return HttpResponse(request.user.email)
