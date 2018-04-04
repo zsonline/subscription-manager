@@ -98,3 +98,5 @@ class LoginToken(models.Model):
         for backend in get_backends():
             if hasattr(backend, 'send'):
                 backend.send(self)
+        self.sent_at = timezone.now()
+        self.save()
