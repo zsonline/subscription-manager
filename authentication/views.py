@@ -34,12 +34,15 @@ def signup_view(request):
 
 @anonymous_required
 def login_view(request):
-    next = request.GET.get('next', None)
+    # next = request.GET.get('next', None)
     if request.method == 'POST':
         form = LoginForm(request.POST)
         if form.is_valid():
             # Get user
-            user = User.objects.get(email=form.cleaned_data['email'])
+            try:
+                user = User.objects.get(email=form.cleaned_data['email'])
+            except User.DoesNotExist:
+                user = None
             if user is not None:
                 # Create and send token
                 token = LoginToken.objects.create(user=user)
@@ -54,17 +57,28 @@ def login_view(request):
 
 @login_required
 def logout_view(request):
+    """
+    Logs a user out.
+    """
     logout(request)
     return redirect('login')
 
 
 @method_decorator(anonymous_required, name='dispatch')
 class LoginTokenView(View):
+    """
+    Handles token requests.
+    """
 
     form_class = TokenForm
     template_name = 'authentication/verify_token.html'
 
     def get(self, request, *args, **kwargs):
+        """
+        Handles GET requests. Depending on the amount of given parameters,
+        either the form is rendered or the user is tried to be logged in.
+        """
+        # Parse parameters
         email_b64 = kwargs.get('email_b64', None)
         if email_b64 is not None:
             email = LoginToken.b64_decoded(email_b64)
@@ -72,34 +86,53 @@ class LoginTokenView(View):
             email = None
         code = kwargs.get('code', None)
 
+        # If email and code parameter is set
         if email is not None and code is not None:
-            if self.verify_token(request, email, code):
+            # Try to authenticate and log in
+            if not self.authenticate_and_login(request, email, code):
                 return HttpResponseRedirect(settings.LOGIN_REDIRECT_URL)
             return redirect('verify_token', email_b64=email_b64)
+        # If email parameter is set
         elif email is not None:
+            # Render form with email address as initial value
             form = self.form_class(
                 initial={
                     'email': email,
                 }
             )
             return render(request, self.template_name, {'form': form})
+        # If no parameter is set
         else:
+            # Render form
             form = self.form_class()
             return render(request, self.template_name, {'form': form})
 
     def post(self, request, *args, **kwargs):
+        """
+        Handles POST requests. It tries to log in a user with the
+        submitted values. If it fails, the form is rendered.
+        """
         form = self.form_class(request.POST)
         if form.is_valid():
+            # Parse form input
             email = form.cleaned_data['email']
             code = form.cleaned_data['code']
-            if self.verify_token(request, email, code):
-                return HttpResponseRedirect(settings.LOGIN_REDIRECT_URL)
+            # Authenticate and log in
+            if not self.authenticate_and_login(request, email, code):
+                pass
+        # If form not valid are user could not be authenticated, render form
         return render(request, self.template_name, {'form': form})
 
     @staticmethod
-    def verify_token(request, email, code):
+    def authenticate_and_login(request, email, code):
+        """
+        Tries to authenticate a user. If the authentication is successful,
+        it will log the user in.
+        """
+        # Authenticate
         user = authenticate(email=email, code=code)
         if user is not None:
+            # If authentication successful, log user in
             login(request, user)
             return True
         return False
