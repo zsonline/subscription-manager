@@ -111,7 +111,6 @@ class LoginTokenView(View):
         # If email and code parameter is set
         if email is not None and code is not None:
             # Try to authenticate and log in
-            print('hallo')
             if not self.authenticate_and_login(request, email, code):
                 return HttpResponseRedirect(settings.LOGIN_REDIRECT_URL)
             return redirect('verify_token', email_b64=email_b64)
@@ -130,23 +129,23 @@ class LoginTokenView(View):
             form = self.form_class()
             return render(request, self.template_name, {'form': form})
 
-    # def post(self, request, *args, **kwargs):
-    #     """
-    #     Handles POST requests. It tries to log in a user with the
-    #     submitted values. If it fails, the form is rendered.
-    #     """
-    #     form = self.form_class(request.POST)
-    #
-    #     if form.is_valid():
-    #         # Parse form input
-    #         email = form.cleaned_data['email']
-    #         code = form.cleaned_data['code']
-    #         # Authenticate and log in
-    #         if not self.authenticate_and_login(request, email, code):
-    #             pass
-    #
-    #     # If form not valid are user could not be authenticated, render form
-    #     return render(request, self.template_name, {'form': form})
+    def post(self, request, *args, **kwargs):
+        """
+        Handles POST requests. It tries to log in a user with the
+        submitted values. If it fails, the form is rendered.
+        """
+        form = self.form_class(request.POST)
+
+        if form.is_valid():
+            # Parse form input
+            email = form.cleaned_data['email']
+            code = form.cleaned_data['code']
+            # Authenticate and log in
+            if not self.authenticate_and_login(request, email, code):
+                pass
+
+        # If form not valid are user could not be authenticated, render form
+        return render(request, self.template_name, {'form': form})
 
     @staticmethod
     def authenticate_and_login(request, email, code):

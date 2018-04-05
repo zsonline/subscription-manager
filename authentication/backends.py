@@ -1,3 +1,7 @@
+# Python imports
+import hashlib
+
+# Django imports
 from django.contrib.auth.backends import ModelBackend
 from django.conf import settings
 from django.core.mail import EmailMultiAlternatives
@@ -8,12 +12,13 @@ from .models import LoginToken
 
 
 class TokenBackend(ModelBackend):
-    def authenticate(self, request, primary_key=None, code=None, **kwargs):
+    def authenticate(self, request, email=None, code=None, **kwargs):
         try:
-            token = LoginToken.objects.get(code=code)
+            encoded_code = hashlib.sha256(code.encode('utf-8')).hexdigest()
+            token = LoginToken.objects.get(code=encoded_code)
             if token.is_valid():
                 user = token.user
-                if user.primary_key == primary_key:
+                if user.email == email:
                     token.delete()
                     if user.is_active:
                         return user
@@ -32,7 +37,7 @@ class EmailTokenBackend(TokenBackend):
         context = {
             'to_name': token.user.first_name,
             'from_name': settings.NAME,
-            'url': token.login_url(),
+            'url': token.login_url(code),
             'code': code,
         }
         text_content = render_to_string('authentication/emails/token_email.txt', context)

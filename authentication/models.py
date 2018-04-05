@@ -26,9 +26,9 @@ class LoginToken(models.Model):
         get_user_model(),
         on_delete=models.CASCADE,
     )
-    code = models.UUIDField(
+    code = models.CharField(
+        max_length=100,
         unique=True,
-        default=uuid.uuid4,
         editable=False,
     )
     valid_until = models.DateTimeField()
@@ -57,15 +57,15 @@ class LoginToken(models.Model):
         except DjangoUnicodeDecodeError:
             return None
 
-    def login_url(self):
+    def login_url(self, code):
         return '{}://{}{}'.format(
             'https' if settings.USE_SSL else 'http',
             settings.HOST,
             reverse(
                 'verify_token',
                 kwargs={
-                    'pk': LoginToken.b64_encoded(self.user.primary_key),
-                    'code': self.code
+                    'email_b64': LoginToken.b64_encoded(self.user.email),
+                    'code': code
                 }
             )
         )

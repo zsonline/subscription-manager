@@ -22,8 +22,8 @@ class LoginTokenManager(models.Manager):
         obj_data['valid_until'] = timezone.now() + settings.TOKEN_EXPIRATION
 
         # Set code and create LoginToken object
-        code = hashlib.sha256(code)
-        obj_data['code'] = code.hexdigest()
+        encoded_code = hashlib.sha256(str(code).encode('utf-8')).hexdigest()
+        obj_data['code'] = encoded_code
 
         # Try creating the object
         token = super().create(**obj_data)
