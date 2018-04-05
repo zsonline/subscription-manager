@@ -13,7 +13,7 @@ class LoginTokenManager(models.Manager):
     Custom manager for login tokens.
     """
 
-    def create(self, code, **obj_data):
+    def create(self, **obj_data):
         """
         Overrides the default create method. It sets the valid_until
         attribute and generates a random code.
@@ -21,20 +21,27 @@ class LoginTokenManager(models.Manager):
         # Set token expiration
         obj_data['valid_until'] = timezone.now() + settings.TOKEN_EXPIRATION
 
-        # Set code and create LoginToken object
-        encoded_code = hashlib.sha256(str(code).encode('utf-8')).hexdigest()
-        obj_data['code'] = encoded_code
-
-        # Try creating the object
-        token = super().create(**obj_data)
-        return token
+        # Try creating LoginToken object
+        while True:
+            try:
+                # Generates a UUID
+                code = uuid.uuid4()
+                # Hash UUID with SHA256
+                encoded_code = hashlib.sha256(str(code).encode('utf-8')).hexdigest()
+                # Try creating token object
+                obj_data['code'] = encoded_code
+                token = super().create(**obj_data)
+            except IntegrityError:
+                continue
+            break
+        return code, token
 
     def create_and_send(self, **obj_data):
         """
         Creates and sends a token object.
         """
-        code = uuid.uuid4()
-        token = self.create(code, **obj_data)
+        # Create and send token
+        code, token = self.create(**obj_data)
         token.send(code)
         return token
 
