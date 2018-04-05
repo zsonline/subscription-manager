@@ -1,5 +1,5 @@
 from datetime import timedelta
-import pytz
+import uuid
 
 from django.db import models
 from django.conf import settings
@@ -24,11 +24,12 @@ class LoginToken(models.Model):
     """
     user = models.ForeignKey(
         get_user_model(),
-        on_delete=models.CASCADE
+        on_delete=models.CASCADE,
     )
-    code = models.CharField(
+    code = models.UUIDField(
         unique=True,
-        max_length=32
+        default=uuid.uuid4,
+        editable=False,
     )
     valid_until = models.DateTimeField()
     sent_at = models.DateTimeField(blank=True, null=True)
@@ -63,15 +64,15 @@ class LoginToken(models.Model):
             reverse(
                 'verify_token',
                 kwargs={
-                    'email_b64': LoginToken.b64_encoded(self.user.email),
+                    'pk': LoginToken.b64_encoded(self.user.primary_key),
                     'code': self.code
                 }
             )
         )
 
-    def send(self):
+    def send(self, code):
         for backend in get_backends():
             if hasattr(backend, 'send'):
-                backend.send(self)
+                backend.send(self, code)
         self.sent_at = timezone.now()
         self.save()

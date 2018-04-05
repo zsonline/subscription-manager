@@ -8,12 +8,12 @@ from .models import LoginToken
 
 
 class TokenBackend(ModelBackend):
-    def authenticate(self, request, email=None, code=None, **kwargs):
+    def authenticate(self, request, primary_key=None, code=None, **kwargs):
         try:
             token = LoginToken.objects.get(code=code)
             if token.is_valid():
                 user = token.user
-                if user.email == email:
+                if user.primary_key == primary_key:
                     token.delete()
                     if user.is_active:
                         return user
@@ -24,7 +24,7 @@ class TokenBackend(ModelBackend):
 
 class EmailTokenBackend(TokenBackend):
 
-    def send(self, token):
+    def send(self, token, code):
         subject = 'Subject'
         to_email = [token.user.email]
         from_email = settings.EMAIL_FROM_ADDRESS
@@ -33,7 +33,7 @@ class EmailTokenBackend(TokenBackend):
             'to_name': token.user.first_name,
             'from_name': settings.NAME,
             'url': token.login_url(),
-            'code': token.code,
+            'code': code,
         }
         text_content = render_to_string('authentication/emails/token_email.txt', context)
         html_content = render_to_string('authentication/emails/token_email.html', context)
