@@ -46,16 +46,24 @@ class LoginTokenManager(models.Manager):
         return token
 
     def valid_user_tokens_count(self, user):
+        """
+        Returns the count of valid tokens for a given user.
+        """
         return self.filter(
             user=user,
             valid_until__gte=timezone.now(),
         ).count()
 
     def all_expired(self):
-        """Selects all tokens that have been sent more than seven days ago"""
+        """
+        Selects all expired tokens.
+        """
         return self.filter(
             valid_until__lt=timezone.now()
         )
 
     def delete_all_expired(self):
+        """
+        Deletes all expired tokens.
+        """
         self.all_expired().delete()

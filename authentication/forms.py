@@ -7,6 +7,7 @@ from django.utils.translation import gettext_lazy as _
 # Application imports
 from .models import LoginToken
 
+
 class SignUpForm(forms.ModelForm):
     """
     Sign up form. Allows a user to sign up with
@@ -23,7 +24,6 @@ class LoginForm(forms.Form):
     Login form. Allows a user to log himself in.
     A token is afterwards sent to her email address.
     """
-
     # Form fields
     email = forms.EmailField()
 
@@ -60,7 +60,6 @@ class TokenForm(forms.Form):
     Token form. A user can verify herself by submitting
     a valid token for her email address.
     """
-
     # Form fields
     email = forms.EmailField()
     code = forms.CharField()
