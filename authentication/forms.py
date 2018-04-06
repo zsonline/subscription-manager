@@ -53,13 +53,3 @@ class LoginForm(forms.Form):
             return False
 
         return True
-
-
-class TokenForm(forms.Form):
-    """
-    Token form. A user can verify herself by submitting
-    a valid token for her email address.
-    """
-    # Form fields
-    email = forms.EmailField()
-    code = forms.CharField()

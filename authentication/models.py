@@ -74,7 +74,7 @@ class LoginToken(models.Model):
             'https' if settings.USE_SSL else 'http',
             settings.HOST,
             reverse(
-                'verify_token',
+                'token_verification',
                 kwargs={
                     'email_b64': LoginToken.b64_encoded(email),
                     'code': code

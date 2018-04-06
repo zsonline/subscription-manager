@@ -41,7 +41,6 @@ class EmailTokenBackend(TokenBackend):
             'to_name': token.user.first_name,
             'from_name': settings.NAME,
             'url': LoginToken.login_url(token.user.email, code),
-            'code': code,
         }
         text_content = render_to_string('authentication/emails/token_email.txt', context)
         html_content = render_to_string('authentication/emails/token_email.html', context)

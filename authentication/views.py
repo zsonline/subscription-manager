@@ -3,12 +3,11 @@ from django.shortcuts import render, redirect, HttpResponse, HttpResponseRedirec
 from django.conf import settings
 from django.contrib.auth import authenticate, login, logout, get_user_model
 from django.contrib.auth.decorators import login_required
-from django.utils.decorators import method_decorator
-from django.views import View
+from django.utils.translation import gettext_lazy as _
 
 # Application imports
 from .models import LoginToken
-from .forms import SignUpForm, LoginForm, TokenForm
+from .forms import SignUpForm, LoginForm
 from .decorators import anonymous_required
 
 
@@ -32,8 +31,8 @@ def signup_view(request):
             if user is not None:
                 # Create and send token
                 token = LoginToken.objects.create_and_send(user=user)
-                # Redirect to token verification
-                return redirect('verify_token', email_b64=LoginToken.b64_encoded(token.user.email))
+                # Render token sent page
+                return render(request, 'authentication/token_sent.html', {'context': 'signup'})
 
             # If user does not exist, redirect to login page
             return redirect('login')
@@ -69,13 +68,31 @@ def login_view(request):
             if user is not None:
                 # Create and send token
                 token = LoginToken.objects.create_and_send(user=user)
-                # Redirect to token verification
-                return redirect('verify_token', email_b64=LoginToken.b64_encoded(token.user.email))
+                # Render token sent template
+                return render(request, 'authentication/token_sent.html', {'context': 'login'})
 
     else:
         form = LoginForm()
 
     return render(request, 'authentication/login.html', {'form': form})
+
+
+def token_verification_view(request, email_b64, code):
+    """
+    Checks login token. If the token is valid, the user is
+    redirected to the login home page. If not, she is being
+    redirected to the login page and an error is displayed.
+    """
+    email = LoginToken.b64_decoded(email_b64)
+    # Authenticate
+    user = authenticate(email=email, code=code)
+    # If authentication is successful, log user in
+    if user is not None:
+        login(request, user)
+        # Redirect user to login home
+        return HttpResponseRedirect(settings.LOGIN_REDIRECT_URL)
+    # Render invalid token template
+    return render(request, 'authentication/invalid_token.html')
 
 
 @login_required
@@ -85,83 +102,6 @@ def logout_view(request):
     """
     logout(request)
     return redirect('login')
-
-
-@method_decorator(anonymous_required, name='dispatch')
-class LoginTokenView(View):
-    """
-    Handles token requests.
-    """
-    form_class = TokenForm
-    template_name = 'authentication/verify_token.html'
-
-    def get(self, request, *args, **kwargs):
-        """
-        Handles GET requests. Depending on the amount of given parameters,
-        either the form is rendered or the user is tried to be logged in.
-        """
-        # Parse parameters
-        email_b64 = kwargs.get('email_b64', None)
-        if email_b64 is not None:
-            email = LoginToken.b64_decoded(email_b64)
-        else:
-            email = None
-        code = kwargs.get('code', None)
-
-        # If email and code parameter is set
-        if email is not None and code is not None:
-            # Try to authenticate and log in
-            if not self.authenticate_and_login(request, email, code):
-                return HttpResponseRedirect(settings.LOGIN_REDIRECT_URL)
-            return redirect('verify_token', email_b64=email_b64)
-        # If email parameter is set
-        elif email is not None:
-            # Render form with email address as initial value
-            form = self.form_class(
-                initial={
-                    'email': email,
-                }
-            )
-            return render(request, self.template_name, {'form': form})
-        # If no parameter is set
-        else:
-            # Render form
-            form = self.form_class()
-            return render(request, self.template_name, {'form': form})
-
-    def post(self, request, *args, **kwargs):
-        """
-        Handles POST requests. It tries to log in a user with the
-        submitted values. If it fails, the form is rendered.
-        """
-        form = self.form_class(request.POST)
-
-        if form.is_valid():
-            # Parse form input
-            email = form.cleaned_data['email']
-            code = form.cleaned_data['code']
-            # Authenticate and log in
-            if not self.authenticate_and_login(request, email, code):
-                pass
-
-        # If form not valid are user could not be authenticated, render form
-        return render(request, self.template_name, {'form': form})
-
-    @staticmethod
-    def authenticate_and_login(request, email, code):
-        """
-        Tries to authenticate a user. If the authentication is
-        successful, it will log him in.
-        """
-        # Authenticate
-        user = authenticate(email=email, code=code)
-
-        # If authentication is successful, log user in
-        if user is not None:
-            login(request, user)
-            return True
-
-        return False
 
 
 @login_required
