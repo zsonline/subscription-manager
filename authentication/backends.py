@@ -12,12 +12,23 @@ from .models import LoginToken
 
 
 class TokenBackend(ModelBackend):
+    """
+    Custom authentication backend that handles authentication
+    by token.
+    """
     def authenticate(self, request, email=None, code=None, **kwargs):
+        """
+        Checks if a given token is valid for a given email
+        address. If so, the user is returned, otherwise None.
+        """
+        # If email or code are None, authentication failed.
         if email is None or code is None:
             return None
         try:
+            # Encode code and find it in database
             encoded_code = hashlib.sha256(code.encode('utf-8')).hexdigest()
             token = LoginToken.objects.get(code=encoded_code)
+            # If token is valid, delete token and return user
             if token.is_valid():
                 user = token.user
                 if user.email == email:

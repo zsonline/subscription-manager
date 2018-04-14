@@ -9,7 +9,7 @@ from django.conf import settings
 def anonymous_required(func):
     """
     Decorator for views that checks whether the user is already
-    logged in. If so, the user is requested to the restricted area.
+    logged in. If so, the user is redirected to the restricted area.
     """
     @wraps(func)
     def inner(request, *args, **kwargs):
