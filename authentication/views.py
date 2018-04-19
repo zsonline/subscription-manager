@@ -67,7 +67,7 @@ def login_view(request):
             # If user exists
             if user is not None:
                 # Create and send token
-                token = LoginToken.objects.create_and_send(user=user)
+                LoginToken.objects.create_and_send(user=user)
                 # Render token sent template
                 return render(request, 'authentication/token_sent.html', {'context': 'login'})
 

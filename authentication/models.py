@@ -63,6 +63,8 @@ class LoginToken(models.Model):
             return force_text(urlsafe_base64_decode(email_b64))
         except DjangoUnicodeDecodeError:
             return None
+        except ValueError:
+            return None
 
     @staticmethod
     def login_url(email, code):

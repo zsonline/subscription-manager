@@ -11,7 +11,7 @@ from django.template.loader import render_to_string
 from .models import LoginToken
 
 
-class TokenBackend(ModelBackend):
+class LoginTokenBackend(ModelBackend):
     """
     Custom authentication backend that handles authentication
     by token.
@@ -40,7 +40,7 @@ class TokenBackend(ModelBackend):
             return None
 
 
-class EmailTokenBackend(TokenBackend):
+class EmailBackend(LoginTokenBackend):
 
     @staticmethod
     def send(token, code):

@@ -12,7 +12,6 @@ class LoginTokenManager(models.Manager):
     """
     Custom manager for login tokens.
     """
-
     def create(self, **obj_data):
         """
         Overrides the default create method. It sets the valid_until
@@ -34,7 +33,7 @@ class LoginTokenManager(models.Manager):
             except IntegrityError:
                 continue
             break
-        return code, token
+        return str(code), token
 
     def create_and_send(self, **obj_data):
         """

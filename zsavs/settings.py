@@ -90,6 +90,8 @@ DATABASES = {
     }
 }
 
+NOSE_ARGS = ['--nocapture',
+             '--nologcapture',]
 
 # Password validation
 # https://docs.djangoproject.com/en/2.0/ref/settings/#auth-password-validators
@@ -113,7 +115,7 @@ AUTH_PASSWORD_VALIDATORS = [
 AUTH_USER_MODEL = 'user.User'
 
 AUTHENTICATION_BACKENDS = [
-    'authentication.backends.EmailTokenBackend',
+    'authentication.backends.EmailBackend',
     'django.contrib.auth.backends.ModelBackend'
 ]
 
