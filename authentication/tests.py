@@ -1,9 +1,11 @@
-from django.test import TestCase, Client
+# Django imports
+from django.test import TestCase
 from django.test.utils import mail
+from django.conf import settings
 from django.contrib.auth import get_user_model
 from django.shortcuts import reverse
-from django.conf import settings
 
+# Application imports
 from .models import LoginToken
 from .backends import EmailBackend
 
