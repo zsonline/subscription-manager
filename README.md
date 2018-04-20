@@ -1,6 +1,6 @@
 # ZS AVS
 
-The ZS AVS (short for ‘Abonnements-Verwaltungssystem’) is a subscription management system for the students newspaper ‘[Zürcher Studierendenzeitung](http://zs-online.ch/)’.
+The ZS AVS (short for ‘Abonnements-Verwaltungssystem’) is a subscription management system for the student newspaper ‘[Zürcher Studierendenzeitung](http://zs-online.ch/)’.
 
 ## Installation
 
@@ -27,7 +27,7 @@ You can install these by typing `pip install -r {project_dir}/requirements.txt`.
 
 ### Database migrations
 
-Lastly, apply all migrations to the database: `python manage.py migrate`. Django is configured to store the data as a sqlite database in `{project_dir}/db.sqlite3` (at least during development).
+Lastly, make all migrations by typing `python manage.py makemigrations` and apply them to the database: `python manage.py migrate`. Django is configured to store the data as a sqlite database in `{project_dir}/db.sqlite3`.
 
 That is it. You are all done.
 
