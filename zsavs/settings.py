@@ -113,7 +113,7 @@ AUTH_PASSWORD_VALIDATORS = [
 AUTH_USER_MODEL = 'user.User'
 
 AUTHENTICATION_BACKENDS = [
-    'authentication.backends.EmailTokenBackend',
+    'authentication.backends.EmailBackend',
     'django.contrib.auth.backends.ModelBackend'
 ]
 
@@ -121,7 +121,8 @@ LOGIN_URL = '/auth/login/'
 LOGIN_REDIRECT_URL = '/auth/home/'
 
 # Token expiration (in hours)
-TOKEN_EXPIRATION = timedelta(hours=1)
+MAX_TOKEN_PER_USER = 2
+TOKEN_EXPIRATION = timedelta(minutes=10)
 TOKEN_LENGTH = 16
 
 NAME = 'Zürcher Studierendenzeitung'
