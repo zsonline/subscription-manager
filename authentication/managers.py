@@ -6,6 +6,7 @@ import uuid
 from django.db import models, IntegrityError
 from django.conf import settings
 from django.utils import timezone
+from django.contrib.auth import get_user_model
 
 
 class LoginTokenManager(models.Manager):

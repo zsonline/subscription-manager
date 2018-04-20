@@ -37,7 +37,7 @@ class LoginForm(forms.Form):
         # Check default validations
         valid = super().is_valid()
         if not valid:
-            return valid
+            return False
 
         # Check whether user exists
         try:
@@ -45,6 +45,9 @@ class LoginForm(forms.Form):
         except get_user_model().DoesNotExist:
             # Add error if user does not exist
             self.add_error('email', _('User does not exist.'))
+            return False
+
+        if not user.is_active:
             return False
 
         if LoginToken.objects.valid_user_tokens_count(user) >= settings.MAX_TOKEN_PER_USER:
