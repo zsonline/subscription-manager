@@ -95,7 +95,7 @@ def token_verification_view(request, email_b64, code):
     return render(request, 'authentication/invalid_token.html')
 
 
-@login_required
+@login_required(redirect_field_name=None)
 def logout_view(request):
     """
     Logs a user out and redirects her to the login page.
@@ -104,7 +104,7 @@ def logout_view(request):
     return redirect('login')
 
 
-@login_required
+@login_required(redirect_field_name=None)
 def home_view(request):
     """
     Login home view. For test purposes.
