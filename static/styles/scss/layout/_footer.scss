@@ -1,0 +1,19 @@
+@import "../base/colours";
+
+footer {
+  padding: 1em;
+
+  div {
+    margin: 1em 0;
+  }
+
+  b {
+    display: block;
+    margin-top: 0.2em;
+    font-size: 1.2em;
+  }
+
+  address {
+    font-style: normal;
+  }
+}

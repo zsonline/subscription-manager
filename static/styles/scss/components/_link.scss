@@ -1,0 +1,30 @@
+@import "../base/colours";
+
+a {
+  color: $black;
+
+  &:visited {
+    color: $black;
+  }
+
+  &:hover, &:focus, &:active {
+    color: $grey;
+  }
+}
+
+.inverted {
+  background-color: $black;
+  color: $white;
+
+  a {
+    color: $white;
+
+    &:visited {
+      color: $white;
+    }
+
+    &:hover, &:focus, &:active {
+      color: $grey;
+    }
+  }
+}
