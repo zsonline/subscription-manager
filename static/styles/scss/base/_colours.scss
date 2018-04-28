@@ -1,9 +1,14 @@
+@import "../utils/black";
+
 // Natural colours
-$white: #fff;
-$light-grey: #f5f5f5;
-$grey: #808080;
-$black: #030303;
+$white: black(0);
+$lighter-grey: black(3);
+$light-grey: black(10);
+$grey: black(50);
+$dark-grey: black(90);
+$dark-grey: black(97);
+$black: black(99);
 
 // Theme colours
-$primary: #263e54;
-$secondary: $light-grey;
+$primary: #315e97;
+$secondary: #fb6542;

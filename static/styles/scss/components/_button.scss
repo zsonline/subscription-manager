@@ -1,0 +1,62 @@
+@import "../base/colours";
+
+.button {
+  padding: .3em;
+  text-decoration: none;
+  display: inline-block;
+  border: 2px solid;
+  border-radius: .15em;
+
+  // Reset input styles
+  width: auto;
+  overflow: visible;
+  background: transparent;
+  color: inherit;
+  font: inherit;
+  outline: none;
+
+  &:focus, &:active, &:hover {
+    cursor: pointer;
+  }
+
+  // Primary coloured button
+  &.primary {
+    border-color: $primary;
+    color: $primary;
+    font-weight: bold;
+
+    &:focus, &:active, &:hover {
+      color: lighten($primary, 10%);
+      border-color: lighten($primary, 10%);
+    }
+
+    &:visited {
+    }
+  }
+
+  // Secondary coloured button
+  &.secondary {
+    border-color: $secondary;
+    color: $secondary;
+
+    &:focus, &:active, &:hover {
+      color: lighten($secondary, 10%);
+      border-color: lighten($secondary, 10%);
+    }
+
+    &:visited {
+    }
+  }
+
+  // Black button (default)
+  &, &.black {
+    border-color: $black;
+    color: $black;
+
+    &:focus, &:active, &:hover {
+      color: lighten($grey, 10%);
+      border-color: lighten($grey, 10%);
+    }
+  }
+
+}

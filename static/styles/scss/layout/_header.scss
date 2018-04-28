@@ -1,17 +1,14 @@
 @import "../base/colours";
 
 header {
-  padding: 1em;
-  background-color: $light-grey;
+  padding: 2em 1em;
 
   h1 {
-    margin-bottom: 0;
+    margin: .1em 0;
+    font-size: 1.7em;
   }
+
   p {
     margin-top: .5em;
   }
-}
-
-#project-name {
-  font-family: 'Open Sans', sans-serif;
 }

@@ -10,39 +10,5 @@ a {
   &:hover, &:focus, &:active {
     color: $grey;
   }
-}
-
-.button {
-  padding: .5em 1em;
-  text-decoration: none;
-  font-family: 'Open Sans', sans-serif;
-  display: inline-block;
-
-  &.primary {
-    background: $primary;
-    color: $white;
-    font-weight: bold;
-
-    &:visited {
-
-    }
-
-    &:focus, &:active, &:hover {
-
-    }
-  }
-
-  &.secondary {
-    background: $secondary;
-    color: $black;
-
-    &:visited {
-
-    }
-
-    &:focus, &:active, &:hover {
-      background: $secondary;
-    }
-  }
 
 }

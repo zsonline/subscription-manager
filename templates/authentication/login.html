@@ -1,0 +1,22 @@
+{% extends 'authentication/base.html' %}
+
+{% block title %}Login{% endblock %}
+
+{% block left %}
+    <div class="inner">
+
+        <h2>Login</h2>
+        <p class="description">Verwalte dein ZS-Abonnement.</p>
+
+        <form action="{% url 'login' %}" method="post">
+            {% csrf_token %}
+            {{ form.as_p }}
+            <input class="button" type="submit" value="Submit" />
+        </form>
+
+    </div>
+{% endblock %}
+
+{% block right %}
+    <p>Seit 1924.</p>
+{% endblock %}
