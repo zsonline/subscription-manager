@@ -1,0 +1,19 @@
+@import "../base/colours";
+
+html, body {
+  height: 100%;
+}
+
+body {
+  display: flex;
+  flex-direction: column;
+  background-color: $white;
+}
+
+#content {
+  flex: 1 0 auto;
+}
+
+footer {
+  flex-shrink: 0;
+}

@@ -6,7 +6,7 @@
  * 2. Prevent adjustments of font size after orientation changes in iOS.
  */
 @import url("https://fonts.googleapis.com/css?family=Open+Sans:400,700");
-@import url("https://fonts.googleapis.com/css?family=Roboto+Slab:400,700");
+@import url("https://fonts.googleapis.com/css?family=Lora:400,400i,700,700i");
 html {
   line-height: 1.15;
   /* 1 */
@@ -300,29 +300,61 @@ template {
   display: none; }
 
 body {
-  font-family: 'Open Sans', sans-serif; }
+  font-family: 'Lora', serif; }
 
 a {
-  color: #1e1e1e; }
+  color: #030303; }
   a:visited {
-    color: #1e1e1e; }
+    color: #030303; }
   a:hover, a:focus, a:active {
     color: #808080; }
 
-.inverted {
-  background-color: #1e1e1e;
-  color: #f5f5f5; }
-  .inverted a {
-    color: #f5f5f5; }
-    .inverted a:visited {
-      color: #f5f5f5; }
-    .inverted a:hover, .inverted a:focus, .inverted a:active {
-      color: #808080; }
+.button {
+  padding: .5em 1em;
+  text-decoration: none;
+  font-family: 'Open Sans', sans-serif;
+  display: inline-block; }
+  .button.primary {
+    background: #263e54;
+    color: #fff;
+    font-weight: bold; }
+  .button.secondary {
+    background: #f5f5f5;
+    color: #030303; }
+    .button.secondary:focus, .button.secondary:active, .button.secondary:hover {
+      background: #f5f5f5; }
+
+html, body {
+  height: 100%; }
+
+body {
+  display: flex;
+  flex-direction: column;
+  background-color: #fff; }
+
+#content {
+  flex: 1 0 auto; }
+
+footer {
+  flex-shrink: 0; }
+
+header {
+  padding: 1em;
+  background-color: #f5f5f5; }
+  header h1 {
+    margin-bottom: 0; }
+  header p {
+    margin-top: .5em; }
+
+#project-name {
+  font-family: 'Open Sans', sans-serif; }
 
 footer {
   padding: 1em; }
   footer div {
     margin: 1em 0; }
+    footer div:last-child {
+      margin-bottom: 0; }
   footer b {
     display: block;
     margin-top: 0.2em;
