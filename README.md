@@ -37,7 +37,44 @@ That is it. You are all done.
 python manage.py runserver
 ```
 
+## Frontend
+
+### Dependencies
+
+The frontend is written in django's own template language. It is included in django itself. Therefore, no additional packages have to be installed for templating.
+
+The stylesheets, however, are written in [sass](https://sass-lang.com/), which depends on additional software. Because no bundler or task runner is currently included in this repository, you have to install one manually for yourself. Before doing that, though, check whether your editor or IDE has built-in tools or plugins which can compile the sass files.
+
+### Directories
+
+Files related to the frontend are stored in two directories: `static/` and `templates/`.
+
+Assets are stored in `static/` (in particular stylesheets in `static/stylesheets/`, images in `static/scripts/`, etc.).
+
+```
+static/
+├── images
+├── scripts
+└── styles
+    └── scss
+```
+
+In `templates/` all template files are stored. It is further divided into subdirectories, one for each application. In addition, `includes/` contains all snippets that can be included in other template files.
+
+```
+templates/
+├── authentication
+│   ├── emails
+├── includes
+└── subscription
+```
+
+### Styles
+
+The stylesheets are written in [sass](https://sass-lang.com/). The `.scss` files are stored in subdirectories in `static/stylesheets/scss/`. They should be compiled into its parent directory `static/stylesheets/` in order to keep the assets clearly structured. The main (and currently only) stylesheet is called `main.css`.
+
 ## Helpful links
 
 - [Django documentation](https://docs.djangoproject.com/en/2.0/)
 - [Python documentation](https://docs.python.org/3/)
+- [Sass documentation](http://sass-lang.com/documentation/)

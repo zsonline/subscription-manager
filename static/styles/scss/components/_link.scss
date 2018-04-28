@@ -1,0 +1,14 @@
+@import "../base/colours";
+
+a {
+  color: $black;
+
+  &:visited {
+    color: $black;
+  }
+
+  &:hover, &:focus, &:active {
+    color: $grey;
+  }
+
+}

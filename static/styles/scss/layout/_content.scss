@@ -1,0 +1,35 @@
+@import "../base/colours";
+
+#content {
+  h2 {
+    color: $primary;
+    margin: 0;
+  }
+  p.description {
+    margin-top: .2em;
+  }
+}
+
+#content.vertical {
+  display: flex;
+  flex: 1 0 auto;
+  flex-direction: row;
+
+  .left {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex: 0 1 50%;
+    background-color: $lighter-grey;
+
+    form {
+      margin-top: 1em;
+    }
+  }
+
+  .right {
+    flex: 0 1 50%;
+    background-color: $black;
+    color: $white;
+  }
+}

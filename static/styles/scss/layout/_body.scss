@@ -1,0 +1,15 @@
+@import "../base/colours";
+
+html, body {
+  height: 100%;
+}
+
+body {
+  display: flex;
+  flex-direction: column;
+  background-color: $white;
+}
+
+footer {
+  flex-shrink: 0;
+}
