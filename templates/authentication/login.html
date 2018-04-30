@@ -2,7 +2,7 @@
 
 {% block title %}Login{% endblock %}
 
-{% block left %}
+{% block form %}
     <div class="inner">
 
         <h2>Login</h2>
@@ -11,12 +11,12 @@
         <form action="{% url 'login' %}" method="post">
             {% csrf_token %}
             {{ form.as_p }}
-            <input class="button" type="submit" value="Submit" />
+            <input class="button primary" type="submit" value="Submit" />
         </form>
 
     </div>
 {% endblock %}
 
-{% block right %}
+{% block context %}
     <p>Seit 1924.</p>
 {% endblock %}

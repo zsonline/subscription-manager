@@ -2,11 +2,11 @@
 
 {% block content %}
     <section id="content" class="vertical">
-        <div class="left">
-            {% block left %}{% endblock %}
+        <div id="form" class="column">
+            {% block form %}{% endblock %}
         </div>
-        <div class="right">
-            {% block right %}{% endblock %}
+        <div id="context" class="column">
+            {% block context %}{% endblock %}
         </div>
     </section>
 {% endblock %}

@@ -1,6 +1,8 @@
 @import "../base/colours";
+@import "../base/breakpoints";
 
 #content {
+  flex: 1 0 auto;
   h2 {
     color: $primary;
     margin: 0;
@@ -11,15 +13,13 @@
 }
 
 #content.vertical {
-  display: flex;
-  flex: 1 0 auto;
-  flex-direction: row;
+  .column {
+    padding: 3em 1em;
+  }
 
-  .left {
+  #form {
     display: flex;
     align-items: center;
-    justify-content: center;
-    flex: 0 1 50%;
     background-color: $lighter-grey;
 
     form {
@@ -27,9 +27,24 @@
     }
   }
 
-  .right {
-    flex: 0 1 50%;
+  #context {
     background-color: $black;
     color: $white;
   }
+}
+
+@media all and (min-width: $medium) {
+  #content.vertical {
+    display: flex;
+    flex-direction: row;
+
+    .column {
+      flex: 1;
+    }
+
+    #form {
+      justify-content: center;
+    }
+  }
+
 }
