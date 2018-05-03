@@ -344,7 +344,7 @@ a {
       border-color: #999999; }
 
 html, body {
-  height: 100%; }
+  min-height: 100vh; }
 
 body {
   display: flex;
@@ -360,17 +360,26 @@ header {
     margin-top: 1.5em; }
   header h1 {
     margin: .1em 0;
-    font-size: 1.7em; }
+    font-size: 1.6em; }
   header p {
     margin: .5em 0 0 0; }
 
-@media all and (min-width: 756px) {
+@media (min-width: 756px) {
   header {
-    padding-bottom: 2.5em; }
+    box-sizing: border-box;
+    height: 10rem; }
     header img {
-      margin-top: 2em; }
+      margin-top: 1.5em; }
     header h1 {
+      display: inline;
+      margin-left: .25em;
       font-size: 1.8em; } }
+@media (min-width: 1024px) {
+  header {
+    height: 12rem; }
+    header h1 {
+      display: block;
+      margin-left: 0; } }
 nav {
   font-size: .8em; }
   nav a {
@@ -379,34 +388,37 @@ nav {
     nav a:hover, nav a:focus, nav a:active {
       color: #bfbfbf; }
 
-#content {
-  flex: 1 0 auto; }
-  #content h2 {
+main {
+  flex: 1; }
+  main h2 {
     color: #315e97;
     margin: 0; }
-  #content p.description {
+  main p.description {
     margin-top: .2em; }
 
-#content.vertical .column {
+main.vertical .column {
   padding: 3em 1em; }
-#content.vertical #form {
+main.vertical #form {
   display: flex;
   align-items: center;
   background-color: #f7f7f7; }
-  #content.vertical #form form {
+  main.vertical #form form {
     margin-top: 1em; }
-#content.vertical #context {
+main.vertical #context {
   background-color: #030303;
   color: white; }
 
 @media all and (min-width: 756px) {
-  #content.vertical {
+  main.vertical {
     display: flex;
-    flex-direction: row; }
-    #content.vertical .column {
+    flex-direction: row;
+    min-height: calc(100vh - 10rem); }
+    main.vertical .column {
       flex: 1; }
-    #content.vertical #form {
+    main.vertical #form {
       justify-content: center; } }
+@media all and (min-width: 1024px) {
+  min-height: calc(100vh - 12rem); }
 footer {
   padding: 1em; }
   footer div:not(.column), footer #credits {

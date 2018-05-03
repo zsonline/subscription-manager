@@ -1,18 +1,19 @@
-@import "../base/colours";
-@import "../base/breakpoints";
+main {
+  flex: 1;
 
-#content {
-  flex: 1 0 auto;
+
   h2 {
     color: $primary;
     margin: 0;
   }
+
   p.description {
     margin-top: .2em;
   }
+
 }
 
-#content.vertical {
+main.vertical {
   .column {
     padding: 3em 1em;
   }
@@ -34,9 +35,10 @@
 }
 
 @media all and (min-width: $medium) {
-  #content.vertical {
+  main.vertical {
     display: flex;
     flex-direction: row;
+    min-height: calc(100vh - #{$header-height-medium});
 
     .column {
       flex: 1;
@@ -47,4 +49,8 @@
     }
   }
 
+}
+
+@media all and (min-width: $large) {
+  min-height: calc(100vh - #{$header-height-large});
 }

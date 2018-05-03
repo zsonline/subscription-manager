@@ -1,12 +1,12 @@
 {% extends 'base.html' %}
 
-{% block content %}
-    <section id="content" class="vertical">
-        <div id="form" class="column">
+{% block main %}
+    <main class="vertical">
+        <section id="form" class="column">
             {% block form %}{% endblock %}
-        </div>
-        <div id="context" class="column">
+        </section>
+        <section id="context" class="column">
             {% block context %}{% endblock %}
-        </div>
-    </section>
+        </section>
+    </main>
 {% endblock %}
