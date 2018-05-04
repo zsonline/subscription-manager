@@ -1,9 +1,25 @@
-{% extends 'base.html' %}
+{% extends 'authentication/base.html' %}
 
-{% block content %}
-    <form action="{% url 'signup' %}" method="post">
-        {% csrf_token %}
-        {{ form.as_p }}
-        <input type="submit" value="Submit" />
-    </form>
+{% block title %}Registrieren{% endblock %}
+
+{% block form %}
+    <div class="inner">
+
+        <h2>Registrieren</h2>
+        <div class="description">Verwalte dein Abonnements.</div>
+
+        <form action="{% url 'signup' %}" method="post">
+            {% if token_sent %}
+                <div class="alert success">Token gesendet. Bitte überprüfe deine E-Mails.</div>
+            {% endif %}
+            {% csrf_token %}
+            {{ form.as_p }}
+            <input class="button black" type="submit" value="Registrieren" />
+        </form>
+
+    </div>
+{% endblock %}
+
+{% block context %}
+    <p>Seit 1924.</p>
 {% endblock %}
