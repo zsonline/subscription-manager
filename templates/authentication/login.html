@@ -1,27 +1,36 @@
-{% extends 'authentication/base.html' %}
+{% extends 'base.html' %}
 
 {% block title %}Login{% endblock %}
 
-{% block form %}
-    <div class="inner">
+{% block main %}
+    <main class="authentication vertical full-height">
 
-        <h2>Login</h2>
-        <div class="description">Verwalte dein ZS-Abonnement.</div>
+        <section id="form" class="column">
+            <div class="inner">
 
-        <form action="{% url 'login' %}" method="post">
-            {% if token_sent %}
-                <div class="alert success">Token gesendet. Bitte überprüfe deine E-Mails.</div>
-            {% elif invalid_token %}
-                <div class="alert danger">Token ungültig. Bitte versuche es erneut.</div>
-            {% endif %}
-            {% csrf_token %}
-            {{ form.as_p }}
-            <input class="button black" type="submit" value="Login" />
-        </form>
+                <h2>Login</h2>
+                <p class="description">Verwalte dein ZS-Abonnement.</p>
 
-    </div>
-{% endblock %}
+                <form action="{% url 'login' %}" method="post">
+                    {% if token_sent %}
+                        <div class="alert success">Token gesendet. Bitte überprüfe deine E-Mails.</div>
+                    {% elif invalid_token %}
+                        <div class="alert danger">Token ungültig. Bitte versuche es erneut.</div>
+                    {% endif %}
+                    {% csrf_token %}
+                    {{ form.as_p }}
+                    <input class="button black" type="submit" value="Login" />
+                </form>
 
-{% block context %}
-    <p>Seit 1924.</p>
+            </div>
+        </section>
+
+        <section id="context" class="column b-lazy" data-src="http://unsplash.it/1200x800">
+            <div class="inner">
+                <h3>Lorem ipsum</h3>
+                <p>Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book.</p>
+            </div>
+        </section>
+
+    </main>
 {% endblock %}

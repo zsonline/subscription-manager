@@ -393,7 +393,6 @@ form input {
 .alert {
   box-sizing: border-box;
   padding: .75em;
-  line-height: 1.2;
   border: solid 1px; }
   .alert li {
     list-style: none; }
@@ -423,7 +422,8 @@ html, body {
 body {
   display: flex;
   flex-direction: column;
-  background-color: white; }
+  background-color: white;
+  line-height: 1.2; }
 
 footer {
   flex-shrink: 0; }
@@ -500,24 +500,44 @@ footer {
 main.authentication h2 {
   color: #030303; }
 main.authentication .column {
-  padding: 3em 1em; }
-main.authentication #form {
   display: flex;
+  padding: 3rem 1rem; }
+main.authentication .inner {
+  width: 100%; }
+main.authentication #form {
   align-items: center;
   background-color: #fbdcc6; }
-  main.authentication #form .inner {
-    width: 100%; }
   main.authentication #form form {
     margin-top: 1em; }
 main.authentication #context {
+  align-items: end;
+  color: white;
+  text-shadow: 0 0 2px #030303;
   background-color: #030303;
-  color: white; }
+  position: relative;
+  background-size: cover;
+  background-position: center; }
+  main.authentication #context:before {
+    content: '';
+    position: absolute;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    background-color: #030303;
+    opacity: .75; }
+  main.authentication #context .inner {
+    z-index: 0; }
+  main.authentication #context h3 {
+    margin: 0 0 .5em 0; }
+  main.authentication #context p {
+    margin: 0; }
 
 @media (min-width: 756px) {
-  main.authentication #form {
+  main.authentication .column {
     justify-content: center; }
-    main.authentication #form .inner {
-      width: 80%; } }
+  main.authentication #form .inner, main.authentication #context .inner {
+    width: 80%; } }
 @media (min-width: 1024px) {
   main.authentication #form .inner {
     width: 60%; } }
