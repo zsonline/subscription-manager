@@ -1,9 +1,4 @@
 .button {
-  padding: .5em;
-  text-decoration: none;
-  display: inline-block;
-  border: 2px solid;
-
   // Reset input styles
   width: auto;
   overflow: visible;
@@ -11,6 +6,11 @@
   color: inherit;
   font: inherit;
   outline: none;
+
+  padding: .5em;
+  text-decoration: none;
+  display: inline-block;
+  border: 2px solid;
 
   &:focus, &:active, &:hover {
     cursor: pointer;

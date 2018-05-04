@@ -303,7 +303,7 @@ body {
   font-family: 'Lora', serif; }
 
 h2 {
-  color: #fa2f52;
+  color: #fa4452;
   margin: 0; }
 
 p.description {
@@ -317,30 +317,30 @@ a {
     color: gray; }
 
 .button {
-  padding: .5em;
-  text-decoration: none;
-  display: inline-block;
-  border: 2px solid;
   width: auto;
   overflow: visible;
   background: transparent;
   color: inherit;
   font: inherit;
-  outline: none; }
+  outline: none;
+  padding: .5em;
+  text-decoration: none;
+  display: inline-block;
+  border: 2px solid; }
   .button:focus, .button:active, .button:hover {
     cursor: pointer; }
   .button.primary {
-    border-color: #fa2f52;
-    color: #fa2f52; }
+    border-color: #fa4452;
+    color: #fa4452; }
     .button.primary:focus, .button.primary:active, .button.primary:hover {
-      color: #fb617b;
-      border-color: #fb617b; }
+      color: #fb7680;
+      border-color: #fb7680; }
   .button.secondary {
-    border-color: #fb6542;
-    color: #fb6542; }
+    border-color: #fbdcc6;
+    color: #fbdcc6; }
     .button.secondary:focus, .button.secondary:active, .button.secondary:hover {
-      color: #fc8e74;
-      border-color: #fc8e74; }
+      color: #fef9f6;
+      border-color: #fef9f6; }
   .button, .button.black {
     border-color: #030303;
     color: #030303; }
@@ -505,7 +505,7 @@ main.authentication .column {
 main.authentication #form {
   display: flex;
   align-items: center;
-  background-color: #f7f7f7; }
+  background-color: #fbdcc6; }
   main.authentication #form .inner {
     width: 100%; }
   main.authentication #form form {
