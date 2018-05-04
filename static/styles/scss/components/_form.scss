@@ -1,2 +1,28 @@
 form {
+  .errorlist {
+    box-sizing: border-box;
+    padding: 75em;
+    border: solid 1px $danger;
+    color: $danger;
+
+    li {
+      list-style: none;
+    }
+  }
+
+  label {
+    display: block;
+    margin-bottom: .25em;
+  }
+
+  input {
+    box-sizing: border-box;
+    border: solid 1px $dark-grey;
+    padding: .75em;
+    width: 100%;
+
+    &:focus {
+      border-color: $black;
+    }
+  }
 }

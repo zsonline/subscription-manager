@@ -1,0 +1,49 @@
+main.authentication {
+  h2 {
+    color: $black;
+  }
+
+  .column {
+    padding: 3em 1em;
+  }
+
+  #form {
+    display: flex;
+    align-items: center;
+    background-color: $lighter-grey;
+
+    .inner {
+      width: 100%;
+    }
+
+    form {
+      margin-top: 1em;
+    }
+  }
+
+  #context {
+    background-color: $black;
+    color: $white;
+  }
+}
+
+@media (min-width: $medium) {
+  main.authentication {
+    #form {
+      justify-content: center;
+      .inner {
+        width: 80%;
+      }
+    }
+  }
+}
+
+@media (min-width: $large) {
+  main.authentication {
+    #form {
+      .inner {
+        width: 60%;
+      }
+    }
+  }
+}

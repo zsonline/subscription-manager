@@ -4,3 +4,12 @@
 body {
    font-family: 'Lora', serif;
 }
+
+h2 {
+   color: $primary;
+   margin: 0;
+}
+
+p.description {
+   margin-top: .2em;
+}

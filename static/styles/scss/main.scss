@@ -12,6 +12,8 @@
 // Components
 @import "components/link";
 @import "components/button";
+@import "components/form";
+@import "components/alert";
 
 // Layout
 @import "layout/body";
@@ -19,3 +21,5 @@
 @import "layout/navigation";
 @import "layout/content";
 @import "layout/footer";
+// Specific
+@import "layout/authentication";
