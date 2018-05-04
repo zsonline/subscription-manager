@@ -1,12 +1,4 @@
-@import "../base/colours";
-
 .button {
-  padding: .3em;
-  text-decoration: none;
-  display: inline-block;
-  border: 2px solid;
-  border-radius: .15em;
-
   // Reset input styles
   width: auto;
   overflow: visible;
@@ -14,6 +6,11 @@
   color: inherit;
   font: inherit;
   outline: none;
+
+  padding: .5em;
+  text-decoration: none;
+  display: inline-block;
+  border: 2px solid;
 
   &:focus, &:active, &:hover {
     cursor: pointer;
@@ -23,14 +20,10 @@
   &.primary {
     border-color: $primary;
     color: $primary;
-    font-weight: bold;
 
     &:focus, &:active, &:hover {
       color: lighten($primary, 10%);
       border-color: lighten($primary, 10%);
-    }
-
-    &:visited {
     }
   }
 
@@ -43,9 +36,6 @@
       color: lighten($secondary, 10%);
       border-color: lighten($secondary, 10%);
     }
-
-    &:visited {
-    }
   }
 
   // Black button (default)
@@ -54,8 +44,48 @@
     color: $black;
 
     &:focus, &:active, &:hover {
-      color: lighten($grey, 10%);
-      border-color: lighten($grey, 10%);
+      color: $dark-grey;
+      border-color: $dark-grey;
+    }
+  }
+
+  &.info {
+    border-color: $info;
+    color: $info;
+
+    &:focus, &:active, &:hover {
+      color: lighten($info, 10%);
+      border-color: lighten($info, 10%);
+    }
+  }
+
+  &.success {
+    border-color: $success;
+    color: $success;
+
+    &:focus, &:active, &:hover {
+      color: lighten($success, 10%);
+      border-color: lighten($success, 10%);
+    }
+  }
+
+  &.warning {
+    border-color: $warning;
+    color: $warning;
+
+    &:focus, &:active, &:hover {
+      color: lighten($warning, 10%);
+      border-color: lighten($warning, 10%);
+    }
+  }
+
+  &.danger {
+    border-color: $danger;
+    color: $danger;
+
+    &:focus, &:active, &:hover {
+      color: lighten($danger, 10%);
+      border-color: lighten($danger, 10%);
     }
   }
 

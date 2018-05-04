@@ -1,8 +1,15 @@
-@import "colours";
-
 @import url('https://fonts.googleapis.com/css?family=Open+Sans:400,700');
 @import url('https://fonts.googleapis.com/css?family=Lora:400,400i,700,700i');
 
 body {
    font-family: 'Lora', serif;
+}
+
+h2 {
+   color: $primary;
+   margin: 0;
+}
+
+p.description {
+   margin-top: .2em;
 }

@@ -1,9 +1,10 @@
 @import "../base/colours";
+@import "../base/breakpoints";
 
 footer {
   padding: 1em;
 
-  div {
+  div:not(.column), #credits {
     margin: 1em 0;
 
     &:last-child {
@@ -20,4 +21,34 @@ footer {
   address {
     font-style: normal;
   }
+
+  small {
+    color: $grey;
+
+    a {
+      color: $grey !important;
+      &:hover, &:focus, &:active {
+        color: $light-grey !important;
+      }
+    }
+  }
+}
+
+@media all and (min-width: $medium) {
+
+  footer {
+    display: flex;
+
+    .column {
+      flex: 1;
+    }
+
+    #credits {
+      display: flex;
+      justify-content: right;
+      align-items: end;
+      text-align: right;
+    }
+  }
+
 }

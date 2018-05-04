@@ -1,0 +1,29 @@
+.alert {
+  box-sizing: border-box;
+  padding: .75em;
+  border: solid 1px;
+
+  li {
+    list-style: none;
+  }
+
+  &, &.info {
+    border-color: $info;
+    color: $info;
+  }
+
+  &.success {
+    border-color: $success;
+    color: $success;
+  }
+
+  &.warning {
+    border-color: $warning;
+    color: $warning;
+  }
+
+  &.danger {
+    border-color: $danger;
+    color: $danger;
+  }
+}

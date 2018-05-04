@@ -1,35 +1,28 @@
-@import "../base/colours";
+main {
+  flex: 1;
+}
 
-#content {
-  h2 {
-    color: $primary;
-    margin: 0;
-  }
-  p.description {
-    margin-top: .2em;
+@media (min-width: $medium) {
+  main {
+    &.full-height {
+      min-height: calc(100vh - #{$header-height-medium});
+    }
+
+    &.vertical {
+      display: flex;
+      flex-direction: row;
+
+      .column {
+        flex: 1;
+      }
+    }
   }
 }
 
-#content.vertical {
-  display: flex;
-  flex: 1 0 auto;
-  flex-direction: row;
-
-  .left {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    flex: 0 1 50%;
-    background-color: $lighter-grey;
-
-    form {
-      margin-top: 1em;
+@media (min-width: $large) {
+  main {
+    &.vertical {
+      min-height: calc(100vh - #{$header-height-large});
     }
-  }
-
-  .right {
-    flex: 0 1 50%;
-    background-color: $black;
-    color: $white;
   }
 }

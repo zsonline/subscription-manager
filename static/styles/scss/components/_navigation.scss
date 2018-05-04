@@ -1,0 +1,11 @@
+nav {
+  font-size: .8em;
+
+  a {
+    margin-right: .7em;
+
+    &.active {
+      font-weight: bold;
+    }
+  }
+}

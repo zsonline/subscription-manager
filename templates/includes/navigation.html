@@ -1,5 +1,7 @@
+{% load tags %}
+
 <nav>
-    <a href="#">zs.news</a>
-    <a href="#" class="button secondary">Abonnieren</a>
-    <a href="#" class="button secondary">Login</a>
+    <a href="http://zs-online.ch/">zs-online.ch</a>
+    <a class="{% active request 'signup' %}" href="{% url 'signup' %}">Abonnieren</a>
+    <a class="{% active request 'login' %}" href="{% url 'login' %}">Login</a>
 </nav>

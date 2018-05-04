@@ -2,22 +2,31 @@
 
 <footer>
 
-    <div>
-        <img src="{% static 'images/zs-signet-small.png' %}">
-        <b>Zürcher Studierendenzeitung</b>
+    <div class="column">
+        <div>
+            <img src="{% static 'images/zs-signet-small.png' %}">
+            <b>Zürcher Studierendenzeitung</b>
+        </div>
+
+        <div>
+            <address>
+                Medienverein ZS<br>
+                Rämistrasse 62<br>
+                8001 Zürich
+            </address>
+            <a href="#">kontakt@zs-online.ch</a>
+        </div>
+
+        <div>
+            Bug gefunden? Schreib uns: <a href="#">informatik@zs-online.ch</a>.<br>
+        </div>
     </div>
 
-    <div>
-        <address>
-            Medienverein ZS<br>
-            Rämistrasse 62<br>
-            8001 Zürich
-        </address>
-        <a href="#">kontakt@zs.news</a>
-    </div>
-
-    <div>
-        Bug gefunden? Schreib uns: <a href="#">informatik@zs.news</a>.<br>
+    <div id="credits" class="column">
+        <small>
+            Framework: <a href="https://www.djangoproject.com/" target="_blank">Django</a>.<br>
+            Entwickler: <a href="https://robinbisping.com/" target="_blank">Robin Bisping</a>, Jonas Passweg.
+        </small>
     </div>
 
 </footer>

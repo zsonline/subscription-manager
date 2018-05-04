@@ -1,5 +1,5 @@
 # Django imports
-from django.shortcuts import render, redirect, HttpResponse, HttpResponseRedirect
+from django.shortcuts import render, redirect, reverse, HttpResponse, HttpResponseRedirect
 from django.conf import settings
 from django.contrib.auth import authenticate, login, logout, get_user_model
 from django.contrib.auth.decorators import login_required
@@ -31,8 +31,9 @@ def signup_view(request):
             if user is not None:
                 # Create and send token
                 token = LoginToken.objects.create_and_send(user=user)
-                # Render token sent page
-                return render(request, 'authentication/token_sent.html', {'context': 'signup'})
+                # Render login template with token sent alert
+                form = SignUpForm()
+                return render(request, 'authentication/login.html', {'form': form, 'token_sent': True})
 
             # If user does not exist, redirect to login page
             return redirect('login')
@@ -68,11 +69,14 @@ def login_view(request):
             if user is not None:
                 # Create and send token
                 LoginToken.objects.create_and_send(user=user)
-                # Render token sent template
-                return render(request, 'authentication/token_sent.html', {'context': 'login'})
+                # Render login template with token sent alert
+                form = LoginForm()
+                return render(request, 'authentication/login.html', {'form': form, 'token_sent': True})
 
     else:
         form = LoginForm()
+        if 'invalid_token' in request.GET:
+            return render(request, 'authentication/login.html', {'form': form, 'invalid_token': True})
 
     return render(request, 'authentication/login.html', {'form': form})
 
@@ -91,8 +95,10 @@ def token_verification_view(request, email_b64, code):
         login(request, user)
         # Redirect user to login home
         return HttpResponseRedirect(settings.LOGIN_REDIRECT_URL)
-    # Render invalid token template
-    return render(request, 'authentication/invalid_token.html')
+    # Render login template with invalid token parameter
+    login_url = reverse('login')
+    login_url += str('?invalid_token')
+    return redirect(login_url)
 
 
 @login_required(redirect_field_name=None)
