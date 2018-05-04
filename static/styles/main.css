@@ -410,6 +410,13 @@ form input {
     border-color: #c50900;
     color: #c50900; }
 
+nav {
+  font-size: .8em; }
+  nav a {
+    margin-right: .7em; }
+    nav a.active {
+      font-weight: bold; }
+
 html, body {
   min-height: 100vh; }
 
@@ -447,14 +454,6 @@ header {
     header h1 {
       display: block;
       margin-left: 0; } }
-nav {
-  font-size: .8em; }
-  nav a {
-    color: gray;
-    margin-right: .7em; }
-    nav a:hover, nav a:focus, nav a:active {
-      color: #bfbfbf; }
-
 main {
   flex: 1; }
 

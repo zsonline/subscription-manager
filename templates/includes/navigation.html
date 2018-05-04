@@ -1,15 +1,7 @@
+{% load tags %}
+
 <nav>
     <a href="http://zs-online.ch/">zs-online.ch</a>
-    <a href="{% url 'signup' %}">Abonnieren</a>
-    <a href="{% url 'login' %}">Login</a>
+    <a class="{% active request 'signup' %}" href="{% url 'signup' %}">Abonnieren</a>
+    <a class="{% active request 'login' %}" href="{% url 'login' %}">Login</a>
 </nav>
-
-{#<nav>#}
-{#    {% for item in navigation %}#}
-{#        {% if item.url == request.path %}#}
-{#            <strong class="active">{{ navigation.name }}</strong>#}
-{#        {% else %}#}
-{#            <a href="{{ navigation.url }}">{{ navigation.name }}</a>#}
-{#        {% endif %}#}
-{#    {% endfor %}#}
-{#</nav>#}
