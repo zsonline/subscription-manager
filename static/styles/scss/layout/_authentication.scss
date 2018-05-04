@@ -1,0 +1,78 @@
+main.authentication {
+  h2 {
+    color: $black;
+  }
+
+  .column {
+    display: flex;
+    padding: 3rem 1rem;
+  }
+
+  .inner {
+    width: 100%;
+  }
+
+  #form {
+    align-items: center;
+    background-color: $secondary;
+
+    form {
+      margin-top: 1em;
+    }
+  }
+
+  #context {
+    align-items: end;
+    color: $white;
+    text-shadow: 0 0 2px $black;
+
+    background-color: $black;
+    position: relative;
+    background-size: cover;
+    background-position: center;
+
+    &:before {
+      content: '';
+      position: absolute;
+      top: 0;
+      right: 0;
+      bottom: 0;
+      left: 0;
+      background-color: $black;
+      opacity: .75;
+    }
+
+    .inner {
+      z-index: 0;
+    }
+
+    h3 {
+      margin: 0 0 .5em 0;
+    }
+
+    p {
+      margin: 0;
+    }
+  }
+}
+
+@media (min-width: $medium) {
+  main.authentication {
+    .column {
+      justify-content: center;
+    }
+    #form, #context {
+      .inner {
+        width: 80%;
+      }
+    }
+  }
+}
+
+@media (min-width: $large) {
+  main.authentication {
+    #form .inner {
+      width: 60%;
+    }
+  }
+}

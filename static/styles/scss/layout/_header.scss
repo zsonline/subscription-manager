@@ -1,14 +1,43 @@
-@import "../base/colours";
-
 header {
-  padding: 2em 1em;
+  padding: 1em 1em 2em 1em;
+
+  img {
+    margin-top: 1.5em;
+  }
 
   h1 {
     margin: .1em 0;
-    font-size: 1.7em;
+    font-size: 1.6em;
   }
 
   p {
-    margin-top: .5em;
+    margin: .5em 0 0 0;
+  }
+}
+
+@media (min-width: $medium) {
+  header {
+    box-sizing: border-box;
+    height: $header-height-medium;
+
+    img {
+      margin-top: 1.5em;
+    }
+
+    h1 {
+      display: inline;
+      margin-left: .25em;
+      font-size: 1.8em;
+    }
+  }
+}
+
+@media (min-width: $large) {
+  header {
+    height: $header-height-large;
+    h1 {
+      display: block;
+      margin-left: 0;
+    }
   }
 }

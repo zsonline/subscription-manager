@@ -16,7 +16,7 @@ class TestRoutes(TestCase):
     a logged in and an anonymous user.
     """
     def setUp(self):
-        self.user = get_user_model().objects.create(email='test@zs.news')
+        self.user = get_user_model().objects.create(email='test@zs-online.ch')
         self.code, self.token = LoginToken.objects.create(user=self.user)
 
     def tearDown(self):
@@ -80,7 +80,7 @@ class TestSignUpViews(TestCase):
         response = self.client.post(
             reverse('signup'),
             {
-                'email': 'test@zs.news',
+                'email': 'test@zs-online.ch',
                 'first_name': 'Test',
                 'last_name': 'Test'
             }
@@ -113,7 +113,7 @@ class TestLoginView(TestCase):
     generated correctly.
     """
     def setUp(self):
-        self.user = get_user_model().objects.create(email='test@zs.news')
+        self.user = get_user_model().objects.create(email='test@zs-online.ch')
 
     def tearDown(self):
         self.user.delete()
@@ -124,7 +124,7 @@ class TestLoginView(TestCase):
         a login token.
         """
         tokens_before = LoginToken.objects.count()
-        self.client.post(reverse('login'), {'email': 'does_not_exist@zs.news'})
+        self.client.post(reverse('login'), {'email': 'does_not_exist@zs-online.ch'})
         self.assertEquals(tokens_before, LoginToken.objects.count())
 
     def test_inactive_user_token(self):
@@ -132,7 +132,7 @@ class TestLoginView(TestCase):
         Tests that an inactive user cannot request
         a login token.
         """
-        inactive_user = get_user_model().objects.create(email='test_inactive@zs.news', is_active=False)
+        inactive_user = get_user_model().objects.create(email='test_inactive@zs-online.ch', is_active=False)
         self.client.post(reverse('login'), {'email': inactive_user.email})
         self.assertEquals(0, LoginToken.objects.filter(user=inactive_user).count())
 
@@ -153,7 +153,7 @@ class TestBackends(TestCase):
     token authentication.
     """
     def setUp(self):
-        self.user = get_user_model().objects.create(email='test@zs.news')
+        self.user = get_user_model().objects.create(email='test@zs-online.ch')
         self.code, self.token = LoginToken.objects.create(user=self.user)
 
     def tearDown(self):
@@ -181,7 +181,7 @@ class TestBackends(TestCase):
         """
         Tests that an inactive user can not login.
         """
-        inactive_user = get_user_model().objects.create(email='test_inactive@zs.news', is_active=False)
+        inactive_user = get_user_model().objects.create(email='test_inactive@zs-online.ch', is_active=False)
         # Manually create token for inactive user
         code, token = LoginToken.objects.create(user=inactive_user)
         self.client.login(email=inactive_user.email, code=code)
@@ -206,7 +206,7 @@ class TestTokenView(TestCase):
     Tests token verification route.
     """
     def setUp(self):
-        self.user = get_user_model().objects.create(email='test@zs.news')
+        self.user = get_user_model().objects.create(email='test@zs-online.ch')
         self.code, self.token = LoginToken.objects.create(user=self.user)
 
     def tearDown(self):
@@ -233,7 +233,7 @@ class TestTokenView(TestCase):
         response = self.client.get(reverse(
             'token_verification',
             kwargs={
-                'email_b64': LoginToken.b64_encoded('invalid_user@zs.news'),
+                'email_b64': LoginToken.b64_encoded('invalid_user@zs-online.ch'),
                 'code': self.code
             }
         ))

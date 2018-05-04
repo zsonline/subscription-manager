@@ -1,9 +1,34 @@
 {% extends 'base.html' %}
 
-{% block content %}
-    <form action="{% url 'signup' %}" method="post">
-        {% csrf_token %}
-        {{ form.as_p }}
-        <input type="submit" value="Submit" />
-    </form>
+{% block title %}Registrieren{% endblock %}
+
+{% block main %}
+    <main class="authentication vertical full-height">
+
+        <section id="form" class="column">
+            <div class="inner">
+
+                <h2>Registrieren</h2>
+                <p class="description">Verwalte dein Abonnement.</p>
+
+                <form action="{% url 'signup' %}" method="post">
+                    {% if token_sent %}
+                        <div class="alert success">Token gesendet. Bitte überprüfe deine E-Mails.</div>
+                    {% endif %}
+                    {% csrf_token %}
+                    {{ form.as_p }}
+                    <input class="button black" type="submit" value="Registrieren" />
+                </form>
+
+            </div>
+        </section>
+
+        <section id="context" class="column b-lazy" data-src="http://unsplash.it/1200x800">
+            <div class="inner">
+                <h3>Unterstütze studentischen Journalismus</h3>
+                <p>Lorem ipsum dolor sit amet, cum harum sensibus ut. Paulo percipit consequuntur sea et, melius minimum dissentiet at usu. Case iriure inciderint an vix, alii alterum vis id.</p>
+            </div>
+        </section>
+
+    </main>
 {% endblock %}
