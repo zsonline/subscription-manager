@@ -347,6 +347,30 @@ a {
     .button:focus, .button:active, .button:hover, .button.black:focus, .button.black:active, .button.black:hover {
       color: #404040;
       border-color: #404040; }
+  .button.info {
+    border-color: #27a7ff;
+    color: #27a7ff; }
+    .button.info:focus, .button.info:active, .button.info:hover {
+      color: #5abcff;
+      border-color: #5abcff; }
+  .button.success {
+    border-color: #28c05c;
+    color: #28c05c; }
+    .button.success:focus, .button.success:active, .button.success:hover {
+      color: #43d876;
+      border-color: #43d876; }
+  .button.warning {
+    border-color: #ffc31e;
+    color: #ffc31e; }
+    .button.warning:focus, .button.warning:active, .button.warning:hover {
+      color: #ffd151;
+      border-color: #ffd151; }
+  .button.danger {
+    border-color: #c50900;
+    color: #c50900; }
+    .button.danger:focus, .button.danger:active, .button.danger:hover {
+      color: #f80b00;
+      border-color: #f80b00; }
 
 form .errorlist {
   box-sizing: border-box;

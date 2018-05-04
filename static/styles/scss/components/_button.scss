@@ -49,4 +49,44 @@
     }
   }
 
+  &.info {
+    border-color: $info;
+    color: $info;
+
+    &:focus, &:active, &:hover {
+      color: lighten($info, 10%);
+      border-color: lighten($info, 10%);
+    }
+  }
+
+  &.success {
+    border-color: $success;
+    color: $success;
+
+    &:focus, &:active, &:hover {
+      color: lighten($success, 10%);
+      border-color: lighten($success, 10%);
+    }
+  }
+
+  &.warning {
+    border-color: $warning;
+    color: $warning;
+
+    &:focus, &:active, &:hover {
+      color: lighten($warning, 10%);
+      border-color: lighten($warning, 10%);
+    }
+  }
+
+  &.danger {
+    border-color: $danger;
+    color: $danger;
+
+    &:focus, &:active, &:hover {
+      color: lighten($danger, 10%);
+      border-color: lighten($danger, 10%);
+    }
+  }
+
 }
