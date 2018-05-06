@@ -1,1 +1,0 @@
-var bLazy = new Blazy();
