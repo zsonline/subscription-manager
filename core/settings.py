@@ -46,6 +46,7 @@ INSTALLED_APPS = [
     'user.apps.UserConfig',
     'authentication.apps.AccountConfig',
     'subscription.apps.SubscriptionConfig',
+    'payment.apps.PaymentConfig',
 ]
 
 MIDDLEWARE = [
