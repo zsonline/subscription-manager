@@ -374,7 +374,7 @@ a {
 
 form .errorlist {
   box-sizing: border-box;
-  padding: 75em;
+  padding: .75em;
   border: solid 1px #c50900;
   color: #c50900; }
   form .errorlist li {
