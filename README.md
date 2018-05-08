@@ -22,6 +22,7 @@ After setting up your virtual environment, you need to install this project's de
 
 - Django (2.0.3)
 - pytz (2018.3)
+- python-dotenv (0.8.2)
 
 You can install these by typing `pip install -r {project_dir}/requirements.txt`.
 
