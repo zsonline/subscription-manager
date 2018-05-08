@@ -4,6 +4,10 @@ from .base import *
 BASE_URL = 'http://127.0.0.1:8000'
 DEBUG = True
 
+# Secret key (default value is set in development
+# settings so that the .env file is not necessary)
+SECRET_KEY = os.getenv('SECRET_KEY', 'fruh-%ut#q*2av0@d+vf!*gkc=vbnxwox^h6-a-$9avh32z+ya')
+
 # Database
 DATABASES = {
     'default': {
@@ -20,6 +24,3 @@ STATIC_URL = '/static/'
 STATICFILES_DIRS = (
     os.path.join(BASE_DIR, 'static'),
 )
-
-# SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'fruh-%ut#q*2av0@d+vf!*gkc=vbnxwox^h6-a-$9avh32z+ya'
