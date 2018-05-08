@@ -50,7 +50,7 @@ class LoginForm(forms.Form):
         if not user.is_active:
             return False
 
-        if LoginToken.objects.valid_user_tokens_count(user) >= settings.MAX_TOKEN_PER_USER:
+        if LoginToken.objects.valid_user_tokens_count(user) >= settings.TOKENS_PER_USER:
             self.add_error('email', _('You reached the maximum of allowed tokens. '
                                       'Please wait 10 minutes before you try it again.'))
             return False

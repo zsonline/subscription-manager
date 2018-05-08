@@ -140,11 +140,11 @@ class TestLoginView(TestCase):
         """
         Tests that the token limit is not exceeded.
         """
-        for _ in range(settings.MAX_TOKEN_PER_USER):
+        for _ in range(settings.TOKENS_PER_USER):
             self.client.post(reverse('login'), {'email': self.user.email})
-        self.assertEquals(settings.MAX_TOKEN_PER_USER, LoginToken.objects.filter(user=self.user).count())
+        self.assertEquals(settings.TOKENS_PER_USER, LoginToken.objects.filter(user=self.user).count())
         self.client.post(reverse('login'), {'email': self.user.email})
-        self.assertEquals(settings.MAX_TOKEN_PER_USER, LoginToken.objects.filter(user=self.user).count())
+        self.assertEquals(settings.TOKENS_PER_USER, LoginToken.objects.filter(user=self.user).count())
 
 
 class TestBackends(TestCase):
