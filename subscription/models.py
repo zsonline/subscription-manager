@@ -17,9 +17,13 @@ class Subscription(models.Model):
         get_user_model(),
         on_delete=models.CASCADE
     )
-    type = models.ForeignKey(
-        'SubscriptionType',
-        on_delete=models.DO_NOTHING
+    type = models.CharField(
+        max_length=7,
+        choices=(
+            ('regular', _('Regular')),
+            ('student', _('Student')),
+            ('gift', _('Gift'))
+        )
     )
     shipping_address = models.ForeignKey(
         'Address',
@@ -31,13 +35,13 @@ class Subscription(models.Model):
         on_delete=models.PROTECT,
         related_name='billing_address'
     )
-    start_date = models.DateField()
-    end_date = models.DateField()
-    created_at = models.DateTimeField()
     payment = models.OneToOneField(
         Payment,
         on_delete=models.DO_NOTHING
     )
+    start_date = models.DateField()
+    end_date = models.DateField()
+    created_at = models.DateTimeField(auto_now_add=True)
 
     def duration(self):
         """
@@ -78,50 +82,23 @@ class Subscription(models.Model):
             return _('expired')
 
 
-class SubscriptionType(models.Model):
-    """
-    Model that holds the information for a
-    type of subscription (i.e. price).
-    """
-    name = models.CharField(
-        max_length=50
-    )
-    description = models.TextField()
-    slug = models.SlugField(
-        unique=True,
-        help_text=_('Unique identifier for this subscription type.')
-    )
-    duration = models.DurationField(
-        help_text=_('Specify a duration in the format \"years:months:days\".')
-    )
-    price = models.IntegerField(
-        help_text=_('Price in CHF for the duration.')
-    )
-    # Whitelist for email addresses that are allowed
-    # for a certain subscription type
-    email_whitelist = models.TextField()
-
-
 class Address(models.Model):
     """
     Address model.
     """
     first_name = models.CharField(
-        max_length=30,
-        blank=True,
-        default=''
+        max_length=30
     )
     last_name = models.CharField(
-        max_length=150,
-        blank=True,
-        default=''
+        max_length=150
     )
     street_1 = models.CharField(max_length=50)
     street_2 = models.CharField(
         max_length=50,
         blank=True,
-        default=''
+        null=True
     )
     postcode = models.CharField(max_length=8)
     city = models.CharField(max_length=50)
     country = models.CharField(max_length=50)
+    created_at = models.DateTimeField(auto_now_add=True)

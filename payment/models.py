@@ -5,7 +5,19 @@ from django.utils.translation import gettext_lazy as _
 
 class Payment(models.Model):
     amount = models.IntegerField()
-    paid_at = models.DateTimeField(blank=True, null=True)
+    type = models.CharField(
+        max_length=7,
+        choices=(
+            ('invoice', _('Invoice')),
+            ('card', _('Credit card')),
+            ('free', _('Free'))
+        )
+    )
+    paid_at = models.DateTimeField(
+        blank=True,
+        null=True,
+        default=None
+    )
     created_at = models.DateTimeField(auto_now_add=True)
 
     def is_paid(self):
