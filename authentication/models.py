@@ -72,9 +72,8 @@ class LoginToken(models.Model):
         Returns the login url for a given email address and code.
         Example: https://hostname.tld/auth/token/cmVkYWt0aW9uQHpzLW9ubGluZS5jaA/1836af19-67df-4090-8229-16ed13036480/
         """
-        return '{}://{}{}'.format(
-            'https' if settings.USE_SSL else 'http',
-            settings.HOST,
+        return '{}{}'.format(
+            settings.BASE_URL,
             reverse(
                 'token_verification',
                 kwargs={

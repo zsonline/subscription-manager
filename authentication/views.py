@@ -30,10 +30,11 @@ def signup_view(request):
             # If user exists
             if user is not None:
                 # Create and send token
-                token = LoginToken.objects.create_and_send(user=user)
-                # Render login template with token sent alert
-                form = SignUpForm()
-                return render(request, 'authentication/login.html', {'form': form, 'token_sent': True})
+                LoginToken.objects.create_and_send(user=user)
+                # Redirect to login view with token sent alert
+                login_url = reverse('login')
+                login_url += str('?token_sent')
+                return redirect(login_url)
 
             # If user does not exist, redirect to login page
             return redirect('login')
@@ -77,6 +78,8 @@ def login_view(request):
         form = LoginForm()
         if 'invalid_token' in request.GET:
             return render(request, 'authentication/login.html', {'form': form, 'invalid_token': True})
+        if 'token_sent' in request.GET:
+            return render(request, 'authentication/login.html', {'form': form, 'token_sent': True})
 
     return render(request, 'authentication/login.html', {'form': form})
 
