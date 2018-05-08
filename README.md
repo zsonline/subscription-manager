@@ -31,6 +31,30 @@ Lastly, make all migrations by typing `python manage.py makemigrations` and appl
 
 That is it. You are all done.
 
+## Configuration
+
+The configuration is stored in two places: the `settings/` directory and a `.env` file.
+
+### `settings/`
+
+Configuration values that do not change and can be public should be stored in the appropriate settings file in `settings/`.
+
+```
+settings/
+├── base.py          # Base settings (imported by all other files)
+├── development.py   # Development settings
+├── production.py    # Production settings
+└── testing.py       # Testing settings
+```
+
+### `.env`
+
+Configuration values that should remain secret (and not be pushed to github) have to be added directly to the environment. In order to avoid doing this each time, you can simply add the variables to the `.env` file. It is read by the application at start, which then adds the values to the environment.
+
+```
+SECRET_KEY=
+```
+
 ## Start the server
 
 ```
