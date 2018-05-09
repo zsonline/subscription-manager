@@ -8,21 +8,21 @@ ORGANISATION_NAME = 'Zürcher Studierendenzeitung'
 ORGANISATION_REPLY_TO_EMAIL = 'support@zs-online.ch'
 ORGANISATION_FROM_EMAIL = 'server@zs-online.ch'
 
-BASE_DIR = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
-PROJECT_ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__))) + '/subscription_manager'
+PROJECT_ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__))) + '/subscription_manager'
 
 # Application definition
 INSTALLED_APPS = [
-    'apps.authentication.apps.AccountConfig',
-    'apps.payment.apps.PaymentConfig',
-    'apps.subscription.apps.SubscriptionConfig',
-    'apps.user.apps.UserConfig',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'subscription_manager.authentication.apps.AccountConfig',
+    'subscription_manager.payment.apps.PaymentConfig',
+    'subscription_manager.subscription.apps.SubscriptionConfig',
+    'subscription_manager.user.apps.UserConfig',
 ]
 
 MIDDLEWARE = [
@@ -35,7 +35,7 @@ MIDDLEWARE = [
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
 
-ROOT_URLCONF = 'core.urls'
+ROOT_URLCONF = 'subscription_manager.urls'
 
 TEMPLATES = [
     {
@@ -51,7 +51,7 @@ TEMPLATES = [
                 'django.contrib.messages.context_processors.messages',
             ],
             'libraries': {
-                'tags': 'utils.tags',
+                'tags': 'subscription_manager.utils.tags',
             },
         },
     },
@@ -61,7 +61,7 @@ TEMPLATES = [
 AUTH_USER_MODEL = 'user.User'
 # Authentication backends
 AUTHENTICATION_BACKENDS = [
-    'apps.authentication.backends.EmailBackend',
+    'subscription_manager.authentication.backends.EmailBackend',
     'django.contrib.auth.backends.ModelBackend'
 ]
 

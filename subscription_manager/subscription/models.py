@@ -5,7 +5,7 @@ from django.utils.translation import gettext_lazy as _
 from django.utils import timezone
 
 # Project imports
-from apps.payment.models import Payment
+from subscription_manager.payment.models import Payment
 
 
 class Subscription(models.Model):

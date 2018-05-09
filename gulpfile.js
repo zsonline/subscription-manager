@@ -18,11 +18,11 @@ maps for the stylesheets and stores them in the same
 directory.
  */
 gulp.task('styles', function () {
-    gulp.src('./static/styles/scss/**/*.scss')
+    gulp.src('./subscription_manager/static/styles/scss/**/*.scss')
         .pipe(sourcemaps.init())
         .pipe(sass().on('error', sass.logError))
         .pipe(sourcemaps.write('.'))
-        .pipe(gulp.dest('./static/styles'));
+        .pipe(gulp.dest('./subscription_manager/static/styles'));
 });
 
 /*
@@ -30,7 +30,7 @@ Watches in static/styles/scss/ for changes in .scss
 files. If changes occur, the styles task is executed.
  */
 gulp.task('styles:watch', ['styles'], function () {
-    gulp.watch('./static/styles/scss/**/*.scss', ['styles']);
+    gulp.watch('./subscription_manager/static/styles/scss/**/*.scss', ['styles']);
 });
 
 /*
