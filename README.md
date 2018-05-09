@@ -6,31 +6,55 @@ The ZS AVS (short for ‘Abonnements-Verwaltungssystem’) is a subscription man
 
 ### Requirements
 
-Before installing this project, check whether [python](https://www.python.org/) (3.6) is installed. If not, do so.
+Before installing this project, check whether [Python](https://www.python.org/) and [Node.js](https://nodejs.org/) are installed. If not, do so. You should also install their package managers if they are not already included: pip and NPM, respectively.
 
-### Virtual environment
+### Virtual environment (optional)
 
-It is recommended to create a virtual environment in order to separate this project's environment from your system's python environment. To create a virtual environment in this directory: `python -m venv {project_dir}/venv`. There are also other tools for doing that, such as  [virtualenv](https://pypi.python.org/pypi/virtualenv).
+In order to separate this project's environment from your system's python environment, create a virtual environment. To create one in this directory: `python -m venv venv`. There are also other tools for doing that, such as  [virtualenv](https://pypi.python.org/pypi/virtualenv).
 
-To activate your created virtual environment, type `source {project_dir}/venv/bin/activate`. To deactivate it afterwards again, type `deactivate`.
+To activate your created virtual environment, type `source venv/bin/activate`. To deactivate it afterwards again, type `deactivate`.
 
-Make sure that the virtual environment is activated when installing or uninstalling packages regarding this project. You can find further information about virtual environments in the [python documentation](https://docs.python.org/3/tutorial/venv.html).
+Make sure that the virtual environment is activated when working on this project. You can find further information about virtual environments in the [python documentation](https://docs.python.org/3/tutorial/venv.html).
 
 ### Dependencies
 
-After setting up your virtual environment, you need to install this project's dependencies, namely the following packages:
+#### Pip packages
 
-- Django (2.0.3)
-- pytz (2018.3)
-- python-dotenv (0.8.2)
+The following Python packages are needed:
 
-You can install these by typing `pip install -r {project_dir}/requirements.txt`.
+- [Django](https://pypi.org/project/Django/)
+- [python-dotenv](https://pypi.org/project/python-dotenv/)
+
+You can install these by typing `pip install -r requirements.txt`.
+
+#### NPM packages
+
+The following Node.js packages are needed:
+
+- [gulp](https://www.npmjs.com/package/gulp)
+- [gulp-sass](https://www.npmjs.com/package/gulp-sass)
+- [gulp-shell](https://www.npmjs.com/package/gulp-shell)
+- [gulp-sourcemaps](https://www.npmjs.com/package/gulp-sourcemaps)
+
+You can install these by typing `npm install`.
+
+### Configuration
+
+Secret variables cannot be stored in the settings. Instead, they are directly read from the environment. That is why you have to set them manually in the `.env` file: Copy `.env.example` to `.env` and complete it.
 
 ### Database migrations
 
-Lastly, make all migrations by typing `python manage.py makemigrations` and apply them to the database: `python manage.py migrate`. Django is configured to store the data as a sqlite database in `{project_dir}/db.sqlite3`.
+Make all migrations by typing `python manage.py makemigrations` and apply them to the database: `python manage.py migrate`.
 
-That is it. You are all done.
+### Start the server
+
+That is it. You can now start the development server: `python manage.py runserver`.
+
+
+## Project structure
+
+To be written.
+
 
 ## Configuration
 
@@ -54,12 +78,6 @@ Configuration values that should remain secret (and not be pushed to github) hav
 
 ```
 SECRET_KEY=
-```
-
-## Start the server
-
-```
-python manage.py runserver
 ```
 
 ## Frontend

@@ -7,4 +7,4 @@ ALLOWED_HOSTS = []
 
 SECURE_SSL_REDIRECT = True
 
-WSGI_APPLICATION = 'core.wsgi.application'
+WSGI_APPLICATION = 'subscription_manager.wsgi.application'
