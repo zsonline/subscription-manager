@@ -40,7 +40,7 @@ You can install these by typing `npm install`.
 
 ### Configuration
 
-Secret variables cannot be stored in the settings. Instead, they are directly read from the environment. That is why you have to set them manually in the `.env` file. To do that, copy `.env.example` to `.env` and complete it.
+Secret variables cannot be stored in the settings. Instead, they are directly read from the environment. That is why you have to set them manually in the `.env` file: Copy `.env.example` to `.env` and complete it.
 
 ### Database migrations
 
