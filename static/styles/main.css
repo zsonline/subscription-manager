@@ -379,9 +379,11 @@ form .errorlist {
   color: #c50900; }
   form .errorlist li {
     list-style: none; }
+
 form label {
   display: block;
   margin-bottom: .25em; }
+
 form input {
   box-sizing: border-box;
   border: solid 1px #404040;
@@ -448,12 +450,14 @@ header {
       display: inline;
       margin-left: .25em;
       font-size: 1.8em; } }
+
 @media (min-width: 1024px) {
   header {
     height: 12rem; }
     header h1 {
       display: block;
       margin-left: 0; } }
+
 main {
   flex: 1; }
 
@@ -465,9 +469,11 @@ main {
     flex-direction: row; }
     main.vertical .column {
       flex: 1; } }
+
 @media (min-width: 1024px) {
   main.vertical {
     min-height: calc(100vh - 12rem); } }
+
 footer {
   padding: 1em; }
   footer div:not(.column), footer #credits {
@@ -497,18 +503,23 @@ footer {
       justify-content: right;
       align-items: end;
       text-align: right; } }
+
 main.authentication h2 {
   color: #030303; }
+
 main.authentication .column {
   display: flex;
   padding: 3rem 1rem; }
+
 main.authentication .inner {
   width: 100%; }
+
 main.authentication #form {
   align-items: center;
   background-color: #fbdcc6; }
   main.authentication #form form {
     margin-top: 1em; }
+
 main.authentication #context {
   align-items: end;
   color: white;
@@ -538,6 +549,7 @@ main.authentication #context {
     justify-content: center; }
   main.authentication #form .inner, main.authentication #context .inner {
     width: 80%; } }
+
 @media (min-width: 1024px) {
   main.authentication #form .inner {
     width: 60%; } }
