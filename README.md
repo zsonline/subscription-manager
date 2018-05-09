@@ -10,9 +10,9 @@ Before installing this project, check whether [Python](https://www.python.org/) 
 
 ### Virtual environment (optional)
 
-In order to separate this project's environment from your system's python environment, create a virtual environment. To create one in this directory: `python -m venv {project_dir}/venv`. There are also other tools for doing that, such as  [virtualenv](https://pypi.python.org/pypi/virtualenv).
+In order to separate this project's environment from your system's python environment, create a virtual environment. To create one in this directory: `python -m venv venv`. There are also other tools for doing that, such as  [virtualenv](https://pypi.python.org/pypi/virtualenv).
 
-To activate your created virtual environment, type `source {project_dir}/venv/bin/activate`. To deactivate it afterwards again, type `deactivate`.
+To activate your created virtual environment, type `source venv/bin/activate`. To deactivate it afterwards again, type `deactivate`.
 
 Make sure that the virtual environment is activated when working on this project. You can find further information about virtual environments in the [python documentation](https://docs.python.org/3/tutorial/venv.html).
 
@@ -25,7 +25,7 @@ The following Python packages are needed:
 - [Django](https://pypi.org/project/Django/)
 - [python-dotenv](https://pypi.org/project/python-dotenv/)
 
-You can install these by typing `pip install -r {project_dir}/requirements.txt`.
+You can install these by typing `pip install -r requirements.txt`.
 
 #### NPM packages
 
