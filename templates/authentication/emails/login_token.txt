@@ -1,4 +1,4 @@
-{% extends 'emails/base.txt' %}
+{% extends 'base_email.txt' %}
 
 {% block content %}
     {{ url }}
