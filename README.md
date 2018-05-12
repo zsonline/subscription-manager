@@ -55,17 +55,19 @@ Install these by typing `npm install`.
 
 ```
 .
-├── settings              # Development, testing and production settings
 ├── subscription_manager
     ├── authentication    # App: Token authentication, login
+    ├── core
+        ├── settings      # Development, testing and production settings
+        ├── urls.py       # Primary urls
+        └── wsgi.py
     ├── payment           # App: Payment
     ├── static            # Static assets (images, styles and scripts)
     ├── subscription      # App: Subscription
     ├── templates         # HTML templates
+    ├── tests             # Test cases
     ├── user              # App: Custom user model
-    ├── utils             # Utilities
-    ├── urls.py           # Primary urls
-    └── wsgi.py
+    └── utils             # Utilities
 ├── gulpfile.js           # Gulp configuration
 ├── manage.py
 ├── package.json          # NPM configuration
