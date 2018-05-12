@@ -1,6 +1,6 @@
-# ZS AVS
+# Subscription manager
 
-The ZS AVS (short for ‘Abonnements-Verwaltungssystem’) is the subscription management system of the student newspaper ‘[Zürcher Studierendenzeitung](http://zs-online.ch/)’.
+_Subscription manager_, internally also called ZS AVS (short for ‘Abonnements-Verwaltungssystem’), is the subscription management system of the student newspaper ‘[Zürcher Studierendenzeitung](http://zs-online.ch/)’.
 
 
 ## Installation
@@ -44,7 +44,7 @@ Install these by typing `npm install`.
 
 ## Getting started
 
-1. The projects main **configuration** is stored in `settings/`. Secret variables, however, are not stored in there. Instead, they are read from the environment. Either you set these values each time manually or you make use of a `.env` file. To do that copy `.env.example` to `.env` and complete it.
+1. The projects main **configuration** is stored in `settings/`. Secret variables, however, are not stored in there. Instead, they are read from the environment. Either you set these values each time manually or you make use of a `.env` file. To do so copy `.env.example` to `.env` and complete it.
 
 2. Make all **database migrations** by typing `python manage.py makemigrations` and apply them to the database: `python manage.py migrate`.
 
@@ -137,6 +137,11 @@ The `.scss` files are  compiled with Gulp (the tasks are configured in `gulpfile
 ### Scripts
 
 To be written.
+
+
+## Contributors
+
+To be added.
 
 
 ## Helpful links
