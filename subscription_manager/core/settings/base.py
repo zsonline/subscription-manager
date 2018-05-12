@@ -8,8 +8,8 @@ ORGANISATION_NAME = 'Zürcher Studierendenzeitung'
 ORGANISATION_REPLY_TO_EMAIL = 'support@zs-online.ch'
 ORGANISATION_FROM_EMAIL = 'server@zs-online.ch'
 
-BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__))) + '/subscription_manager'
-PROJECT_ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__))) + '/subscription_manager'
+BASE_DIR = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+PROJECT_ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
 # Application definition
 INSTALLED_APPS = [
@@ -35,13 +35,12 @@ MIDDLEWARE = [
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
 
-ROOT_URLCONF = 'subscription_manager.urls'
+ROOT_URLCONF = 'subscription_manager.core.urls'
 
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [os.path.join(BASE_DIR, 'templates')]
-        ,
+        'DIRS': [os.path.join(BASE_DIR, 'templates')],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
