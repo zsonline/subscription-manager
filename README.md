@@ -1,22 +1,25 @@
 # ZS AVS
 
-The ZS AVS (short for ‘Abonnements-Verwaltungssystem’) is a subscription management system for the student newspaper ‘[Zürcher Studierendenzeitung](http://zs-online.ch/)’.
+The ZS AVS (short for ‘Abonnements-Verwaltungssystem’) is the subscription management system of the student newspaper ‘[Zürcher Studierendenzeitung](http://zs-online.ch/)’.
+
 
 ## Installation
 
 ### Requirements
 
-Before installing this project, check whether [Python](https://www.python.org/) and [Node.js](https://nodejs.org/) are installed. If not, do so. You should also install their package managers if they are not already included: pip and NPM, respectively.
+Before installing this project, check whether [Python](https://www.python.org/) and [Node.js](https://nodejs.org/) are installed. If not, do so. You should also install their package managers if they are not already included. You need [pip](https://pypi.org/) for Python and [NPM](https://www.npmjs.com/) for Node.js.
 
 ### Virtual environment (optional)
 
-In order to separate this project's environment from your system's python environment, create a virtual environment. To create one in this directory: `python -m venv venv`. There are also other tools for doing that, such as  [virtualenv](https://pypi.python.org/pypi/virtualenv).
+In order to separate this project's environment from your system's environment, create a virtual environment. To create one in your current directory: `python -m venv venv`. There are also other tools for doing that, such as  [virtualenv](https://pypi.python.org/pypi/virtualenv).
 
-To activate your created virtual environment, type `source venv/bin/activate`. To deactivate it afterwards again, type `deactivate`.
+To activate your created virtual environment type `source venv/bin/activate`. To deactivate it afterwards again type `deactivate`.
 
-Make sure that the virtual environment is activated when working on this project. You can find further information about virtual environments in the [python documentation](https://docs.python.org/3/tutorial/venv.html).
+Make sure that the virtual environment is activated when working on this project. You can find further information about virtual environments in [Python's documentation](https://docs.python.org/3/tutorial/venv.html).
 
 ### Dependencies
+
+This project depends on other software. In general, Pip packages are needed for the backend and NPM packages for the frontend. However, there are exceptions such as Django, which is used for backend and frontend.
 
 #### Pip packages
 
@@ -25,7 +28,7 @@ The following Python packages are needed:
 - [Django](https://pypi.org/project/Django/)
 - [python-dotenv](https://pypi.org/project/python-dotenv/)
 
-You can install these by typing `pip install -r requirements.txt`.
+Install these by typing `pip install -r requirements.txt`.
 
 #### NPM packages
 
@@ -36,33 +39,44 @@ The following Node.js packages are needed:
 - [gulp-shell](https://www.npmjs.com/package/gulp-shell)
 - [gulp-sourcemaps](https://www.npmjs.com/package/gulp-sourcemaps)
 
-You can install these by typing `npm install`.
+Install these by typing `npm install`.
 
-### Configuration
 
-Secret variables cannot be stored in the settings. Instead, they are directly read from the environment. That is why you have to set them manually in the `.env` file: Copy `.env.example` to `.env` and complete it.
+## Getting started
 
-### Database migrations
+1. The projects main **configuration** is stored in `settings/`. Secret variables, however, are not stored in there. Instead, they are read from the environment. Either you set these values each time manually or you make use of a `.env` file. To do that copy `.env.example` to `.env` and complete it.
 
-Make all migrations by typing `python manage.py makemigrations` and apply them to the database: `python manage.py migrate`.
+2. Make all **database migrations** by typing `python manage.py makemigrations` and apply them to the database: `python manage.py migrate`.
 
-### Start the server
-
-That is it. You can now start the development server: `python manage.py runserver`.
+3. Start the **development server**: `python manage.py runserver`. Also run Gulp by typing `gulp`. Gulp handles the project's frontend assets (i.e. compiles `.scss` files).
 
 
 ## Project structure
 
-To be written.
+```
+.
+├── settings              # Development, testing and production settings
+├── subscription_manager
+    ├── authentication    # App: Token authentication, login
+    ├── payment           # App: Payment
+    ├── static            # Static assets (images, styles and scripts)
+    ├── subscription      # App: Subscription
+    ├── templates         # HTML templates
+    ├── user              # App: Custom user model
+    ├── utils             # Utilities
+    ├── urls.py           # Primary urls
+    └── wsgi.py
+├── gulpfile.js           # Gulp configuration
+├── manage.py
+├── package.json          # NPM configuration
+├── README.md
+└── requirements.txt      # pip packages
+```
 
 
 ## Configuration
 
-The configuration is stored in two places: the `settings/` directory and a `.env` file.
-
-### `settings/`
-
-Configuration values that do not change and can be public should be stored in the appropriate settings file in `settings/`.
+The configuration is stored in `settings/` where it is divided into development, production and testing settings.
 
 ```
 settings/
@@ -72,25 +86,16 @@ settings/
 └── testing.py       # Testing settings
 ```
 
-### `.env`
-
-Configuration values that should remain secret (and not be pushed to github) have to be added directly to the environment. In order to avoid doing this each time, you can simply add the variables to the `.env` file. It is read by the application at start, which then adds the values to the environment.
+Secret variables that should not be added to git have to be set directly in the environment. From there, the values can be read by the application. In order to avoid setting them each time, you can add the variables to a `.env` file. Its content is added to the environment when starting the application. An empty `.env` file is provided as `.env.example`.
 
 ```
 SECRET_KEY=
 ```
 
+
 ## Frontend
 
-### Dependencies
-
-The frontend is written in django's own template language. It is included in django itself. Therefore, no additional packages have to be installed for templating.
-
-The stylesheets, however, are written in [sass](https://sass-lang.com/), which depends on additional software. Because no bundler or task runner is currently included in this repository, you have to install one manually for yourself. Before doing that, though, check whether your editor or IDE has built-in tools or plugins which can compile the sass files.
-
-### Directories
-
-Files related to the frontend are stored in two directories: `static/` and `templates/`.
+The frontend is written in Django's template language and [Sass](https://sass-lang.com/). Files related to the frontend are stored in `static/` and `templates/`.
 
 Assets are stored in `static/` (in particular stylesheets in `static/stylesheets/`, images in `static/scripts/`, etc.).
 
@@ -102,22 +107,41 @@ static/
     └── scss
 ```
 
-In `templates/` all template files are stored. It is further divided into subdirectories, one for each application. In addition, `includes/` contains all snippets that can be included in other template files.
+HTML templates are stored in `templates/`. It is further divided into subdirectories, one for each application. The folder `includes/` contains all snippets that can be included in other template files.
 
 ```
 templates/
 ├── authentication
-│   ├── emails
 ├── includes
 └── subscription
 ```
 
 ### Styles
 
-The stylesheets are written in [sass](https://sass-lang.com/). The `.scss` files are stored in subdirectories in `static/stylesheets/scss/`. They should be compiled into its parent directory `static/stylesheets/` in order to keep the assets clearly structured. The main (and currently only) stylesheet is called `main.css`.
+The stylesheets are written in [Sass](https://sass-lang.com/). The `.scss` files are stored in subdirectories in `stylesheets/scss/`. They are compiled into its parent directory `stylesheets/`.
+
+```
+styles/
+├── scss
+    ├── base         # General styles, variables
+    ├── components   # Form, button, link, ...
+    ├── layout       # Header, footer, pages
+    ├── utils        # Mixins
+    ├── vendors      # Reset
+    └── main.scss    # Imports all used styles
+└── main.css
+```
+
+The `.scss` files are  compiled with Gulp (the tasks are configured in `gulpfile.js`). Simply run `gulp styles`. Gulp can also watch for changes and compile each time it detects one: `gulp styles:watch`.
+
+### Scripts
+
+To be written.
+
 
 ## Helpful links
 
-- [Django documentation](https://docs.djangoproject.com/en/2.0/)
 - [Python documentation](https://docs.python.org/3/)
+- [Django documentation](https://docs.djangoproject.com/en/dev/)
 - [Sass documentation](http://sass-lang.com/documentation/)
+- [Gulp documentation](https://gulpjs.com/)
