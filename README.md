@@ -1,6 +1,6 @@
 # Subscription manager
 
-_Subscription manager_, internally also called ZS AVS (short for ‘Abonnements-Verwaltungssystem’), is the subscription management system of the student newspaper ‘[Zürcher Studierendenzeitung](http://zs-online.ch/)’.
+_Subscription manager_, also called ZS AVS internally (short for ‘Abonnements-Verwaltungssystem’), is the subscription management system of the student newspaper ‘[Zürcher Studierendenzeitung](http://zs-online.ch/)’.
 
 
 ## Installation
