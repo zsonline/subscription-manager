@@ -105,7 +105,6 @@ ENV/
 
 # Database
 db.sqlite3
-migrations/
 
 # Dependency directories
 node_modules/
