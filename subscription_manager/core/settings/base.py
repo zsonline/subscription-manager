@@ -5,6 +5,7 @@ from datetime import timedelta
 
 # Organisation
 ORGANISATION_NAME = 'Zürcher Studierendenzeitung'
+ORGANISATION_ABBREVIATION = 'ZS'
 ORGANISATION_REPLY_TO_EMAIL = 'support@zs-online.ch'
 ORGANISATION_FROM_EMAIL = 'server@zs-online.ch'
 
