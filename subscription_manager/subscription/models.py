@@ -36,6 +36,10 @@ class SubscriptionType(models.Model):
         help_text=_('If True, the user can purchase a subscription for someone other than herself.')
     )
 
+    def __str__(self):
+        return 'SubscriptionType({})'.format(self.name)
+
+
 
 class Subscription(models.Model):
     """
@@ -59,8 +63,16 @@ class Subscription(models.Model):
         Payment,
         on_delete=models.DO_NOTHING
     )
-    start_date = models.DateField()
+    start_date = models.DateField(
+        blank=True,
+        null=True,
+        default=None
+    )
     created_at = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return 'Subscription({}, {}, {}, {})'\
+            .format(self.user.email, self.type.name, self.address.address_line_1, self.address.city)
 
     def end_date(self):
         """
@@ -107,19 +119,30 @@ class Address(models.Model):
     """
     first_name = models.CharField(
         max_length=30,
-        blank=True
+        blank=True,
+        null=True
     )
     last_name = models.CharField(
         max_length=150,
-        blank=True
+        blank=True,
+        null=True
     )
-    street_1 = models.CharField(max_length=50)
-    street_2 = models.CharField(
+    address_line_1 = models.CharField(
+        max_length=50,
+        verbose_name=_('Address line')
+    )
+    address_line_2 = models.CharField(
         max_length=50,
         blank=True,
         null=True
     )
     postcode = models.CharField(max_length=8)
     city = models.CharField(max_length=50)
-    country = models.CharField(max_length=50)
+    country = models.CharField(
+        max_length=50,
+        default='Switzerland'
+    )
     created_at = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return 'Address({}, {})'.format(self.address_line_1, self.city)

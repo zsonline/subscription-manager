@@ -4,12 +4,14 @@ from django.conf import settings
 from django.contrib.auth import authenticate, login, logout, get_user_model
 from django.contrib.auth.decorators import login_required
 from django.utils.translation import gettext_lazy as _
+from django.utils import timezone
 
 # Project imports
 from subscription_manager.authentication.forms import SignUpForm
+from subscription_manager.payment.models import Payment
 
 # Application imports
-from .models import SubscriptionType
+from .models import SubscriptionType, Subscription
 from .forms import AddressForm, AddressWithoutNamesForm
 
 
@@ -44,10 +46,34 @@ def subscribe_view(request, slug):
         if user_form.is_valid() and address_form.is_valid():
 
             # Save forms
-            user_form.save()
-            address_form.save()
+            user = user_form.save()
+            address = address_form.save()
 
-            # If user does not exist, redirect to login page
+            # Initialise values for other models
+            price = subscription_type.price
+            paid_at = None
+            start_date = None
+            if price == 0:
+                paid_at = timezone.now()
+                start_date = timezone.now()
+
+            # Create and save payment
+            payment = Payment.objects.create(
+                amount=price,
+                paid_at=paid_at
+            )
+            payment = payment.save()
+
+            # Create and save subscription
+            subscription = Subscription.objects.create(
+                user=user,
+                type=subscription_type,
+                address=address,
+                payment=payment,
+                start_date=start_date
+            )
+            subscription.save()
+
             return redirect('login')
 
     # If it is another request, instantiate empty form

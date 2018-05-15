@@ -15,15 +15,21 @@ class AddressForm(forms.ModelForm):
     """
     Address form.
     """
+    country = forms.CharField(
+        initial='Switzerland',
+        disabled=True,
+        help_text=_('We can only send our newspaper to Swiss addresses.')
+    )
+
     class Meta:
         model = Address
-        fields = ('first_name', 'last_name', 'street_1', 'street_2', 'postcode', 'city')
+        fields = ('first_name', 'last_name', 'address_line_1', 'address_line_2', 'postcode', 'city', 'country')
 
 
-class AddressWithoutNamesForm(forms.ModelForm):
+class AddressWithoutNamesForm(AddressForm):
     """
     Address form.
     """
     class Meta:
         model = Address
-        fields = ('street_1', 'street_2', 'postcode', 'city')
+        fields = ('address_line_1', 'address_line_2', 'postcode', 'city', 'country')
