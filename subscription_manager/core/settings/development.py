@@ -6,7 +6,7 @@ DEBUG = True
 
 # Secret key (default value is set in development
 # settings so that the .env file is not necessary)
-SECRET_KEY = os.getenv('SECRET_KEY', 'fruh-%ut#q*2av0@d+vf!*gkc=vbnxwox^h6-a-$9avh32z+ya')
+SECRET_KEY = 'fruh-%ut#q*2av0@d+vf!*gkc=vbnxwox^h6-a-$9avh32z+ya'
 
 # Database
 DATABASES = {
