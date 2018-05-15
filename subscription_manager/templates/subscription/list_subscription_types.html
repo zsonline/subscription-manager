@@ -1,5 +1,7 @@
 {% extends 'base.html' %}
 
+{% load i18n %}
+
 {% block title %}Subscribe{% endblock %}
 
 {% block main %}
@@ -18,13 +20,17 @@
                             <p>{{ subscription_type.description }}</p>
                             <span>
                                 {% if subscription_type.price == 0 %}
-                                    Free
+                                    {% trans 'Free' %}
+                                {% elif subscription_type.price == 1 %}
+                                    {{ subscription_type.price }} {% trans 'Franc' %}
                                 {% else %}
-                                    {{ subscription_type.price }}
+                                    {{ subscription_type.price }} {% trans 'Francs' %}
                                 {% endif %}
-                                Franken
+                                {% if not subscription_type.fixed_price %}
+                                    {% trans 'or more' %}
+                                {% endif %}
                             </span>
-                            <a href="{% url 'subscribe' subscription_type.slug %}" class="button black">Abonnieren</a>
+                            <a href="{% url 'subscribe' subscription_type.slug %}" class="button black">{% trans 'Subscribe' %}</a>
                         </li>
                     {% endfor %}
                 </ul>

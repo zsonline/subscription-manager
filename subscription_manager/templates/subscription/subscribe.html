@@ -10,21 +10,31 @@
         <section id="form" class="column">
             <div class="inner">
 
+                <a class="back" href="{% url 'list_subscription_types' %}">{% trans 'Back to all offers' %}</a>
+
                 <h2>{{ subscription_type.name }}</h2>
                 <p class="description">{{ subscription_type.description }}</p>
 
-                <form action="" method="post">
+                <form action="{% url 'subscribe' subscription_type.slug %}" method="post">
                     {% csrf_token %}
-                    <fieldset>
-                        <h3>Account</h3>
-                        {{ user_form.as_p }}
-                    </fieldset>
-                    <fieldset>
-                        <h3>Adresse</h3>
-                        {{ address_form.as_p }}
-                    </fieldset>
 
-                    <span>{{ subscription_type.price }} {% trans 'Francs' %}</span>
+                    <h3>{% trans 'Account' %}</h3>
+                    {{ user_form.as_p }}
+
+                    <h3>{% trans 'Subscription' %}</h3>
+                    {{ address_form.as_p }}
+
+                    {% if subscription_type.fixed_price %}
+                        {% if subscription_type.price == 0 %}
+                            {% trans 'Free' %}
+                        {% elif subscription_type.price == 1 %}
+                            {{ subscription_type.price }} {% trans 'Franc' %}
+                        {% else %}
+                            {{ subscription_type.price }} {% trans 'Francs' %}
+                        {% endif %}
+                    {% else %}
+                        <input>
+                    {% endif %}
 
                     {% if subscription_type.price == 0 %}
                         <input class="button black" type="submit" value="{% trans 'Subscribe' %}" />

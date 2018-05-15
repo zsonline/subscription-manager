@@ -11,28 +11,19 @@ from subscription_manager.authentication.forms import SignUpForm
 from .models import Address, Subscription
 
 
-class SubscribeForm(forms.ModelForm):
-    """
-    Subscription form.
-    """
-    type = forms.ChoiceField(
-        choices=(
-            ('regular', _('Regular')),
-            ('student', _('Student'))
-        ),
-        widget=forms.RadioSelect()
-    )
-
-    # ModelForm generates form fields
-    class Meta:
-        model = Subscription
-        fields = ('type',)
-
-
 class AddressForm(forms.ModelForm):
     """
     Address form.
     """
     class Meta:
         model = Address
-        exclude = ('country', 'created_at')
+        fields = ('first_name', 'last_name', 'street_1', 'street_2', 'postcode', 'city')
+
+
+class AddressWithoutNamesForm(forms.ModelForm):
+    """
+    Address form.
+    """
+    class Meta:
+        model = Address
+        fields = ('street_1', 'street_2', 'postcode', 'city')

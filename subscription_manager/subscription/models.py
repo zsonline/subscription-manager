@@ -8,6 +8,35 @@ from django.utils import timezone
 from subscription_manager.payment.models import Payment
 
 
+class SubscriptionType(models.Model):
+    """
+    Model that holds the information for a
+    type of subscription (i.e. price).
+    """
+    name = models.CharField(
+        max_length=50
+    )
+    description = models.TextField()
+    slug = models.SlugField(
+        unique=True,
+        help_text=_('Unique identifier for this subscription type.')
+    )
+    duration = models.DurationField(
+        help_text=_('Specify a duration in the format \"years:months:days\".')
+    )
+    fixed_price = models.BooleanField(
+        default=True,
+        help_text=_('If False, users can choose a value greater or equal than the set price.')
+    )
+    price = models.PositiveSmallIntegerField(
+        help_text=_('Price in CHF for the duration.'),
+    )
+    allow_other_name = models.BooleanField(
+        default=False,
+        help_text=_('If True, the user can purchase a subscription for someone other than herself.')
+    )
+
+
 class Subscription(models.Model):
     """
     Model that holds the information for a
@@ -18,7 +47,7 @@ class Subscription(models.Model):
         on_delete=models.CASCADE
     )
     type = models.ForeignKey(
-        'SubscriptionType',
+        SubscriptionType,
         on_delete=models.DO_NOTHING
     )
     address = models.ForeignKey(
@@ -70,27 +99,6 @@ class Subscription(models.Model):
             return _('active')
         if self.has_ended():
             return _('expired')
-
-
-class SubscriptionType(models.Model):
-    """
-    Model that holds the information for a
-    type of subscription (i.e. price).
-    """
-    name = models.CharField(
-        max_length=50
-    )
-    description = models.TextField()
-    slug = models.SlugField(
-        unique=True,
-        help_text=_('Unique identifier for this subscription type.')
-    )
-    duration = models.DurationField(
-        help_text=_('Specify a duration in the format \"years:months:days\".')
-    )
-    price = models.PositiveSmallIntegerField(
-        help_text=_('Price in CHF for the duration.'),
-    )
 
 
 class Address(models.Model):

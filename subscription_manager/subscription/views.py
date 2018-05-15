@@ -10,7 +10,7 @@ from subscription_manager.authentication.forms import SignUpForm
 
 # Application imports
 from .models import SubscriptionType
-from .forms import SubscribeForm, AddressForm
+from .forms import AddressForm, AddressWithoutNamesForm
 
 
 def list_subscription_types_view(request):
@@ -36,7 +36,10 @@ def subscribe_view(request, slug):
     if request.method == 'POST':
 
         user_form = SignUpForm(request.POST, prefix='user')
-        address_form = AddressForm(request.POST, prefix='address')
+        if subscription_type.allow_other_name:
+            address_form = AddressForm(request.POST, prefix='address')
+        else:
+            address_form = AddressWithoutNamesForm(request.POST, prefix='address')
 
         if user_form.is_valid() and address_form.is_valid():
 
@@ -50,7 +53,10 @@ def subscribe_view(request, slug):
     # If it is another request, instantiate empty form
     else:
         user_form = SignUpForm(prefix='user')
-        address_form = AddressForm(prefix='address')
+        if subscription_type.allow_other_name:
+            address_form = AddressForm(prefix='address')
+        else:
+            address_form = AddressWithoutNamesForm(prefix='address')
 
     return render(request, 'subscription/subscribe.html', {
         'user_form': user_form,
