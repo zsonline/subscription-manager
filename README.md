@@ -7,19 +7,13 @@ _Subscription manager_, also called ZS AVS internally (short for ‘Abonnements-
 
 ### Requirements
 
-Before installing this project, check whether [Python](https://www.python.org/) and [Node.js](https://nodejs.org/) are installed. If not, do so. You should also install their package managers if they are not already included. You need [pip](https://pypi.org/) for Python and [NPM](https://www.npmjs.com/) for Node.js.
+Before installing this project, check whether [Python](https://www.python.org/) and [Node.js](https://nodejs.org/) are installed. If not, do so. You should also install their package managers if they are not already included. It is recommended to use [pipenv](https://pipenv.org/) for Python and [NPM](https://www.npmjs.com/) for Node.js.
 
-### Virtual environment (optional)
-
-In order to separate this project's environment from your system's environment, create a virtual environment. To create one in your current directory: `python -m venv venv`. There are also other tools for doing that, such as  [virtualenv](https://pypi.python.org/pypi/virtualenv).
-
-To activate your created virtual environment type `source venv/bin/activate`. To deactivate it afterwards again type `deactivate`.
-
-Make sure that the virtual environment is activated when working on this project. You can find further information about virtual environments in [Python's documentation](https://docs.python.org/3/tutorial/venv.html).
+Pipenv will also create a virtual environment for you, which separates this project's environment from your system's environment. To activate your created virtual environment type source `pipenv shell`. To deactivate it afterwards again type `deactivate`. Make sure that the virtual environment is activated when working on this project.
 
 ### Dependencies
 
-This project depends on other software. In general, Pip packages are needed for the backend and NPM packages for the frontend. However, there are exceptions such as Django, which is used for backend and frontend.
+This project depends on other software. In general, Python packages are needed for the backend and Node.js packages for the frontend. However, there are exceptions such as Django, which is used for backend and frontend.
 
 #### Pip packages
 
@@ -28,7 +22,7 @@ The following Python packages are needed:
 - [Django](https://pypi.org/project/Django/)
 - [python-dotenv](https://pypi.org/project/python-dotenv/)
 
-Install these by typing `pip install -r requirements.txt`.
+Install these by typing `pipenv install`.
 
 #### NPM packages
 
@@ -149,6 +143,7 @@ To be added.
 ## Helpful links
 
 - [Python documentation](https://docs.python.org/3/)
+- [Pipenv documentation](https://docs.pipenv.org/)
 - [Django documentation](https://docs.djangoproject.com/en/dev/)
 - [Sass documentation](http://sass-lang.com/documentation/)
 - [Gulp documentation](https://gulpjs.com/)
