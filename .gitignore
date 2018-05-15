@@ -105,6 +105,8 @@ ENV/
 
 # Database
 db.sqlite3
+# Migrations
+[0-9][0-9][0-9][0-9]_*.py
 
 # Dependency directories
 node_modules/
