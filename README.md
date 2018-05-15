@@ -9,7 +9,7 @@ _Subscription manager_, also called ZS AVS internally (short for ‘Abonnements-
 
 Before installing this project, check whether [Python](https://www.python.org/) and [Node.js](https://nodejs.org/) are installed. If not, do so. You should also install their package managers if they are not already included. It is recommended to use [pipenv](https://pipenv.org/) for Python and [NPM](https://www.npmjs.com/) for Node.js.
 
-Pipenv will also create a virtual environment for you, which separates this project's environment from your system's environment. To activate your created virtual environment type source `pipenv shell`. To deactivate it afterwards again type `deactivate`. Make sure that the virtual environment is activated when working on this project.
+Pipenv will also create a virtual environment for you, which separates this project's environment from your system's environment. To activate your created virtual environment type `pipenv shell`. To deactivate it afterwards again type `deactivate`. Make sure that the virtual environment is activated when working on this project.
 
 ### Dependencies
 
