@@ -16,6 +16,14 @@ class User(AbstractUser):
     # Remove username and password field
     username = None
 
+    # Require first and last name
+    first_name = models.CharField(
+        max_length=30
+    )
+    last_name = models.CharField(
+        max_length=150
+    )
+
     # Substitute username by email address field
     email = models.EmailField(unique=True)
     USERNAME_FIELD = 'email'

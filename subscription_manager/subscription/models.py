@@ -17,37 +17,27 @@ class Subscription(models.Model):
         get_user_model(),
         on_delete=models.CASCADE
     )
-    type = models.CharField(
-        max_length=7,
-        choices=(
-            ('regular', _('Regular')),
-            ('student', _('Student')),
-            ('gift', _('Gift'))
-        )
+    type = models.ForeignKey(
+        'SubscriptionType',
+        on_delete=models.DO_NOTHING
     )
-    shipping_address = models.ForeignKey(
+    address = models.ForeignKey(
         'Address',
         on_delete=models.PROTECT,
         related_name='shipping_address'
-    )
-    billing_address = models.ForeignKey(
-        'Address',
-        on_delete=models.PROTECT,
-        related_name='billing_address'
     )
     payment = models.OneToOneField(
         Payment,
         on_delete=models.DO_NOTHING
     )
     start_date = models.DateField()
-    end_date = models.DateField()
     created_at = models.DateTimeField(auto_now_add=True)
 
-    def duration(self):
+    def end_date(self):
         """
         Returns duration of the subscription.
         """
-        return self.end_date - self.start_date
+        return self.start_date + self.type.duration
 
     def has_started(self):
         """
@@ -82,15 +72,38 @@ class Subscription(models.Model):
             return _('expired')
 
 
+class SubscriptionType(models.Model):
+    """
+    Model that holds the information for a
+    type of subscription (i.e. price).
+    """
+    name = models.CharField(
+        max_length=50
+    )
+    description = models.TextField()
+    slug = models.SlugField(
+        unique=True,
+        help_text=_('Unique identifier for this subscription type.')
+    )
+    duration = models.DurationField(
+        help_text=_('Specify a duration in the format \"years:months:days\".')
+    )
+    price = models.PositiveSmallIntegerField(
+        help_text=_('Price in CHF for the duration.'),
+    )
+
+
 class Address(models.Model):
     """
     Address model.
     """
     first_name = models.CharField(
-        max_length=30
+        max_length=30,
+        blank=True
     )
     last_name = models.CharField(
-        max_length=150
+        max_length=150,
+        blank=True
     )
     street_1 = models.CharField(max_length=50)
     street_2 = models.CharField(

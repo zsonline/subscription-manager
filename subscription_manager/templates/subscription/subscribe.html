@@ -1,0 +1,47 @@
+{% extends 'base.html' %}
+
+{% load i18n %}
+
+{% block title %}Subscribe{% endblock %}
+
+{% block main %}
+    <main class="authentication vertical full-height">
+
+        <section id="form" class="column">
+            <div class="inner">
+
+                <h2>{{ subscription_type.name }}</h2>
+                <p class="description">{{ subscription_type.description }}</p>
+
+                <form action="" method="post">
+                    {% csrf_token %}
+                    <fieldset>
+                        <h3>Account</h3>
+                        {{ user_form.as_p }}
+                    </fieldset>
+                    <fieldset>
+                        <h3>Adresse</h3>
+                        {{ address_form.as_p }}
+                    </fieldset>
+
+                    <span>{{ subscription_type.price }} {% trans 'Francs' %}</span>
+
+                    {% if subscription_type.price == 0 %}
+                        <input class="button black" type="submit" value="{% trans 'Subscribe' %}" />
+                    {% else %}
+                        <input class="button black" type="submit" value="{% trans 'Purchase' %}" />
+                    {% endif %}
+                </form>
+
+            </div>
+        </section>
+
+        <section id="context" class="column" style="background-image: url('http://unsplash.it/1200x800')">
+            <div class="inner">
+                <h3>Lorem ipsum</h3>
+                <p>Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book.</p>
+            </div>
+        </section>
+
+    </main>
+{% endblock %}
