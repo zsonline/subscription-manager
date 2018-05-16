@@ -49,6 +49,7 @@ TEMPLATES = [
                 'django.template.context_processors.request',
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
+                'subscription_manager.utils.context_processors.organisation',
             ],
             'libraries': {
                 'tags': 'subscription_manager.utils.tags',

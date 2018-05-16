@@ -1,6 +1,8 @@
 {% extends 'base.html' %}
 
-{% block title %}Registrieren{% endblock %}
+{% load i18n %}
+
+{% block title %}{% trans 'Sign up' %}{% endblock %}
 
 {% block main %}
     <main class="authentication vertical full-height">
@@ -8,16 +10,13 @@
         <section id="form" class="column">
             <div class="inner">
 
-                <h2>Registrieren</h2>
-                <p class="description">Verwalte dein Abonnement.</p>
+                <h2>{% trans 'Sign up' %}</h2>
+                <p class="description">{% trans 'Create an account to manage your subscriptions.' %}</p>
 
                 <form action="{% url 'signup' %}" method="post">
-                    {% if token_sent %}
-                        <div class="alert success">Token gesendet. Bitte überprüfe deine E-Mails.</div>
-                    {% endif %}
                     {% csrf_token %}
                     {{ form.as_p }}
-                    <input class="button black" type="submit" value="Registrieren" />
+                    <input class="button black" type="submit" value="{% trans 'Sign up' %}" />
                 </form>
 
             </div>

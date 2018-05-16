@@ -1,6 +1,8 @@
 {% extends 'base.html' %}
 
-{% block title %}Login{% endblock %}
+{% load i18n %}
+
+{% block title %}{% trans 'Log in' %}{% endblock %}
 
 {% block main %}
     <main class="authentication vertical full-height">
@@ -8,18 +10,18 @@
         <section id="form" class="column">
             <div class="inner">
 
-                <h2>Login</h2>
-                <p class="description">Verwalte dein ZS-Abonnement.</p>
+                <h2>{% trans 'Log in' %}</h2>
+                <p class="description">{% trans 'Manage your subscriptions.' %}</p>
 
                 <form action="{% url 'login' %}" method="post">
                     {% if token_sent %}
-                        <div class="alert success">Token gesendet. Bitte überprüfe deine E-Mails.</div>
+                        <div class="alert success">{% trans 'Token sent. Please check your emails.' %}</div>
                     {% elif invalid_token %}
-                        <div class="alert danger">Token ungültig. Bitte versuche es erneut.</div>
+                        <div class="alert danger">{% trans 'Token invalid. Please try again.' %}</div>
                     {% endif %}
                     {% csrf_token %}
                     {{ form.as_p }}
-                    <input class="button black" type="submit" value="Login" />
+                    <input class="button black" type="submit" value="{% trans 'Log in' %}" />
                 </form>
 
             </div>
