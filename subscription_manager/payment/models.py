@@ -5,6 +5,10 @@ from django.utils.translation import gettext_lazy as _
 
 class Payment(models.Model):
     amount = models.IntegerField()
+    code = models.CharField(
+        max_length=30,
+        unique=True
+    )
     paid_at = models.DateTimeField(
         blank=True,
         null=True,
