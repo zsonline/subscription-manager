@@ -62,17 +62,15 @@ def purchase_view(request, slug):
                 amount=price,
                 paid_at=paid_at
             )
-            payment = payment.save()
 
             # Create and save subscription
-            subscription = Subscription.objects.create(
+            Subscription.objects.create(
                 user=user,
                 type=subscription_type,
                 address=address,
                 payment=payment,
                 start_date=start_date
             )
-            subscription.save()
 
             return redirect('login')
 
