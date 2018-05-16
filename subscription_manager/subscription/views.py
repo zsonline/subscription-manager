@@ -47,13 +47,8 @@ def purchase_view(request, slug):
             address_form = AddressWithoutNamesForm(request.POST, prefix='address')
         # Get data from payment form
         if subscription_type.fixed_price:
-            payment_form = PaymentForm(
-                request.POST,
-                prefix='payment',
-                initial={
-                    'amount': subscription_type.price
-                },
-            )
+            payment_form = PaymentForm(request.POST, prefix='payment')
+            payment_form.data['amount'] = subscription_type.price
         else:
             payment_form = PaymentForm(request, prefix='payment')
 
