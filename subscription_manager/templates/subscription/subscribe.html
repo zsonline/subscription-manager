@@ -20,8 +20,10 @@
 
                     <h3>{% trans 'Account' %}</h3>
                     <p class="alert info">
-                        The authentication is password-less. That is why you do not have to specify a password.
-                        Each time you want to log in we will send you an email with a secure log in url.
+                        {% blocktrans %}
+                            The authentication is password-less. That is why you do not have to specify a password.
+                            Each time you want to log in we will send you an email with a secure log in url.
+                        {% endblocktrans %}
                     </p>
                     {{ user_form.as_p }}
 
@@ -32,19 +34,20 @@
                     {% if subscription_type.fixed_price %}
                         {% if subscription_type.price == 0 %}
                             {% trans 'Free' %}
-                        {% elif subscription_type.price == 1 %}
-                            {{ subscription_type.price }} {% trans 'Franc' %}
                         {% else %}
-                            {{ subscription_type.price }} {% trans 'Francs' %}
+                            {% blocktrans count price=subscription_type.price %}
+                                {{ price }} franc
+                            {% plural %}
+                                {{ price }} francs
+                            {% endblocktrans %}
                         {% endif %}
                     {% else %}
                         <p>
-                            Please specify a price that is greater than or equal to
-                            {% if subscription_type.price == 1 %}
-                                {{ subscription_type.price }} {% trans 'Franc' %}.
-                            {% else %}
-                                {{ subscription_type.price }} {% trans 'Francs' %}.
-                            {% endif %}
+                            {% blocktrans count price=subscription_type.price %}
+                                Please specify a price that is greater than or equal to {{ price }} franc.
+                            {% plural %}
+                                Please specify a price that is greater than or equal to {{ price }} francs.
+                            {% endblocktrans %}
                         </p>
                         <input>
                     {% endif %}
