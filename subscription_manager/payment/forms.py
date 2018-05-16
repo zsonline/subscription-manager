@@ -1,5 +1,5 @@
 # Django imports
-from django.forms import ModelForm
+from django.forms import ModelForm, IntegerField
 
 # Application imports
 from .models import Payment

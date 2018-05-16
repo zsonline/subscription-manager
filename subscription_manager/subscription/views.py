@@ -9,6 +9,7 @@ from django.utils import timezone
 # Project imports
 from subscription_manager.authentication.forms import SignUpForm
 from subscription_manager.payment.models import Payment
+from subscription_manager.payment.forms import PaymentForm
 
 # Application imports
 from .models import SubscriptionType, Subscription
@@ -37,31 +38,36 @@ def purchase_view(request, slug):
     # For POST requests, process the form data
     if request.method == 'POST':
 
+        # Get data from user form
         user_form = SignUpForm(request.POST, prefix='user')
+        # Get data from right address form
         if subscription_type.allow_other_name:
             address_form = AddressForm(request.POST, prefix='address')
         else:
             address_form = AddressWithoutNamesForm(request.POST, prefix='address')
+        # Get data from payment form
+        if subscription_type.fixed_price:
+            payment_form = PaymentForm(
+                request.POST,
+                prefix='payment',
+                initial={
+                    'amount': subscription_type.price
+                },
+            )
+        else:
+            payment_form = PaymentForm(request, prefix='payment')
 
-        if user_form.is_valid() and address_form.is_valid():
-
+        # Validate forms
+        if user_form.is_valid() and address_form.is_valid() and payment_form.is_valid():
             # Save forms
             user = user_form.save()
             address = address_form.save()
+            payment = payment_form.save()
 
-            # Initialise values for other models
-            price = subscription_type.price
-            paid_at = None
+            # Create start date
             start_date = None
-            if price == 0:
-                paid_at = timezone.now()
+            if payment.amount == 0:
                 start_date = timezone.now()
-
-            # Create and save payment
-            payment = Payment.objects.create(
-                amount=price,
-                paid_at=paid_at
-            )
 
             # Create and save subscription
             Subscription.objects.create(
@@ -76,14 +82,20 @@ def purchase_view(request, slug):
 
     # If it is another request, instantiate empty form
     else:
+
+        # User form
         user_form = SignUpForm(prefix='user')
+        # Choose right address form
         if subscription_type.allow_other_name:
             address_form = AddressForm(prefix='address')
         else:
             address_form = AddressWithoutNamesForm(prefix='address')
+        # Payment form
+        payment_form = PaymentForm(prefix='payment')
 
     return render(request, 'subscription/purchase.html', {
         'user_form': user_form,
         'address_form': address_form,
+        'payment_form': payment_form,
         'subscription_type': subscription_type
     })
