@@ -1,0 +1,79 @@
+{% extends 'vertical_base.html' %}
+
+{% load i18n %}
+
+{% block title %}{% trans 'Subscribe' %}{% endblock %}
+
+{% block left_column %}
+    <h2>{{ subscription_type.name }}</h2>
+    <p class="description">{{ subscription_type.description }}</p>
+
+    <form action="{% url 'purchase' subscription_type.slug %}" method="post">
+        {% csrf_token %}
+
+        <h3>{% trans 'Account' %}</h3>
+        {{ user_form.as_p }}
+        <p class="alert info">
+            {% blocktrans %}
+                The authentication is password-less. That is why you do not have to specify a password.
+                Each time you want to log in we will send you an email with a secure log in url.
+            {% endblocktrans %}
+        </p>
+
+        <h3>{% trans 'Subscription' %}</h3>
+        {{ address_form.as_p }}
+
+        <h3>{% trans 'Price' %}</h3>
+        {% if subscription_type.fixed_price %}
+            <div class="price">
+                {% if subscription_type.price == 0 %}
+                    <span class="amount">{% trans 'Free' %}</span>
+                {% else %}
+                    {% blocktrans count price=subscription_type.price %}
+                        <span class="amount">{{ price }}</span> franc
+                    {% plural %}
+                        <span class="amount">{{ price }}</span> francs
+                    {% endblocktrans %}
+                {% endif %}
+                per {{ subscription_type.duration }}
+            </div>
+        {% else %}
+            <p>
+                {% blocktrans count price=subscription_type.price %}
+                    Please specify a price that is greater than or equal to {{ price }} franc.
+                {% plural %}
+                    Please specify a price that is greater than or equal to {{ price }} francs.
+                {% endblocktrans %}
+            </p>
+            <input>
+        {% endif %}
+
+        {# Displays info box if subscription potentially costs something. #}
+        {% if not subscription_type.price == 0 or not subscription_type.fixed_price %}
+            <p class="alert info">
+                {% blocktrans %}
+                    We only accept payments with bank transfer. You will receive an invoice after successfully
+                    purchasing your subscription. Once we have received the payment, we will activate your
+                    subscription.
+                {% endblocktrans %}
+            </p>
+        {% endif %}
+
+        {% if subscription_type.price == 0 %}
+            <input class="button black" type="submit" value="{% trans 'Subscribe' %}" />
+        {% else %}
+            <input class="button black" type="submit" value="{% trans 'Purchase' %}" />
+        {% endif %}
+    </form>
+{% endblock %}
+
+{% comment %}
+{% block background_image_url %}{% endblock %}
+{% endcomment %}
+
+{% block right_column_alignment %}top{% endblock %}
+
+{% block right_column %}
+    <h3>Lorem ipsum</h3>
+    <p>{% lorem %}</p>
+{% endblock %}

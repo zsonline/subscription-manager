@@ -18,7 +18,7 @@ class AddressForm(forms.ModelForm):
     country = forms.CharField(
         initial='Switzerland',
         disabled=True,
-        help_text=_('We can only send our newspaper to Swiss addresses.')
+        help_text=_('We can send our newspaper only to Swiss addresses.')
     )
 
     class Meta:

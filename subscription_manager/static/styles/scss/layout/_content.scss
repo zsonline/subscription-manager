@@ -1,5 +1,9 @@
 main {
   flex: 1;
+
+  p.description {
+    margin-top: .2em;
+  }
 }
 
 @media (min-width: $medium) {
@@ -7,21 +11,12 @@ main {
     &.full-height {
       min-height: calc(100vh - #{$header-height-medium});
     }
-
-    &.vertical {
-      display: flex;
-      flex-direction: row;
-
-      .column {
-        flex: 1;
-      }
-    }
   }
 }
 
 @media (min-width: $large) {
   main {
-    &.vertical {
+    &.full-height {
       min-height: calc(100vh - #{$header-height-large});
     }
   }

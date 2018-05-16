@@ -1,38 +1,30 @@
-{% extends 'base.html' %}
+{% extends 'vertical_base.html' %}
 
 {% load i18n %}
 
 {% block title %}{% trans 'Log in' %}{% endblock %}
 
-{% block main %}
-    <main class="authentication vertical full-height">
+{% block left_column %}
+    <h2>{% trans 'Log in' %}</h2>
+    <p class="description">{% trans 'Manage your subscriptions.' %}</p>
 
-        <section id="form" class="column">
-            <div class="inner">
+    <form action="{% url 'login' %}" method="post">
+        {% if token_sent %}
+            <div class="alert success">{% trans 'Token sent. Please check your emails.' %}</div>
+        {% elif invalid_token %}
+            <div class="alert danger">{% trans 'Token invalid. Please try again.' %}</div>
+        {% endif %}
+        {% csrf_token %}
+        {{ form.as_p }}
+        <input class="button black" type="submit" value="{% trans 'Log in' %}" />
+    </form>
+{% endblock %}
 
-                <h2>{% trans 'Log in' %}</h2>
-                <p class="description">{% trans 'Manage your subscriptions.' %}</p>
+{% comment %}
+{% block background_image_url %}{% endblock %}
+{% endcomment %}
 
-                <form action="{% url 'login' %}" method="post">
-                    {% if token_sent %}
-                        <div class="alert success">{% trans 'Token sent. Please check your emails.' %}</div>
-                    {% elif invalid_token %}
-                        <div class="alert danger">{% trans 'Token invalid. Please try again.' %}</div>
-                    {% endif %}
-                    {% csrf_token %}
-                    {{ form.as_p }}
-                    <input class="button black" type="submit" value="{% trans 'Log in' %}" />
-                </form>
-
-            </div>
-        </section>
-
-        <section id="context" class="column" style="background-image: url('http://unsplash.it/1200x800')">
-            <div class="inner">
-                <h3>Lorem ipsum</h3>
-                <p>Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book.</p>
-            </div>
-        </section>
-
-    </main>
+{% block right_column %}
+    <h3>Lorem ipsum</h3>
+    <p>{% lorem %}</p>
 {% endblock %}

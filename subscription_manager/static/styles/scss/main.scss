@@ -21,5 +21,8 @@
 @import "layout/header";
 @import "layout/content";
 @import "layout/footer";
-// Specific
-@import "layout/authentication";
+@import "layout/vertical";
+
+// Pages
+@import "pages/authentication";
+@import "pages/subscription";

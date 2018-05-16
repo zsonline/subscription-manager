@@ -1,33 +1,25 @@
-{% extends 'base.html' %}
+{% extends 'vertical_base.html' %}
 
 {% load i18n %}
 
 {% block title %}{% trans 'Sign up' %}{% endblock %}
 
-{% block main %}
-    <main class="authentication vertical full-height">
+{% block left_column %}
+    <h2>{% trans 'Sign up' %}</h2>
+    <p class="description">{% trans 'Create an account to manage your subscriptions.' %}</p>
 
-        <section id="form" class="column">
-            <div class="inner">
+    <form action="{% url 'signup' %}" method="post">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <input class="button black" type="submit" value="{% trans 'Sign up' %}" />
+    </form>
+{% endblock %}
 
-                <h2>{% trans 'Sign up' %}</h2>
-                <p class="description">{% trans 'Create an account to manage your subscriptions.' %}</p>
+{% comment %}
+{% block background_image_url %}{% endblock %}
+{% endcomment %}
 
-                <form action="{% url 'signup' %}" method="post">
-                    {% csrf_token %}
-                    {{ form.as_p }}
-                    <input class="button black" type="submit" value="{% trans 'Sign up' %}" />
-                </form>
-
-            </div>
-        </section>
-
-        <section id="context" class="column" style="background-image: url('http://unsplash.it/1200x800')">
-            <div class="inner">
-                <h3>Unterstütze studentischen Journalismus</h3>
-                <p>Lorem ipsum dolor sit amet, cum harum sensibus ut. Paulo percipit consequuntur sea et, melius minimum dissentiet at usu. Case iriure inciderint an vix, alii alterum vis id.</p>
-            </div>
-        </section>
-
-    </main>
+{% block right_column %}
+    <h3>Unterstütze studentischen Journalismus</h3>
+    <p>{% lorem %}</p>
 {% endblock %}

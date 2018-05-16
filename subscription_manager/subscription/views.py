@@ -23,7 +23,7 @@ def list_subscription_types_view(request):
     return render(request, 'subscription/list_subscription_types.html', {'subscription_types': subscription_types})
 
 
-def subscribe_view(request, slug):
+def purchase_view(request, slug):
     """
 
     """
@@ -84,7 +84,7 @@ def subscribe_view(request, slug):
         else:
             address_form = AddressWithoutNamesForm(prefix='address')
 
-    return render(request, 'subscription/subscribe.html', {
+    return render(request, 'subscription/purchase.html', {
         'user_form': user_form,
         'address_form': address_form,
         'subscription_type': subscription_type

@@ -1,4 +1,8 @@
 form {
+  .helptext {
+    color: $grey;
+  }
+
   .errorlist {
     box-sizing: border-box;
     padding: .75em;
@@ -15,7 +19,7 @@ form {
     margin-bottom: .25em;
   }
 
-  input {
+  input, select {
     box-sizing: border-box;
     border: solid 1px $dark-grey;
     padding: .75em;
@@ -23,6 +27,12 @@ form {
 
     &:focus {
       border-color: $black;
+    }
+
+    &:required {
+    }
+
+    &:not(:required) {
     }
   }
 }
