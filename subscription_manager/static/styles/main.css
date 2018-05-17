@@ -415,7 +415,7 @@ form input, form select {
   .alert.warning {
     border-color: #ffc31e;
     color: #ffc31e; }
-  .alert.danger {
+  .alert.error {
     border-color: #c50900;
     color: #c50900; }
 
