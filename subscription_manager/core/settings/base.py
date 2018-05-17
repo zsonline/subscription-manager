@@ -66,10 +66,11 @@ AUTHENTICATION_BACKENDS = [
     'django.contrib.auth.backends.ModelBackend'
 ]
 
-# Maximum amount of tokens per user
-TOKENS_PER_USER = 2
-# Validity duration of a token
-TOKEN_EXPIRATION = timedelta(minutes=10)
+# Login tokens
+TOKENS_PER_USER = 3  # Maximum amount of tokens per user
+TOKEN_EXPIRATION = timedelta(minutes=10)  # Validity duration of a token
+
+ALLOWED_STUDENT_EMAIL_ADDRESSES = ['student.ethz.ch']
 
 # Password validation
 AUTH_PASSWORD_VALIDATORS = [
@@ -92,7 +93,7 @@ LOGIN_URL = '/auth/login/'
 LOGIN_REDIRECT_URL = '/auth/home/'
 
 # Internationalization
-LANGUAGE_CODE = 'en-us'
+LANGUAGE_CODE = 'de'
 TIME_ZONE = 'UTC'
 USE_I18N = True
 USE_L10N = True
