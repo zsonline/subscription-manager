@@ -8,12 +8,22 @@ from .models import Payment
 
 class PaymentForm(ModelForm):
     """
-    Payment form with one input field for
-    the amount.
+    Payment model form with one input field for the amount.
+    Has custom validation that checks whether the price is
+    correct.
     """
+    class Meta:
+        model = Payment
+        fields = ('amount',)
+
     def __init__(self, *args, **kwargs):
+        """
+        Constructor. Should get two additional parameters, price (int)
+        and fixed price (bool). These values are necessary for the
+        validation and for generating the help text.
+        """
         # Read passed parameters
-        self.price = kwargs.pop('price')
+        self.price = kwargs.pop('price', 50)
         self.fixed_price = kwargs.pop('fixed_price', True)
         # Call super constructor
         super().__init__(*args, **kwargs)
@@ -26,6 +36,12 @@ class PaymentForm(ModelForm):
         self.fields['amount'].help_text = amount_help_text
 
     def clean_amount(self):
+        """
+        Validates whether the price is appropriate. If the price
+        is fixed, the amount input has to be exactly the same as
+        the given price. Otherwise, the amount input has to be
+        greater than or equal to the given price.
+        """
         amount = self.cleaned_data['amount']
 
         if self.fixed_price:
@@ -38,7 +54,3 @@ class PaymentForm(ModelForm):
                 raise ValidationError(_('Price is too low.'))
 
         return amount
-
-    class Meta:
-        model = Payment
-        fields = ('amount',)
