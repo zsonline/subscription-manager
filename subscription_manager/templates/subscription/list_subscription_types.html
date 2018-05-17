@@ -1,6 +1,7 @@
 {% extends 'vertical_base.html' %}
 
 {% load i18n %}
+{% load tags %}
 
 {% block title %}{% trans 'Subscribe' %}{% endblock %}
 
@@ -31,6 +32,7 @@
                     {% if not subscription_type.fixed_price %}
                         {% trans 'or more' %}
                     {% endif %}
+                    per {% natural_delta subscription_type.duration %}
                 </div>
                 <a href="{% url 'purchase' subscription_type.slug %}" class="button black">{% trans 'Subscribe' %}</a>
             </li>

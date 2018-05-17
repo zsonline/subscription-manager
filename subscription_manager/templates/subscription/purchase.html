@@ -1,6 +1,7 @@
 {% extends 'vertical_base.html' %}
 
 {% load i18n %}
+{% load tags %}
 
 {% block title %}{% trans 'Subscribe' %}{% endblock %}
 
@@ -35,7 +36,7 @@
                         <span class="amount">{{ price }}</span> francs
                     {% endblocktrans %}
                 {% endif %}
-                per {{ subscription_type.duration }}
+                per {% natural_delta subscription_type.duration %}
             </div>
         {% else %}
             {{ payment_form }}
