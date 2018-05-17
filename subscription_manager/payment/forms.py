@@ -23,10 +23,14 @@ class PaymentForm(ModelForm):
         validation and for generating the help text.
         """
         # Read passed parameters
-        self.price = kwargs.pop('price', 50)
+        self.price = kwargs.pop('price', None)
+        if self.price is None:
+            raise ValidationError(_('Payment form improperly instantiated. Price is missing.'))
         self.fixed_price = kwargs.pop('fixed_price', True)
+
         # Call super constructor
         super().__init__(*args, **kwargs)
+
         # Create help text
         amount_help_text = ngettext(
             'Please specify a price that is greater than or equal to {} franc.',
@@ -47,10 +51,20 @@ class PaymentForm(ModelForm):
         if self.fixed_price:
             # Check if price has the right value
             if self.price is None or amount != self.price:
-                raise ValidationError(_('Wrong price.'))
+                error = ngettext(
+                    'The price has to be exactly {} franc.',
+                    'The price has to be exactly {} francs.',
+                    self.price
+                ).format(self.price)
+                self.add_error('amount', error)
         else:
             # Check whether price is high enough
             if self.price is None or amount < self.price:
-                raise ValidationError(_('Price is too low.'))
+                error = ngettext(
+                    'The price has to be greater than or equal to {} franc.',
+                    'The price has to be greater than or equal to {} francs.',
+                    self.price
+                ).format(self.price)
+                self.add_error('amount', error)
 
         return amount

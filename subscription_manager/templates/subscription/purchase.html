@@ -8,6 +8,7 @@
 {% block left_column %}
     <h2>{{ subscription_type.name }}</h2>
     <p class="description">{{ subscription_type.description }}</p>
+    <a href="{% url 'list_subscription_types' %}">{% trans 'Show all subscriptions' %}</a>
 
     <form action="{% url 'purchase' subscription_type.slug %}" method="post">
         {% csrf_token %}
@@ -39,7 +40,7 @@
                 per {% natural_delta subscription_type.duration %}
             </div>
         {% else %}
-            {{ payment_form }}
+            {{ payment_form.as_p }}
         {% endif %}
 
         {# Displays info box if subscription potentially costs something. #}
