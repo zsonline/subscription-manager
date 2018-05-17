@@ -5,6 +5,7 @@ from django.contrib.auth import authenticate, login, logout, get_user_model
 from django.contrib.auth.decorators import login_required
 from django.utils.translation import gettext_lazy as _, ngettext_lazy
 from django.utils import timezone
+from django.views.generic import ListView
 
 # Project imports
 from subscription_manager.authentication.forms import SignUpForm
@@ -16,12 +17,9 @@ from .models import SubscriptionType, Subscription
 from .forms import AddressForm, AddressWithoutNamesForm
 
 
-def list_subscription_types_view(request):
-    """
-    Lists the subscriptions.
-    """
-    subscription_types = SubscriptionType.objects.all()
-    return render(request, 'subscription/list_subscription_types.html', {'subscription_types': subscription_types})
+class SubscriptionTypeList(ListView):
+    model = SubscriptionType
+    context_object_name = 'subscription_types'
 
 
 def purchase_view(request, slug):
@@ -33,7 +31,7 @@ def purchase_view(request, slug):
     try:
         subscription_type = SubscriptionType.objects.get(slug=slug)
     except SubscriptionType.DoesNotExist:
-        return redirect('list_subscription_types')
+        return redirect('subscription_type_list')
 
     # For POST requests, process the form data
     if request.method == 'POST':
