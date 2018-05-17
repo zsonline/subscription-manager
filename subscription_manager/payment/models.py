@@ -1,10 +1,11 @@
 # Django imports
 from django.db import models
-from django.utils.translation import gettext_lazy as _
 
 
 class Payment(models.Model):
-    amount = models.IntegerField()
+    amount = models.IntegerField(
+        'Betrag'
+    )
     code = models.CharField(
         max_length=30,
         unique=True
@@ -21,8 +22,3 @@ class Payment(models.Model):
 
     def is_paid(self):
         return self.paid_at is not None
-
-    def status(self):
-        if self.is_paid():
-            return _('paid')
-        return _('not paid')

@@ -1,44 +1,13 @@
 # Django imports
-from django.db import models
 from django.contrib.auth import get_user_model
-from django.utils.translation import gettext_lazy as _
+from django.db import models
 from django.utils import timezone
 
 # Project imports
 from subscription_manager.payment.models import Payment
 
-
-class SubscriptionType(models.Model):
-    """
-    Model that holds the information for a
-    type of subscription (i.e. price).
-    """
-    name = models.CharField(
-        max_length=50
-    )
-    description = models.TextField()
-    slug = models.SlugField(
-        unique=True,
-        help_text=_('Unique identifier for this subscription type.')
-    )
-    duration = models.DurationField(
-        help_text=_('Specify a duration in the format \"years:months:days\".')
-    )
-    fixed_price = models.BooleanField(
-        default=True,
-        help_text=_('If False, users can choose a value greater or equal than the set price.')
-    )
-    price = models.PositiveSmallIntegerField(
-        help_text=_('Price in CHF for the duration.'),
-    )
-    allow_other_name = models.BooleanField(
-        default=False,
-        help_text=_('If True, the user can purchase a subscription for someone other than herself.')
-    )
-
-    def __str__(self):
-        return 'SubscriptionType({})'.format(self.name)
-
+# Application imports
+from .plans import convert_to_choices
 
 
 class Subscription(models.Model):
@@ -50,35 +19,24 @@ class Subscription(models.Model):
         get_user_model(),
         on_delete=models.CASCADE
     )
-    type = models.ForeignKey(
-        SubscriptionType,
-        on_delete=models.DO_NOTHING
+    plan = models.CharField(
+        max_length=7,
+        choices=convert_to_choices()
     )
     address = models.ForeignKey(
         'Address',
-        on_delete=models.PROTECT,
-        related_name='shipping_address'
+        on_delete=models.PROTECT
     )
     payment = models.OneToOneField(
         Payment,
-        on_delete=models.DO_NOTHING
+        on_delete=models.PROTECT
     )
-    start_date = models.DateField(
-        blank=True,
-        null=True,
-        default=None
-    )
+    start_date = models.DateField()
+    end_date = models.DateField()
     created_at = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
-        return 'Subscription({}, {}, {}, {})'\
-            .format(self.user.email, self.type.name, self.address.address_line_1, self.address.city)
-
-    def end_date(self):
-        """
-        Returns duration of the subscription.
-        """
-        return self.start_date + self.type.duration
+        return 'Subscription({}, {})'.format(self.user.email, self.plan)
 
     def has_started(self):
         """
@@ -100,47 +58,45 @@ class Subscription(models.Model):
         """
         return self.has_started() and not self.has_ended()
 
-    def status(self):
-        """
-        Returns status of the subscription.
-        Does not check the payment status.
-        """
-        if not self.has_started():
-            return _('inactive')
-        if self.is_active():
-            return _('active')
-        if self.has_ended():
-            return _('expired')
-
 
 class Address(models.Model):
     """
     Address model.
     """
     first_name = models.CharField(
+        'Vorname',
         max_length=30,
         blank=True,
         null=True
     )
     last_name = models.CharField(
+        'Nachname',
         max_length=150,
         blank=True,
         null=True
     )
     address_line_1 = models.CharField(
-        max_length=50,
-        verbose_name=_('Address line')
+        'Adresse',
+        max_length=50
     )
     address_line_2 = models.CharField(
+        'Zweite Adresszeile',
         max_length=50,
         blank=True,
-        null=True
+        null=True,
     )
-    postcode = models.CharField(max_length=8)
-    city = models.CharField(max_length=50)
+    postcode = models.CharField(
+        'Postleitzahl',
+        max_length=8,
+    )
+    city = models.CharField(
+        'Ort',
+        max_length=50
+    )
     country = models.CharField(
+        'Land',
         max_length=50,
-        default='Switzerland'
+        default='Schweiz'
     )
     created_at = models.DateTimeField(auto_now_add=True)
 
