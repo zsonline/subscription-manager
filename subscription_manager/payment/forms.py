@@ -12,6 +12,8 @@ class PaymentForm(ModelForm):
     Has custom validation that checks whether the price is
     correct.
     """
+    required_css_class = 'required'
+
     class Meta:
         model = Payment
         fields = ('amount',)

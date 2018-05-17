@@ -377,6 +377,17 @@ form .errorlist {
   form .errorlist li {
     list-style: none; }
 
+form .required label:after {
+  content: '*';
+  font-size: .75em;
+  float: right; }
+
+form :not(.required) label {
+  color: #bfbfbf; }
+
+form :not(.required) input, form :not(.required) select {
+  border-color: #bfbfbf; }
+
 form label {
   display: block;
   margin-bottom: .25em; }

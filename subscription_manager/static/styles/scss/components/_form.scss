@@ -14,6 +14,23 @@ form {
     }
   }
 
+  .required {
+    label:after {
+      content: '*';
+      font-size: .75em;
+      float: right;
+    }
+  }
+
+  :not(.required) {
+    label {
+      color: $light-grey;
+    }
+    input, select {
+      border-color: $light-grey;
+    }
+  }
+
   label {
     display: block;
     margin-bottom: .25em;
@@ -27,12 +44,6 @@ form {
 
     &:focus {
       border-color: $black;
-    }
-
-    &:required {
-    }
-
-    &:not(:required) {
     }
   }
 }
