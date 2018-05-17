@@ -38,13 +38,6 @@
                 per {{ subscription_type.duration }}
             </div>
         {% else %}
-            <p>
-                {% blocktrans count price=subscription_type.price %}
-                    Please specify a price that is greater than or equal to {{ price }} franc.
-                {% plural %}
-                    Please specify a price that is greater than or equal to {{ price }} francs.
-                {% endblocktrans %}
-            </p>
             {{ payment_form }}
         {% endif %}
 

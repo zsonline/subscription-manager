@@ -3,7 +3,7 @@ from django.shortcuts import render, redirect, reverse, HttpResponse, HttpRespon
 from django.conf import settings
 from django.contrib.auth import authenticate, login, logout, get_user_model
 from django.contrib.auth.decorators import login_required
-from django.utils.translation import gettext_lazy as _
+from django.utils.translation import gettext_lazy as _, ngettext_lazy
 from django.utils import timezone
 
 # Project imports
@@ -46,11 +46,15 @@ def purchase_view(request, slug):
         else:
             address_form = AddressWithoutNamesForm(request.POST, prefix='address')
         # Get data from payment form
-        if subscription_type.fixed_price:
-            payment_form = PaymentForm(request.POST, prefix='payment')
-            payment_form.data['amount'] = subscription_type.price
-        else:
-            payment_form = PaymentForm(request, prefix='payment')
+        payment_form = PaymentForm(
+            request.POST,
+            price=subscription_type.price,
+            fixed_price=subscription_type.fixed_price,
+            prefix='payment',
+            initial={
+                'amount': subscription_type.price
+            }
+        )
 
         # Validate forms
         if user_form.is_valid() and address_form.is_valid() and payment_form.is_valid():
@@ -86,7 +90,14 @@ def purchase_view(request, slug):
         else:
             address_form = AddressWithoutNamesForm(prefix='address')
         # Payment form
-        payment_form = PaymentForm(prefix='payment')
+        payment_form = PaymentForm(
+            price=subscription_type.price,
+            fixed_price=subscription_type.fixed_price,
+            prefix='payment',
+            initial={
+                'amount': subscription_type.price
+            }
+        )
 
     return render(request, 'subscription/purchase.html', {
         'user_form': user_form,
