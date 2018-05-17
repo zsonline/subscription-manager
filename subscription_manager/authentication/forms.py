@@ -2,10 +2,9 @@
 from django import forms
 from django.contrib.auth import get_user_model
 from django.conf import settings
-from django.utils.translation import gettext_lazy as _
 
 # Application imports
-from .models import LoginToken
+from .models import Token
 
 
 class SignUpForm(forms.ModelForm):
@@ -18,6 +17,17 @@ class SignUpForm(forms.ModelForm):
     class Meta:
         model = get_user_model()
         fields = ('first_name', 'last_name', 'email')
+
+    def save(self, commit=True):
+        """
+        Custom save method that saves newly registered
+        users with an unusable password.
+        """
+        user = super().save(commit=False)
+        user.set_unusable_password()
+        if commit:
+            user.save()
+        return user
 
 
 class LoginForm(forms.Form):
@@ -46,15 +56,20 @@ class LoginForm(forms.Form):
             user = get_user_model().objects.get(email=self.cleaned_data['email'])
         except get_user_model().DoesNotExist:
             # Add error if user does not exist
-            self.add_error('email', _('User does not exist.'))
+            self.add_error(None, 'Ein Account {} existiert nicht.'.format(self.cleaned_data['email']))
             return False
 
         if not user.is_active:
+            self.add_error(None, 'Dein Account {} ist gesperrt.'.format(self.cleaned_data['email']))
             return False
 
-        if LoginToken.objects.valid_user_tokens_count(user) >= settings.TOKENS_PER_USER:
-            self.add_error('email', _('You reached the maximum of allowed tokens. '
-                                      'Please wait 10 minutes before you try it again.'))
+        if Token.objects.valid_user_tokens_count(user) >= settings.LOGIN_TOKENS_PER_USER:
+            self.add_error(
+                None,
+                'Auf deinen Account {} ist die maximale Anzahl Tokens ausgestellt. '
+                'Sobald einer davon abgelaufen ist, kannst du wieder einen Neuen anfordern.'
+                .format(self.cleaned_data['email'])
+            )
             return False
 
         return True
