@@ -1,12 +1,10 @@
 {% extends 'vertical_base.html' %}
 
-{% load i18n %}
-
-{% block title %}{% trans 'Log in' %}{% endblock %}
+{% block title %}Log in{% endblock %}
 
 {% block left_column %}
-    <h2>{% trans 'Log in' %}</h2>
-    <p class="description">{% trans 'Manage your subscriptions.' %}</p>
+    <h2>Log in</h2>
+    <p class="description">Verwalte deine Abonnements.</p>
 
     {% for message in messages %}
         <p class="alert{% if message.tags %} {{ message.tags }}{% endif %}">{{ message }}</p>
@@ -15,7 +13,7 @@
     <form action="{% url 'login' %}" method="post">
         {% csrf_token %}
         {{ form.as_p }}
-        <input class="button black" type="submit" value="{% trans 'Log in' %}" />
+        <input class="button black" type="submit" value="Log in" />
     </form>
 {% endblock %}
 
