@@ -7,9 +7,9 @@
       "description": "Lorem ipsum",
       "slug": "regular",
       "duration": "365 00:00:00",
-      "fixed_price": true,
       "price": 50,
-      "allow_other_name": false
+      "fixed_price": true,
+      "allow_different_name": false
     }
   },
   {
@@ -20,9 +20,9 @@
       "description": "Lorem ipsum",
       "slug": "student",
       "duration": "365 00:00:00",
-      "fixed_price": true,
       "price": 0,
-      "allow_other_name": false
+      "fixed_price": true,
+      "allow_different_name": false
     }
   },
   {
@@ -33,9 +33,9 @@
       "description": "Lorem ipsum",
       "slug": "patron",
       "duration": "365 00:00:00",
-      "fixed_price": false,
       "price": 51,
-      "allow_other_name": false
+      "fixed_price": false,
+      "allow_different_name": false
     }
   },
   {
@@ -46,9 +46,10 @@
       "description": "Lorem ipsum",
       "slug": "gift",
       "duration": "365 00:00:00",
-      "fixed_price": true,
       "price": 50,
-      "allow_other_name": true
+      "fixed_price": true,
+
+      "allow_different_name": true
     }
   }
 ]
