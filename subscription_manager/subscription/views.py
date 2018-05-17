@@ -13,16 +13,17 @@ from subscription_manager.payment.models import Payment
 from subscription_manager.payment.forms import PaymentForm
 
 # Application imports
-from .models import SubscriptionType, Subscription
-from .forms import AddressForm, AddressWithoutNamesForm
+from .models import Subscription
+from .forms import AddressWithNamesForm, AddressWithoutNamesForm
+from .plans import plans
 
 
-class SubscriptionTypeList(ListView):
-    model = SubscriptionType
-    context_object_name = 'subscription_types'
+def list_plans(request):
+    return render(request, 'subscription/list_plans.html', {'plans': plans})
 
 
 def purchase_view(request, slug):
+    return HttpResponse('')
     """
 
     """
@@ -40,7 +41,7 @@ def purchase_view(request, slug):
         user_form = SignUpForm(request.POST, prefix='user')
         # Get data from right address form
         if subscription_type.allow_other_name:
-            address_form = AddressForm(request.POST, prefix='address')
+            address_form = AddressWithNamesForm(request.POST, prefix='address')
         else:
             address_form = AddressWithoutNamesForm(request.POST, prefix='address')
         # Get data from payment form
@@ -84,7 +85,7 @@ def purchase_view(request, slug):
         user_form = SignUpForm(prefix='user')
         # Choose right address form
         if subscription_type.allow_other_name:
-            address_form = AddressForm(prefix='address')
+            address_form = AddressWithNamesForm(prefix='address')
         else:
             address_form = AddressWithoutNamesForm(prefix='address')
         # Payment form

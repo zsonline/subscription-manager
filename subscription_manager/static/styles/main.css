@@ -559,13 +559,13 @@ main.vertical form {
   main.vertical .inner {
     width: 60%; } }
 
-ul#subscription_types {
+ul#plans {
   padding: 0;
   margin: 0; }
-  ul#subscription_types li {
+  ul#plans li {
     list-style: none; }
 
-.price .amount {
+.plan .price .amount {
   font-size: 3em; }
 
 /*# sourceMappingURL=main.css.map */
