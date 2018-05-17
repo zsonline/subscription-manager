@@ -1,21 +1,17 @@
 # Django imports
-from django import forms
-from django.contrib.auth import get_user_model
+from django.forms import ModelForm, CharField
 from django.conf import settings
 from django.utils.translation import gettext_lazy as _
 
-# Project imports
-from subscription_manager.authentication.forms import SignUpForm
-
 # Application imports
-from .models import Address, Subscription
+from .models import Address
 
 
-class AddressForm(forms.ModelForm):
+class AddressForm(ModelForm):
     """
     Address form.
     """
-    country = forms.CharField(
+    country = CharField(
         initial='Switzerland',
         disabled=True,
         help_text=_('We can send our newspaper only to Swiss addresses.')

@@ -51,14 +51,9 @@ class PaymentForm(ModelForm):
         amount = self.cleaned_data['amount']
 
         if self.fixed_price:
-            # Check if price has the right value
-            if self.price is None or amount != self.price:
-                error = ngettext(
-                    'The price has to be exactly {} franc.',
-                    'The price has to be exactly {} francs.',
-                    self.price
-                ).format(self.price)
-                self.add_error('amount', error)
+            # Set price to fixed amount
+            self.price = amount
+
         else:
             # Check whether price is high enough
             if self.price is None or amount < self.price:
