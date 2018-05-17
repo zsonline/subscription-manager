@@ -1,4 +1,5 @@
-from django.db import models
+from django.conf import settings
+from django.db.models import CharField, EmailField
 from django.contrib.auth.models import AbstractUser
 
 from .managers import UserManager
@@ -16,21 +17,37 @@ class User(AbstractUser):
     # Remove username and password field
     username = None
 
-    # Require first and last name
-    first_name = models.CharField(
+    # Model fields
+    first_name = CharField(
+        'Vorname',
         max_length=30
     )
-    last_name = models.CharField(
+    last_name = CharField(
+        'Nachname',
         max_length=150
+    )
+    # Make email address unique
+    email = EmailField(
+        'E-Mail-Adresse',
+        unique=True
     )
 
     # Substitute username by email address field
-    email = models.EmailField(unique=True)
     USERNAME_FIELD = 'email'
-
-    # Use custom UserManager for user creation
     REQUIRED_FIELDS = []
+    # Use custom UserManager for user creation
     objects = UserManager()
 
     def __str__(self):
         return 'User({})'.format(self.email)
+
+    def is_student(self):
+        """
+        Checks whether the user has a student email address.
+        """
+        # Extract domain from email address
+        email_domain = self.email.split('@')[1]
+        # Check if extracted domain is in list
+        if email_domain in settings.ALLOWED_STUDENT_EMAIL_ADDRESSES:
+            return True
+        return False
