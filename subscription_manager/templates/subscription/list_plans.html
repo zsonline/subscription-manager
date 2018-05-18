@@ -10,6 +10,11 @@
         Lorem ipsum.
     </p>
 
+    {% for message in messages %}
+        <p class="alert{% if message.tags %} {{ message.tags }}{% endif %}">{{ message }}</p>
+    {% endfor %}
+
+
     <ul id="plans">
         {% for _, plan in plans.items %}
 

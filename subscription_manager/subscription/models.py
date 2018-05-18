@@ -7,7 +7,7 @@ from django.utils import timezone
 from subscription_manager.payment.models import Payment
 
 # Application imports
-from .plans import convert_to_choices
+from .plans import Plans
 
 
 class Subscription(models.Model):
@@ -21,7 +21,7 @@ class Subscription(models.Model):
     )
     plan = models.CharField(
         max_length=7,
-        choices=convert_to_choices()
+        choices=Plans.convert_to_choices()
     )
     address = models.ForeignKey(
         'Address',

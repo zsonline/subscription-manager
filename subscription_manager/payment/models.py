@@ -1,6 +1,9 @@
 # Django imports
 from django.db import models
 
+# Application imports
+from .managers import PaymentManager
+
 
 class Payment(models.Model):
     amount = models.IntegerField(
@@ -16,6 +19,8 @@ class Payment(models.Model):
         default=None
     )
     created_at = models.DateTimeField(auto_now_add=True)
+
+    objects = PaymentManager()
 
     def __str__(self):
         return 'Payment({}, {}, {})'.format(self.subscription.user.name, self.amount, self.paid_at)
