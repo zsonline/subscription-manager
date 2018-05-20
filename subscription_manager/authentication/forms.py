@@ -63,7 +63,7 @@ class LoginForm(forms.Form):
             self.add_error(None, 'Dein Account {} ist gesperrt.'.format(self.cleaned_data['email']))
             return False
 
-        if Token.objects.valid_user_tokens_count(user) >= settings.LOGIN_TOKENS_PER_USER:
+        if Token.objects.valid_user_tokens_count(user) >= settings.TOKENS_PER_USER:
             self.add_error(
                 None,
                 'Auf deinen Account {} ist die maximale Anzahl Tokens ausgestellt. '
