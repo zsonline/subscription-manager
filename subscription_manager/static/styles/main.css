@@ -303,6 +303,12 @@ body {
   font-family: 'Lora', serif;
   color: #030303; }
 
+h2 {
+  color: #9d331f; }
+
+h3 {
+  color: #bc6d4f; }
+
 a {
   color: #030303; }
   a:visited {
@@ -324,47 +330,47 @@ a {
   .button:focus, .button:active, .button:hover {
     cursor: pointer; }
   .button.primary {
-    border-color: #882326;
-    color: #882326; }
+    border-color: #9d331f;
+    color: #9d331f; }
     .button.primary:focus, .button.primary:active, .button.primary:hover {
-      color: #b12d31;
-      border-color: #b12d31; }
+      color: #db5f47;
+      border-color: #db5f47; }
   .button.secondary {
-    border-color: #fbe6d3;
-    color: #fbe6d3; }
+    border-color: #bc6d4f;
+    color: #bc6d4f; }
     .button.secondary:focus, .button.secondary:active, .button.secondary:hover {
-      color: white;
-      border-color: white; }
+      color: #d8aa99;
+      border-color: #d8aa99; }
   .button, .button.black {
     border-color: #030303;
     color: #030303; }
     .button:focus, .button:active, .button:hover, .button.black:focus, .button.black:active, .button.black:hover {
-      color: #404040;
-      border-color: #404040; }
+      color: #595959;
+      border-color: #595959; }
   .button.info {
-    border-color: #42a9d7;
-    color: #42a9d7; }
+    border-color: #375e97;
+    color: #375e97; }
     .button.info:focus, .button.info:active, .button.info:hover {
-      color: #6cbce0;
-      border-color: #6cbce0; }
+      color: #6b91c9;
+      border-color: #6b91c9; }
   .button.success {
-    border-color: #34b764;
-    color: #34b764; }
+    border-color: #3f681c;
+    color: #3f681c; }
     .button.success:focus, .button.success:active, .button.success:hover {
-      color: #51cd7e;
-      border-color: #51cd7e; }
+      color: #70b832;
+      border-color: #70b832; }
   .button.warning {
-    border-color: #f5ce22;
-    color: #f5ce22; }
+    border-color: #ffbb00;
+    color: #ffbb00; }
     .button.warning:focus, .button.warning:active, .button.warning:hover {
-      color: #f7d953;
-      border-color: #f7d953; }
+      color: #ffd666;
+      border-color: #ffd666; }
   .button.danger {
-    border-color: #c50900;
-    color: #c50900; }
+    border-color: #fb6542;
+    color: #fb6542; }
     .button.danger:focus, .button.danger:active, .button.danger:hover {
-      color: #f80b00;
-      border-color: #f80b00; }
+      color: #fdb6a6;
+      border-color: #fdb6a6; }
 
 form fieldset {
   margin: 0;
@@ -377,8 +383,8 @@ form .helptext {
 form .errorlist {
   box-sizing: border-box;
   padding: .75em;
-  border: solid 1px #c50900;
-  color: #c50900; }
+  border: solid 1px #fb6542;
+  color: #fb6542; }
   form .errorlist li {
     list-style: none; }
 
@@ -407,17 +413,17 @@ form input, form select {
   .alert li {
     list-style: none; }
   .alert, .alert.info {
-    border-color: #42a9d7;
-    color: #42a9d7; }
+    border-color: #375e97;
+    color: #375e97; }
   .alert.success {
-    border-color: #34b764;
-    color: #34b764; }
+    border-color: #3f681c;
+    color: #3f681c; }
   .alert.warning {
-    border-color: #f5ce22;
-    color: #f5ce22; }
+    border-color: #ffbb00;
+    color: #ffbb00; }
   .alert.error {
-    border-color: #c50900;
-    color: #c50900; }
+    border-color: #fb6542;
+    color: #fb6542; }
 
 nav {
   font-size: .8em; }
@@ -439,21 +445,22 @@ footer {
   flex-shrink: 0; }
 
 header {
-  padding: 1em 1em 2em 1em; }
-  header img {
-    margin-top: 1.5em; }
+  padding: 2em 1em; }
   header h1 {
     margin: .1em 0;
     font-size: 1.6em; }
-  header p {
-    margin: .5em 0 0 0; }
+  header #logo {
+    text-decoration: none;
+    color: #030303; }
+  header nav {
+    margin-top: 1em; }
 
 @media (min-width: 756px) {
   header {
     box-sizing: border-box;
+    display: flex;
+    align-items: center;
     height: 10rem; }
-    header img {
-      margin-top: 1.5em; }
     header h1 {
       display: inline;
       margin-left: .25em;
@@ -512,7 +519,7 @@ footer {
 main.vertical .column {
   display: flex;
   padding: 2rem 1rem;
-  background-color: #fbe6d3; }
+  background-color: #faf0e6; }
   main.vertical .column, main.vertical .column.top {
     align-items: start; }
   main.vertical .column.center {

@@ -1,28 +1,27 @@
 header {
-  padding: 1em 1em 2em 1em;
-
-  img {
-    margin-top: 1.5em;
-  }
+  padding: 2em 1em;
 
   h1 {
     margin: .1em 0;
     font-size: 1.6em;
   }
 
-  p {
-    margin: .5em 0 0 0;
+  #logo {
+    text-decoration: none;
+    color: $black;
+  }
+
+  nav {
+    margin-top: 1em;
   }
 }
 
 @media (min-width: $medium) {
   header {
     box-sizing: border-box;
+    display: flex;
+    align-items: center;
     height: $header-height-medium;
-
-    img {
-      margin-top: 1.5em;
-    }
 
     h1 {
       display: inline;

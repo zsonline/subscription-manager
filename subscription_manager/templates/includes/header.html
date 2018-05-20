@@ -2,9 +2,15 @@
 
 <header>
 
-    {% include 'includes/navigation.html' %}
+    <div>
 
-    <img src="{% static 'images/zs-signet-small.png' %}">
-    <h1>{{ organisation_name }}</h1>
+        <a id="logo" href="#">
+            <img src="{% static 'images/zs-signet-small.png' %}">
+            <h1>{{ organisation_name }}</h1>
+        </a>
+
+        {% include 'includes/navigation.html' %}
+
+    </div>
 
 </header>

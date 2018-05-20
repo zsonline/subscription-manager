@@ -44,9 +44,9 @@
                 </div>
 
                 {% if not plan.price == 0 or plan.price < 0 and plan.min_price >= 0 %}
-                    <a href="{% url 'purchase' plan.slug %}" class="button primary">Kaufen</a>
+                    <a href="{% url 'purchase' plan.slug %}" class="button black">Kaufen</a>
                 {% else %}
-                    <a href="{% url 'purchase' plan.slug %}" class="button primary">Abonnieren</a>
+                    <a href="{% url 'purchase' plan.slug %}" class="button black">Abonnieren</a>
                 {% endif %}
 
 
