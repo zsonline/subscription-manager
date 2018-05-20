@@ -1,15 +1,39 @@
-ul#plans {
-  padding: 0;
-  margin: 0;
-  li {
-    list-style: none;
+.price {
+  margin-bottom: 1em;
+  .amount {
+    font-size: 2em;
   }
 }
 
-.plan {
-  .price {
-    .amount {
-      font-size: 3em;
+#plans {
+  padding: 0;
+  margin: 0;
+
+  li {
+    list-style: none;
+  }
+
+  .plan {
+    padding: 2em 0;
+
+    border-bottom: solid 1px rgba($black, .25);
+
+    &:last-child {
+      border: none;
     }
+
+    h3 {
+      margin: 0;
+    }
+  }
+}
+
+#purchase-form {
+  h3 {
+    margin-bottom: 0;
+  }
+
+  input[type="submit"] {
+    margin: 1em 0 2em 0;
   }
 }

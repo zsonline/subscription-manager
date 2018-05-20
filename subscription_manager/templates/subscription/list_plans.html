@@ -5,9 +5,9 @@
 {% block title %}Abonnieren{% endblock %}
 
 {% block left_column %}
-    <h2>Abonnieren</h2>
+    <h2>Unsere Abonnements</h2>
     <p class="description">
-        Lorem ipsum.
+        Die Zürcher Studierendenzeitung wird sechsmal jährlich an alle Abonnentinnen und Abonnenten nach Hause versandt.
     </p>
 
     {% for message in messages %}
@@ -39,9 +39,16 @@
                             <span class="amount">{{ plan.min_price }}</span> Franken oder mehr
                         {% endif %}
                     {% endif %}
+                    /
+                    {% humanize_months plan.duration %}
                 </div>
 
-                <a href="{% url 'purchase' plan.slug %}" class="button black">Abonnieren</a>
+                {% if not plan.price == 0 or plan.price < 0 and plan.min_price >= 0 %}
+                    <a href="{% url 'purchase' plan.slug %}" class="button primary">Kaufen</a>
+                {% else %}
+                    <a href="{% url 'purchase' plan.slug %}" class="button primary">Abonnieren</a>
+                {% endif %}
+
 
             </li>
 
@@ -52,6 +59,8 @@
 {% comment %}
 {% block background_image_url %}{% endblock %}
 {% endcomment %}
+
+{% block right_column_alignment %}top{% endblock %}
 
 {% block right_column %}
     <h3>Lorem ipsum</h3>

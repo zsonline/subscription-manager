@@ -7,28 +7,32 @@ class Plans:
     data = {
         1: {
             'name': 'Reguläres Abonnement',
-            'description': 'Lorem ipsum',
+            'description': 'Unser ganz normales Abonnement. Du zahlst, wir liefern. Sechs Mal jährlich schicken wir '
+                           'dir Geschichten aus der Uni und ETH nach Hause.',
             'slug': 'regular',
             'price': 50,
             'duration': 12  # in months
         },
         2: {
             'name': 'ETH-Abonnement',
-            'description': 'Lorem ipsum',
+            'description': 'Studierende der ETH erhalten die ZS gratis. Registriere dich hierfür mit deiner '
+                           'studentischen E-Mail-Adresse.',
             'slug': 'student',
             'price': 0,
             'duration': 6
         },
         3: {
             'name': 'Gönner-Abonnement',
-            'description': 'Lorem ipsum',
+            'description': 'Du zahlst mehr und unterstützt uns damit enorm. So können wir uns mal einen neuen '
+                           'Computer anschaffen. Oder unser selbstgekochtes Weihnachtsessen aufpeppen.',
             'slug': 'patron',
             'min_price': 75,
             'duration': 12
         },
         4: {
             'name': 'Geschenk-Abonnement',
-            'description': 'Lorem ipsum',
+            'description': 'Alles gleich wie bei einem regulären Abonnement. Ausser, dass es nicht du erhältst, '
+                           'sondern deine Beschenkte, dein Beschenkter.',
             'slug': 'gift',
             'price': 50,
             'duration': 12,

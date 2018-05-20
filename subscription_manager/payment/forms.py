@@ -41,7 +41,7 @@ class MinimumPaymentForm(PaymentForm):
 
         # Add help text
         self.fields['amount'].help_text = \
-            'Der Betrag muss grösser als {} Franken sein.'.format(self.min_price)
+            'Der Preis muss mindestens {} Franken betragen.'.format(self.min_price)
 
     def clean_amount(self):
         """
@@ -54,7 +54,7 @@ class MinimumPaymentForm(PaymentForm):
 
         # Check whether price is high enough
         if amount is None or amount < self.min_price:
-            self.add_error('amount', 'Der Betrag muss grösser als {} Franken sein.'.format(self.min_price))
+            self.add_error('amount', 'Der Preis muss mindestens {} Franken betragen.'.format(self.min_price))
 
         return amount
 

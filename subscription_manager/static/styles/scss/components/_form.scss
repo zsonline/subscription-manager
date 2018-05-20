@@ -1,4 +1,10 @@
 form {
+  fieldset {
+    margin: 0;
+    padding: 0;
+    border: none;
+  }
+
   .helptext {
     color: $grey;
   }
@@ -16,18 +22,10 @@ form {
 
   .required {
     label:after {
-      content: '*';
+      content: 'erforderlich';
       font-size: .75em;
-      float: right;
-    }
-  }
-
-  :not(.required) {
-    label {
-      color: $light-grey;
-    }
-    input, select {
-      border-color: $light-grey;
+      color: $grey;
+      margin-left: .5em;
     }
   }
 

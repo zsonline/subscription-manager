@@ -14,47 +14,60 @@
     {% endfor %}
 
 
-    <form action="{% url 'purchase' plan.slug %}" method="post" class="plan">
+    <form id="purchase-form" action="{% url 'purchase' plan.slug %}" method="post">
         {% csrf_token %}
 
-        <h3>Account</h3>
-        {{ user_form.as_p }}
-        <p class="alert info">
-            Unser Login funktioniert ohne Passwort, darum musst du auch keines angeben. Wenn du dich
-            anmelden willst, senden wir dir eine E-Mail mit einem sicheren Login-Link.
-        </p>
-
-        <h3>Abonnement</h3>
-        {{ address_form.as_p }}
-
-        <h3>Preis</h3>
-        Laufzeit: {% humanize_months plan.duration %}
-
-        {% if plan.price >= 0 %}
-            <div class="price">
-                {% if plan.price == 0 %}
-                    <span class="amount">Gratis</span>
-                {% else %}
-                    <span class="amount">{{ plan.price }}</span> Franken
-                {% endif %}
-            </div>
-        {% elif plan.min_price >= 0 %}
-            {{ payment_form.as_p }}
-        {% endif %}
-
-        {# Displays info box if subscription potentially costs something. #}
-        {% if not plan.price == 0 or plan.price < 0 and plan.min_price >= 0 %}
+        <fieldset>
+            <h3>Account</h3>
+            {{ user_form.as_p }}
             <p class="alert info">
-                Wir unterstützen nur Zahlungen mittels Banküberweisung. Nach dem Kauf deines Abonnements,
-                schicken wir dir eine Rechnung. Sobald die Zahlung bei uns eingetroffen ist, aktivieren wir es.
+                Das Login erfolgt ohne Passwort, darum musst du auch keines angeben. Wenn du dich
+                anmelden willst, senden wir dir eine E-Mail mit einem sicheren Login-Link.
             </p>
-        {% endif %}
+        </fieldset>
 
-        {% if plan.price == 0 %}
-            <input class="button black" type="submit" value="Abonnieren" />
-        {% else %}
-            <input class="button black" type="submit" value="Kaufen" />
-        {% endif %}
+        <fieldset>
+            <h3>Abonnement</h3>
+            {{ address_form.as_p }}
+        </fieldset>
+
+        <fieldset>
+            <h3>Preis</h3>
+
+            {% if plan.price >= 0 %}
+                <div class="price">
+                    {% if plan.price == 0 %}
+                        <span class="amount">Gratis</span>
+                    {% else %}
+                        <span class="amount">{{ plan.price }}</span> Franken
+                    {% endif %}
+                    /
+                    {% humanize_months plan.duration %}
+                </div>
+            {% elif plan.min_price >= 0 %}
+                <p>
+                    Laufzeit:<br>
+                    {% humanize_months plan.duration %}
+                </p>
+                {{ payment_form.as_p }}
+            {% endif %}
+
+            {# Displays info box if subscription potentially costs something. #}
+            {% if not plan.price == 0 or plan.price < 0 and plan.min_price >= 0 %}
+                <p class="alert info">
+                    Wir unterstützen nur Zahlungen mittels Banküberweisung. Nach dem Kauf deines Abonnements,
+                    schicken wir dir eine Rechnung. Sobald die Zahlung bei uns eingetroffen ist, aktivieren wir es.
+                </p>
+            {% endif %}
+        </fieldset>
+
+        <fieldset>
+            {% if plan.price == 0 %}
+                <input class="button primary" type="submit" value="Abonnieren" />
+            {% else %}
+                <input class="button primary" type="submit" value="Kaufen" />
+            {% endif %}
+        </fieldset>
     </form>
 {% endblock %}
 
