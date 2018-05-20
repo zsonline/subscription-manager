@@ -348,17 +348,17 @@ a {
       color: #6cbce0;
       border-color: #6cbce0; }
   .button.success {
-    border-color: #28c05c;
-    color: #28c05c; }
+    border-color: #34b764;
+    color: #34b764; }
     .button.success:focus, .button.success:active, .button.success:hover {
-      color: #43d876;
-      border-color: #43d876; }
+      color: #51cd7e;
+      border-color: #51cd7e; }
   .button.warning {
-    border-color: #ffc31e;
-    color: #ffc31e; }
+    border-color: #f5ce22;
+    color: #f5ce22; }
     .button.warning:focus, .button.warning:active, .button.warning:hover {
-      color: #ffd151;
-      border-color: #ffd151; }
+      color: #f7d953;
+      border-color: #f7d953; }
   .button.danger {
     border-color: #c50900;
     color: #c50900; }
@@ -410,11 +410,11 @@ form input, form select {
     border-color: #42a9d7;
     color: #42a9d7; }
   .alert.success {
-    border-color: #28c05c;
-    color: #28c05c; }
+    border-color: #34b764;
+    color: #34b764; }
   .alert.warning {
-    border-color: #ffc31e;
-    color: #ffc31e; }
+    border-color: #f5ce22;
+    color: #f5ce22; }
   .alert.error {
     border-color: #c50900;
     color: #c50900; }
