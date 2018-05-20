@@ -16,7 +16,7 @@ class Plans:
             'name': 'ETH-Abonnement',
             'description': 'Lorem ipsum',
             'slug': 'student',
-            'price': 50,
+            'price': 0,
             'duration': 6
         },
         3: {

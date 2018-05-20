@@ -30,20 +30,20 @@
         <h3>Preis</h3>
         Laufzeit: {% humanize_months plan.duration %}
 
-        {% if plan.price %}
+        {% if plan.price >= 0 %}
             <div class="price">
-                {% if subscription_type.price == 0 %}
-                    <span class="amount">Kostenlos</span>
+                {% if plan.price == 0 %}
+                    <span class="amount">Gratis</span>
                 {% else %}
                     <span class="amount">{{ plan.price }}</span> Franken
                 {% endif %}
             </div>
-        {% elif plan.min_price and payment_form %}
+        {% elif plan.min_price >= 0 %}
             {{ payment_form.as_p }}
         {% endif %}
 
         {# Displays info box if subscription potentially costs something. #}
-        {% if not plan.price == 0 or plan.min_price %}
+        {% if not plan.price == 0 or plan.price < 0 and plan.min_price >= 0 %}
             <p class="alert info">
                 Wir unterstützen nur Zahlungen mittels Banküberweisung. Nach dem Kauf deines Abonnements,
                 schicken wir dir eine Rechnung. Sobald die Zahlung bei uns eingetroffen ist, aktivieren wir es.

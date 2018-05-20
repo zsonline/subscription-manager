@@ -24,19 +24,19 @@
                 <p>{{ plan.description }}</p>
 
                 <div class="price">
-                    {% if plan.price %}
+                    {% if plan.price >= 0 %}
                         {# Fixed price #}
                         {% if plan.price == 0 %}
                             <span class="amount">Gratis</span>
                         {% else %}
                             <span class="amount">{{ plan.price }}</span> Franken
                         {% endif %}
-                    {% elif plan.min_price %}
-                        {# Dynamic price #}
+                    {% elif plan.min_price >= 0 %}
+                        {# Flexible price #}
                         {% if plan.min_price == 0 %}
-                            So viel du willst
+                            Soviel du willst
                         {% else %}
-                            Mindestens <span class="amount">{{ plan.min_price }}</span> Franken
+                            <span class="amount">{{ plan.min_price }}</span> Franken oder mehr
                         {% endif %}
                     {% endif %}
                 </div>
