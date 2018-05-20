@@ -43,20 +43,20 @@ class Subscription(models.Model):
         True if the subscription has started.
         Otherwise false.
         """
-        return self.start_date <= timezone.now()
+        return self.start_date <= timezone.now().date()
 
     def has_ended(self):
         """
         True if the subscription has ended.
         Otherwise false.
         """
-        return self.end_date <= timezone.now()
+        return self.end_date <= timezone.now().date()
 
     def is_active(self):
         """
         Checks whether the subscription is active.
         """
-        return self.has_started() and not self.has_ended()
+        return self.payment.is_paid() and self.has_started() and not self.has_ended()
 
 
 class Address(models.Model):

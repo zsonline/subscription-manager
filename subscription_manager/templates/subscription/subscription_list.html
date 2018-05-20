@@ -1,0 +1,29 @@
+{% extends 'layouts/manager.html' %}
+
+{% load plans %}
+
+{% block title %}Abo-Verwaltung{% endblock %}
+
+{% block content %}
+    {% for subscription in subscriptions %}
+
+        {% if subscription.is_active %}
+            <span class="badge success">aktiv</span>
+        {% elif subscription.has_ended %}
+            <span class="badge danger">abgelaufen</span>
+        {% else %}
+            <span class="badge danger">inaktiv</span>
+        {% endif %}
+
+        {% plan_name subscription.plan %}
+
+        {% if subscription.payment.is_paid %}
+            Bezahlt am {{ subscription.payment.paid_at }}
+        {% else %}
+            Zahlung offen
+        {% endif %}
+
+    {% empty %}
+        <li>Du hast keine Abos.</li>
+    {% endfor %}
+{% endblock %}

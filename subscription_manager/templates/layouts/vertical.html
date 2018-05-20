@@ -1,0 +1,26 @@
+{% extends 'base.html' %}
+
+{% block main_classes %}vertical full-height{% endblock %}
+
+{% block main %}
+    <section
+            class="column {% block left_column_alignment %}center{% endblock %}"
+    >
+
+        <div class="inner">
+            {% block left_column %}{% endblock %}
+        </div>
+
+    </section>
+
+    <section
+            class="column overlay {% block right_column_alignment %}bottom{% endblock %}"
+            style="background-image: url('{% block background_image_url %}http://unsplash.it/1200x800{% endblock %}')"
+    >
+
+        <div class="inner">
+            {% block right_column %}{% endblock %}
+        </div>
+
+    </section>
+{% endblock %}

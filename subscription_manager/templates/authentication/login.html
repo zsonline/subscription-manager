@@ -1,9 +1,9 @@
-{% extends 'vertical_base.html' %}
+{% extends 'layouts/vertical.html' %}
 
-{% block title %}Log in{% endblock %}
+{% block title %}Anmelden{% endblock %}
 
 {% block left_column %}
-    <h2>Log in</h2>
+    <h2>Anmelden</h2>
     <p class="description">Verwalte deine Abonnements.</p>
 
     {% for message in messages %}
@@ -13,7 +13,7 @@
     <form action="{% url 'login' %}" method="post">
         {% csrf_token %}
         {{ form.as_p }}
-        <input class="button black" type="submit" value="Log in" />
+        <input class="button black" type="submit" value="Anmelden" />
     </form>
 {% endblock %}
 

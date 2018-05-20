@@ -109,11 +109,3 @@ def logout_view(request):
     logout(request)
     messages.success(request, 'Du hast dich ausgeloggt.')
     return redirect('login')
-
-
-@login_required(redirect_field_name=None)
-def home_view(request):
-    """
-    Login home view. For test purposes.
-    """
-    return HttpResponse(request.user.email)

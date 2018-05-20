@@ -372,6 +372,41 @@ a {
       color: #fdb6a6;
       border-color: #fdb6a6; }
 
+.badge {
+  font-size: .75em;
+  padding: .25em .5em; }
+  .badge.info {
+    color: white;
+    background-color: #375e97; }
+  .badge.success {
+    color: white;
+    background-color: #3f681c; }
+  .badge.warning {
+    color: white;
+    background-color: #ffbb00; }
+  .badge.danger {
+    color: white;
+    background-color: #fb6542; }
+
+.alert {
+  box-sizing: border-box;
+  padding: .75em;
+  border: solid 1px; }
+  .alert li {
+    list-style: none; }
+  .alert, .alert.info {
+    border-color: #375e97;
+    color: #375e97; }
+  .alert.success {
+    border-color: #3f681c;
+    color: #3f681c; }
+  .alert.warning {
+    border-color: #ffbb00;
+    color: #ffbb00; }
+  .alert.error {
+    border-color: #fb6542;
+    color: #fb6542; }
+
 form fieldset {
   margin: 0;
   padding: 0;
@@ -405,25 +440,6 @@ form input, form select {
   width: 100%; }
   form input:focus, form select:focus {
     border-color: #030303; }
-
-.alert {
-  box-sizing: border-box;
-  padding: .75em;
-  border: solid 1px; }
-  .alert li {
-    list-style: none; }
-  .alert, .alert.info {
-    border-color: #375e97;
-    color: #375e97; }
-  .alert.success {
-    border-color: #3f681c;
-    color: #3f681c; }
-  .alert.warning {
-    border-color: #ffbb00;
-    color: #ffbb00; }
-  .alert.error {
-    border-color: #fb6542;
-    color: #fb6542; }
 
 nav {
   font-size: .8em; }
@@ -565,6 +581,13 @@ main.vertical form {
 @media (min-width: 1024px) {
   main.vertical .inner {
     width: 60%; } }
+
+.manager #header {
+  padding: 1em;
+  background-color: #faf0e6; }
+
+.manager #content {
+  padding: 3em 1em; }
 
 .price {
   margin-bottom: 1em; }

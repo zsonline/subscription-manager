@@ -6,6 +6,7 @@ from django.shortcuts import render, redirect, reverse, HttpResponse, HttpRespon
 from django.contrib.auth.decorators import login_required
 from django.utils import timezone
 from django.contrib import messages
+from django.views.generic.list import ListView
 
 # Project imports
 from subscription_manager.authentication.forms import SignUpForm
@@ -22,7 +23,7 @@ def list_plans(request):
     """
     Lists all plans.
     """
-    return render(request, 'subscription/list_plans.html', {'plans': Plans.data})
+    return render(request, 'subscription/plan_list.html', {'plans': Plans.data})
 
 
 def purchase_view(request, slug):
@@ -115,3 +116,19 @@ def purchase_view(request, slug):
         'address_form': address_form,
         'payment_form': payment_form
     })
+
+
+def home_view(request):
+    """
+    Login home view. For test purposes.
+    """
+    return HttpResponse(request.user.email)
+
+
+class SubscriptionListView(ListView):
+    model = Subscription
+    context_object_name = 'subscriptions'
+    template_name = 'subscription/subscription_list.html'
+
+    def get_queryset(self):
+        return Subscription.objects.filter(user=self.request.user)

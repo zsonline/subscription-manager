@@ -90,7 +90,7 @@ AUTH_PASSWORD_VALIDATORS = [
 
 # Fixed auth urls
 LOGIN_URL = '/auth/login/'
-LOGIN_REDIRECT_URL = '/auth/home/'
+LOGIN_REDIRECT_URL = '/home/'
 
 # Internationalization
 LANGUAGE_CODE = 'de'
