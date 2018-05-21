@@ -80,7 +80,7 @@ class Address(models.Model):
         max_length=50
     )
     address_line_2 = models.CharField(
-        'Zweite Adresszeile',
+        'Adresszusatz',
         max_length=50,
         blank=True,
         null=True,

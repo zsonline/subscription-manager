@@ -23,7 +23,7 @@ class Payment(models.Model):
     objects = PaymentManager()
 
     def __str__(self):
-        return 'Payment({}, {}, {})'.format(self.subscription.user.name, self.amount, self.paid_at)
+        return 'Payment({}, {}, {})'.format(self.subscription.user.email, self.amount, self.paid_at)
 
     def is_paid(self):
         return self.paid_at is not None

@@ -4,9 +4,12 @@ from dateutil.relativedelta import relativedelta
 # Django imports
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
-from django.shortcuts import render, redirect, reverse
+from django.shortcuts import render, redirect, reverse, get_object_or_404
+from django.urls import reverse_lazy
 from django.utils import timezone
 from django.utils.decorators import method_decorator
+from django.views.generic.detail import DetailView
+from django.views.generic.edit import DeleteView, FormView, UpdateView
 from django.views.generic.list import ListView
 
 # Project imports
@@ -17,7 +20,7 @@ from subscription_manager.payment.models import Payment
 
 # Application imports
 from .forms import AddressWithNamesForm, AddressWithoutNamesForm
-from .models import Subscription
+from .models import Subscription, Address
 from .plans import Plans
 
 
@@ -133,3 +136,61 @@ class SubscriptionListView(ListView):
 
     def get_queryset(self):
         return Subscription.objects.filter(user=self.request.user)
+
+
+@method_decorator(login_required, name='dispatch')
+class SubscriptionDetailView(DetailView):
+    """
+    Detail view of a subscription. Shows mainly payment
+    details.
+    """
+    model = Subscription
+    context_object_name = 'subscription'
+    template_name = 'subscription/subscription_detail.html'
+
+    def get_object(self, queryset=None):
+        """
+        Returns subscription object if it is owned
+        by the current user and does exist. Otherwise,
+        a 404 exception.
+        """
+        # Url parameter
+        subscription_id = self.kwargs['subscription_id']
+        # Get object from database
+        return get_object_or_404(Subscription, id=subscription_id, user=self.request.user)
+
+
+@method_decorator(login_required, name='dispatch')
+class SubscriptionUpdateView(UpdateView):
+    model = Address
+    fields = ['first_name', 'last_name', 'address_line_1', 'address_line_2', 'postcode', 'city', 'country']
+    template_name = 'subscription/subscription_update.html'
+
+    def get_object(self, queryset=None):
+        """
+        Returns address object for a subscription id. If
+        the subscription is not owned by the current user or
+        does not exist, the user is redirected to the subscription
+        list page.
+        """
+        # Get subscription object
+        try:
+            subscription = Subscription.objects.get(pk=self.kwargs['subscription_id'])
+        except Subscription.DoesNotExist:
+            # Redirect to subscription list if subscription does not exist
+            return None
+
+        # If subscription is not owned by current user, redirect
+        if self.request.user != subscription.user:
+            # Redirect to subscription list
+            messages.error(self.request, 'Dieses Abo existiert nicht.')
+            return redirect(reverse('subscription_list'))
+
+        # Return address
+        return subscription.address
+
+
+@method_decorator(login_required, name='dispatch')
+class SubscriptionDeleteView(DeleteView):
+    model = Subscription
+    success_url = reverse_lazy('subscription_list')

@@ -1,0 +1,12 @@
+{% extends 'layouts/manager.html' %}
+
+{% block title %}Adresse ändern{% endblock %}
+
+{% block content %}
+    <form action="{% url 'manager_subscription_update' 1 %}" method="post">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <input class="button black" type="submit" value="Update" />
+    </form>
+{% endblock %}
+
