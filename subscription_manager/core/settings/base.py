@@ -9,7 +9,8 @@ ORGANISATION_ABBREVIATION = 'ZS'
 ORGANISATION_REPLY_TO_EMAIL = 'support@zs-online.ch'
 ORGANISATION_FROM_EMAIL = 'server@zs-online.ch'
 
-BASE_DIR = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+BASE_DIR = os.path.dirname(os.path.dirname(
+    os.path.dirname(os.path.abspath(__file__))))
 PROJECT_ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
 # Application definition
@@ -24,6 +25,7 @@ INSTALLED_APPS = [
     'subscription_manager.payment.apps.PaymentConfig',
     'subscription_manager.subscription.apps.SubscriptionConfig',
     'subscription_manager.user.apps.UserConfig',
+    'subscription_manager.administration.apps.AdministrationConfig',
 ]
 
 MIDDLEWARE = [
