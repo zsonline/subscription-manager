@@ -10,6 +10,8 @@
         <p class="alert{% if message.tags %} {{ message.tags }}{% endif %}">{{ message }}</p>
     {% endfor %}
 
+    <a href="{% url 'subscription_create' %}" class="button success">Neues Abonnement</a>
+
     <div class="table">
 
         {% for subscription in subscriptions %}
@@ -52,7 +54,7 @@
 
                 <div class="column">
                     {% if subscription.payment.is_paid %}
-                        <a href="#" class="button black">Bearbeiten</a>
+                        <a href="{% url 'subscription_update' subscription.id %}" class="button black">Bearbeiten</a>
                         <a href="{% url 'subscription_delete' subscription.id %}" class="button danger">Kündigen</a>
                     {% else %}
                         <a href="{% url 'subscription_detail' subscription.id %}" class="button success">Zahlungsdetails</a>

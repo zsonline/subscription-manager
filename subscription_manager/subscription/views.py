@@ -8,9 +8,7 @@ from django.shortcuts import render, redirect, reverse, get_object_or_404
 from django.urls import reverse_lazy
 from django.utils import timezone
 from django.utils.decorators import method_decorator
-from django.views.generic.detail import DetailView
-from django.views.generic.edit import DeleteView, FormView, UpdateView
-from django.views.generic.list import ListView
+from django.views.generic import detail, edit, list
 
 # Project imports
 from subscription_manager.authentication.decorators import anonymous_required
@@ -127,7 +125,7 @@ def purchase_view(request, plan_slug):
 
 
 @method_decorator(login_required, name='dispatch')
-class SubscriptionListView(ListView):
+class SubscriptionListView(list.ListView):
     """
     Lists all subscriptions of the current user.
     """
@@ -140,7 +138,7 @@ class SubscriptionListView(ListView):
 
 
 @method_decorator(login_required, name='dispatch')
-class SubscriptionDetailView(DetailView):
+class SubscriptionDetailView(detail.DetailView):
     """
     Detail view of a subscription. Shows mainly payment
     details.
@@ -162,10 +160,18 @@ class SubscriptionDetailView(DetailView):
 
 
 @method_decorator(login_required, name='dispatch')
-class SubscriptionUpdateView(UpdateView):
+class SubscriptionCreateView(edit.CreateView):
+    model = Subscription
+    fields = ['address']
+    template_name = 'subscription/subscription_create.html'
+
+
+@method_decorator(login_required, name='dispatch')
+class SubscriptionUpdateView(edit.UpdateView):
     model = Address
     fields = ['first_name', 'last_name', 'address_line_1', 'address_line_2', 'postcode', 'city', 'country']
     template_name = 'subscription/subscription_update.html'
+    success_url = reverse_lazy('subscription_list')
 
     def get_object(self, queryset=None):
         """
@@ -192,7 +198,7 @@ class SubscriptionUpdateView(UpdateView):
 
 
 @method_decorator(login_required, name='dispatch')
-class SubscriptionDeleteView(DeleteView):
+class SubscriptionDeleteView(edit.DeleteView):
     model = Subscription
     success_url = reverse_lazy('subscription_list')
     context_object_name = 'subscription'

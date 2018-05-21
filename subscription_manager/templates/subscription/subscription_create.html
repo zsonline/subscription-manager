@@ -1,12 +1,12 @@
 {% extends 'layouts/manager.html' %}
 
-{% block title %}Adresse ändern{% endblock %}
+{% block title %}Neues Abonnement{% endblock %}
 
 {% block content %}
     <form method="post">
         {% csrf_token %}
         {{ form.as_p }}
-        <input class="button black" type="submit" value="Update" />
+        <input class="button black" type="submit" value="Kaufen" />
     </form>
 {% endblock %}
 
