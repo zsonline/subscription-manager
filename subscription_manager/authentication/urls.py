@@ -1,6 +1,5 @@
 # Django imports
 from django.urls import path
-from django.views.generic import RedirectView
 
 # Application imports
 from .views import signup_view, login_view, logout_view, token_verification_view

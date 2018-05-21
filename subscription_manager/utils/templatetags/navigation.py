@@ -1,6 +1,3 @@
-# Pip imports
-from humanize import naturaldelta
-
 # Django imports
 from django import template
 from django.shortcuts import reverse

@@ -21,9 +21,10 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'subscription_manager.authentication.apps.AccountConfig',
+    'subscription_manager.manager.apps.ManagerConfig',
     'subscription_manager.payment.apps.PaymentConfig',
     'subscription_manager.subscription.apps.SubscriptionConfig',
-    'subscription_manager.user.apps.UserConfig',
+    'subscription_manager.user.apps.UserConfig'
 ]
 
 MIDDLEWARE = [
@@ -48,11 +49,10 @@ TEMPLATES = [
                 'django.template.context_processors.debug',
                 'django.template.context_processors.request',
                 'django.contrib.auth.context_processors.auth',
-                'django.contrib.messages.context_processors.messages',
-                'subscription_manager.utils.context_processors.organisation',
+                'django.contrib.messages.context_processors.messages'
             ],
             'libraries': {
-                'tags': 'subscription_manager.utils.tags',
+                'navigation': 'subscription_manager.utils.templatetags.navigation',
             },
         },
     },
@@ -90,7 +90,7 @@ AUTH_PASSWORD_VALIDATORS = [
 
 # Fixed auth urls
 LOGIN_URL = '/auth/login/'
-LOGIN_REDIRECT_URL = '/home/'
+LOGIN_REDIRECT_URL = '/manager/'
 
 # Internationalization
 LANGUAGE_CODE = 'de'

@@ -2,43 +2,48 @@
 from dateutil.relativedelta import relativedelta
 
 # Django imports
-from django.shortcuts import render, redirect, reverse, HttpResponse, HttpResponseRedirect
-from django.contrib.auth.decorators import login_required
-from django.utils import timezone
 from django.contrib import messages
+from django.contrib.auth.decorators import login_required
+from django.shortcuts import render, redirect, reverse
+from django.utils import timezone
+from django.utils.decorators import method_decorator
 from django.views.generic.list import ListView
 
 # Project imports
+from subscription_manager.authentication.decorators import anonymous_required
 from subscription_manager.authentication.forms import SignUpForm
-from subscription_manager.payment.models import Payment
 from subscription_manager.payment.forms import MinimumPaymentForm
+from subscription_manager.payment.models import Payment
 
 # Application imports
-from .models import Subscription
 from .forms import AddressWithNamesForm, AddressWithoutNamesForm
+from .models import Subscription
 from .plans import Plans
 
 
-def list_plans(request):
+@anonymous_required
+def plan_list_view(request):
     """
     Lists all plans.
     """
-    return render(request, 'subscription/plan_list.html', {'plans': Plans.data})
+    return render(request, 'subscription/plans.html', {'plans': Plans.data})
 
 
-def purchase_view(request, slug):
+@anonymous_required
+def purchase_view(request, plan_slug):
     """
-
+    Displays a form for opening a new account and
+    purchasing a subscription.
     """
     # Check if plan exists
-    if slug not in Plans.slugs():
+    if plan_slug not in Plans.slugs():
         # If plan does not exist, return to list view and display
         # error message
-        messages.error(request, 'Das Angebot \"{}\" existiert nicht.'.format(slug))
-        return redirect(reverse('list_plans'))
+        messages.error(request, 'Das Angebot \"{}\" existiert nicht.'.format(plan_slug))
+        return redirect(reverse('plans'))
 
     # Get current plan
-    plan = Plans.get(slug)
+    plan = Plans.get(plan_slug)
 
     # For POST requests, process the form data
     if request.method == 'POST':
@@ -100,7 +105,7 @@ def purchase_view(request, slug):
             address_form = AddressWithNamesForm(prefix='address')
 
         payment_form = None
-        # Payment form in case, the price is not fixed
+        # Payment form in case the price is not fixed
         if 'min_price' in plan:
             payment_form = MinimumPaymentForm(
                 prefix='payment',
@@ -112,20 +117,16 @@ def purchase_view(request, slug):
 
     return render(request, 'subscription/purchase.html', {
         'plan': plan,
-        'user_form': user_form,
         'address_form': address_form,
         'payment_form': payment_form
     })
 
 
-def home_view(request):
-    """
-    Login home view. For test purposes.
-    """
-    return HttpResponse(request.user.email)
-
-
+@method_decorator(login_required, name='dispatch')
 class SubscriptionListView(ListView):
+    """
+    Lists all subscriptions of the current user.
+    """
     model = Subscription
     context_object_name = 'subscriptions'
     template_name = 'subscription/subscription_list.html'
