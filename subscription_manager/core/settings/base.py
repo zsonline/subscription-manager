@@ -49,7 +49,8 @@ TEMPLATES = [
                 'django.template.context_processors.debug',
                 'django.template.context_processors.request',
                 'django.contrib.auth.context_processors.auth',
-                'django.contrib.messages.context_processors.messages'
+                'django.contrib.messages.context_processors.messages',
+                'subscription_manager.utils.context_processors.setting_variables'
             ],
             'libraries': {
                 'navigation': 'subscription_manager.utils.templatetags.navigation',
