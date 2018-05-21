@@ -53,7 +53,7 @@
                 <div class="column">
                     {% if subscription.payment.is_paid %}
                         <a href="#" class="button black">Bearbeiten</a>
-                        <a href="#" class="button danger">Kündigen</a>
+                        <a href="{% url 'subscription_delete' subscription.id %}" class="button danger">Kündigen</a>
                     {% else %}
                         <a href="{% url 'subscription_detail' subscription.id %}" class="button success">Zahlungsdetails</a>
                     {% endif %}

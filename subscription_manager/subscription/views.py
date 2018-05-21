@@ -195,3 +195,16 @@ class SubscriptionUpdateView(UpdateView):
 class SubscriptionDeleteView(DeleteView):
     model = Subscription
     success_url = reverse_lazy('subscription_list')
+    context_object_name = 'subscription'
+    template_name = 'subscription/subscription_delete.html'
+
+    def get_object(self, queryset=None):
+        """
+        Returns subscription object if it is owned
+        by the current user and does exist. Otherwise,
+        a 404 exception.
+        """
+        # Url parameter
+        subscription_id = self.kwargs['subscription_id']
+        # Get object from database
+        return get_object_or_404(Subscription, id=subscription_id, user=self.request.user)
