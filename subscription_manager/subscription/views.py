@@ -153,10 +153,11 @@ class SubscriptionDetailView(detail.DetailView):
         by the current user and does exist. Otherwise,
         a 404 exception.
         """
-        # Url parameter
+        # Parameters
         subscription_id = self.kwargs['subscription_id']
-        # Get object from database
-        return get_object_or_404(Subscription, id=subscription_id, user=self.request.user)
+        user = self.request.user
+        # Get object or raise 404
+        return get_object_or_404(Subscription, id=subscription_id, user=user)
 
 
 @method_decorator(login_required, name='dispatch')
@@ -180,21 +181,11 @@ class SubscriptionUpdateView(edit.UpdateView):
         does not exist, the user is redirected to the subscription
         list page.
         """
-        # Get subscription object
-        try:
-            subscription = Subscription.objects.get(pk=self.kwargs['subscription_id'])
-        except Subscription.DoesNotExist:
-            # Redirect to subscription list if subscription does not exist
-            return None
-
-        # If subscription is not owned by current user, redirect
-        if self.request.user != subscription.user:
-            # Redirect to subscription list
-            messages.error(self.request, 'Dieses Abo existiert nicht.')
-            return redirect(reverse('subscription_list'))
-
-        # Return address
-        return subscription.address
+        # Parameters
+        subscription_id = self.kwargs['subscription_id']
+        user = self.request.user
+        # Get object or raise 404
+        return get_object_or_404(Subscription, id=subscription_id, user=user)
 
 
 @method_decorator(login_required, name='dispatch')
@@ -210,7 +201,8 @@ class SubscriptionDeleteView(edit.DeleteView):
         by the current user and does exist. Otherwise,
         a 404 exception.
         """
-        # Url parameter
+        # Parameters
         subscription_id = self.kwargs['subscription_id']
-        # Get object from database
-        return get_object_or_404(Subscription, id=subscription_id, user=self.request.user)
+        user = self.request.user
+        # Get object or raise 404
+        return get_object_or_404(Subscription, id=subscription_id, user=user)
