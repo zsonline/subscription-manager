@@ -1,4 +1,10 @@
 form {
+  fieldset {
+    margin: 0;
+    padding: 0;
+    border: none;
+  }
+
   .helptext {
     color: $grey;
   }
@@ -11,6 +17,15 @@ form {
 
     li {
       list-style: none;
+    }
+  }
+
+  .required {
+    label:after {
+      content: 'erforderlich';
+      font-size: .75em;
+      color: $grey;
+      margin-left: .5em;
     }
   }
 
@@ -27,12 +42,6 @@ form {
 
     &:focus {
       border-color: $black;
-    }
-
-    &:required {
-    }
-
-    &:not(:required) {
     }
   }
 }

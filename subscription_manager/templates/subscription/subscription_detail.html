@@ -1,0 +1,9 @@
+{% extends 'layouts/manager.html' %}
+
+{% load plans %}
+
+{% block title %}Zahlungsdetails{% endblock %}
+
+{% block content %}
+    {{ subscription.payment }}
+{% endblock %}

@@ -1,63 +1,73 @@
-{% extends 'vertical_base.html' %}
+{% extends 'layouts/vertical.html' %}
 
-{% load i18n %}
-{% load tags %}
+{% load plans %}
 
-{% block title %}{% trans 'Subscribe' %}{% endblock %}
+{% block title %}{{ plan.name }} kaufen{% endblock %}
 
 {% block left_column %}
-    <h2>{{ subscription_type.name }}</h2>
-    <p class="description">{{ subscription_type.description }}</p>
+    <h2>{{ plan.name }}</h2>
+    <p class="description">{{ plan.description }}</p>
+    <a href="{% url 'plans' %}">Alle Abonnements</a>
 
-    <form action="{% url 'purchase' subscription_type.slug %}" method="post">
+    {% for message in messages %}
+        <p class="alert{% if message.tags %} {{ message.tags }}{% endif %}">{{ message }}</p>
+    {% endfor %}
+
+
+    <form id="purchase-form" action="{% url 'purchase' plan.slug %}" method="post">
         {% csrf_token %}
 
-        <h3>{% trans 'Account' %}</h3>
-        {{ user_form.as_p }}
-        <p class="alert info">
-            {% blocktrans %}
-                The authentication is password-less. That is why you do not have to specify a password.
-                Each time you want to log in we will send you an email with a secure log in url.
-            {% endblocktrans %}
-        </p>
-
-        <h3>{% trans 'Subscription' %}</h3>
-        {{ address_form.as_p }}
-
-        <h3>{% trans 'Price' %}</h3>
-        {% if subscription_type.fixed_price %}
-            <div class="price">
-                {% if subscription_type.price == 0 %}
-                    <span class="amount">{% trans 'Free' %}</span>
-                {% else %}
-                    {% blocktrans count price=subscription_type.price %}
-                        <span class="amount">{{ price }}</span> franc
-                    {% plural %}
-                        <span class="amount">{{ price }}</span> francs
-                    {% endblocktrans %}
-                {% endif %}
-                per {% natural_delta subscription_type.duration %}
-            </div>
-        {% else %}
-            {{ payment_form }}
-        {% endif %}
-
-        {# Displays info box if subscription potentially costs something. #}
-        {% if not subscription_type.price == 0 or not subscription_type.fixed_price %}
+        <fieldset>
+            <h3>Account</h3>
+            {{ user_form.as_p }}
             <p class="alert info">
-                {% blocktrans %}
-                    We only accept payments with bank transfer. You will receive an invoice after successfully
-                    purchasing your subscription. Once we have received the payment, we will activate your
-                    subscription.
-                {% endblocktrans %}
+                Das Login erfolgt ohne Passwort, darum musst du auch keines angeben. Wenn du dich
+                anmelden willst, senden wir dir eine E-Mail mit einem sicheren Login-Link.
             </p>
-        {% endif %}
+        </fieldset>
 
-        {% if subscription_type.price == 0 %}
-            <input class="button black" type="submit" value="{% trans 'Subscribe' %}" />
-        {% else %}
-            <input class="button black" type="submit" value="{% trans 'Purchase' %}" />
-        {% endif %}
+        <fieldset>
+            <h3>Abonnement</h3>
+            {{ address_form.as_p }}
+        </fieldset>
+
+        <fieldset>
+            <h3>Preis</h3>
+
+            {% if plan.price >= 0 %}
+                <div class="price">
+                    {% if plan.price == 0 %}
+                        <span class="amount">Gratis</span>
+                    {% else %}
+                        <span class="amount">{{ plan.price }}</span> Franken
+                    {% endif %}
+                    /
+                    {% humanize_months plan.duration %}
+                </div>
+            {% elif plan.min_price >= 0 %}
+                <p>
+                    Laufzeit:<br>
+                    {% humanize_months plan.duration %}
+                </p>
+                {{ payment_form.as_p }}
+            {% endif %}
+
+            {# Displays info box if subscription potentially costs something. #}
+            {% if not plan.price == 0 or plan.price < 0 and plan.min_price >= 0 %}
+                <p class="alert info">
+                    Wir unterstützen nur Zahlungen mittels Banküberweisung. Nach dem Kauf deines Abonnements,
+                    schicken wir dir eine Rechnung. Sobald die Zahlung bei uns eingetroffen ist, aktivieren wir es.
+                </p>
+            {% endif %}
+        </fieldset>
+
+        <fieldset>
+            {% if plan.price == 0 %}
+                <input class="button black" type="submit" value="Abonnieren" />
+            {% else %}
+                <input class="button black" type="submit" value="Kaufen" />
+            {% endif %}
+        </fieldset>
     </form>
 {% endblock %}
 

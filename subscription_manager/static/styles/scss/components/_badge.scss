@@ -1,0 +1,28 @@
+@mixin badge($background-color, $color: $white) {
+  color: $color;
+  background-color: $background-color;
+}
+
+.badge {
+  font-size: .75em;
+  padding: .25em .5em;
+  text-transform: lowercase;
+  display: inline-block;
+
+  &.info {
+    @include badge($info);
+  }
+
+  &.success {
+    @include badge($success);
+  }
+
+  &.warning {
+    @include badge($warning);
+  }
+
+  &.danger {
+    @include badge($danger);
+  }
+
+}

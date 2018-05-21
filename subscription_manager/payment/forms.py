@@ -1,21 +1,29 @@
 # Django imports
-from django.forms import ModelForm, ValidationError
-from django.utils.translation import gettext_lazy as _, ngettext
+from django import forms
+from django.db import IntegrityError
+from django.utils.crypto import get_random_string
 
 # Application imports
 from .models import Payment
 
 
-class PaymentForm(ModelForm):
+class PaymentForm(forms.ModelForm):
+    """
+    Base payment model form.
+    """
+    required_css_class = 'required'
+
+    class Meta:
+        model = Payment
+        fields = ('amount',)
+
+
+class MinimumPaymentForm(PaymentForm):
     """
     Payment model form with one input field for the amount.
     Has custom validation that checks whether the price is
     correct.
     """
-    class Meta:
-        model = Payment
-        fields = ('amount',)
-
     def __init__(self, *args, **kwargs):
         """
         Constructor. Should get two additional parameters, price (int)
@@ -23,17 +31,17 @@ class PaymentForm(ModelForm):
         validation and for generating the help text.
         """
         # Read passed parameters
-        self.price = kwargs.pop('price', 50)
-        self.fixed_price = kwargs.pop('fixed_price', True)
+        self.min_price = kwargs.pop('min_price', None)
+
+        if self.min_price is None:
+            raise forms.ValidationError('Payment form improperly instantiated.')
+
         # Call super constructor
         super().__init__(*args, **kwargs)
-        # Create help text
-        amount_help_text = ngettext(
-            'Please specify a price that is greater than or equal to {} franc.',
-            'Please specify a price that is greater than or equal to {} francs.',
-            self.price
-        ).format(self.price)
-        self.fields['amount'].help_text = amount_help_text
+
+        # Add help text
+        self.fields['amount'].help_text = \
+            'Der Preis muss mindestens {} Franken betragen.'.format(self.min_price)
 
     def clean_amount(self):
         """
@@ -44,13 +52,28 @@ class PaymentForm(ModelForm):
         """
         amount = self.cleaned_data['amount']
 
-        if self.fixed_price:
-            # Check if price has the right value
-            if self.price is None or amount != self.price:
-                raise ValidationError(_('Wrong price.'))
-        else:
-            # Check whether price is high enough
-            if self.price is None or amount < self.price:
-                raise ValidationError(_('Price is too low.'))
+        # Check whether price is high enough
+        if amount is None or amount < self.min_price:
+            self.add_error('amount', 'Der Preis muss mindestens {} Franken betragen.'.format(self.min_price))
 
         return amount
+
+    def save(self, commit=True):
+        """
+        Overrides the default save method. It generates
+        and saves a unique payment code.
+        """
+        # Default method
+        payment = super().save(commit=False)
+        # Try creating unique code object
+        while True:
+            try:
+                # Generates a UUID
+                code = get_random_string()
+                payment.code = code
+                if commit:
+                    payment.save()
+            except IntegrityError:
+                continue
+            break
+        return payment

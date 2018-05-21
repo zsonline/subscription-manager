@@ -303,6 +303,15 @@ body {
   font-family: 'Lora', serif;
   color: #030303; }
 
+h2 {
+  color: #9d331f; }
+
+h3 {
+  color: #bc6d4f; }
+
+h4 {
+  margin: 0 0 .25em 0; }
+
 a {
   color: #030303; }
   a:visited {
@@ -324,47 +333,89 @@ a {
   .button:focus, .button:active, .button:hover {
     cursor: pointer; }
   .button.primary {
-    border-color: #fa4452;
-    color: #fa4452; }
+    border-color: #9d331f;
+    color: #9d331f; }
     .button.primary:focus, .button.primary:active, .button.primary:hover {
-      color: #fb7680;
-      border-color: #fb7680; }
+      color: #db5f47;
+      border-color: #db5f47; }
   .button.secondary {
-    border-color: #fbdcc6;
-    color: #fbdcc6; }
+    border-color: #bc6d4f;
+    color: #bc6d4f; }
     .button.secondary:focus, .button.secondary:active, .button.secondary:hover {
-      color: #fef9f6;
-      border-color: #fef9f6; }
+      color: #d8aa99;
+      border-color: #d8aa99; }
   .button, .button.black {
     border-color: #030303;
     color: #030303; }
     .button:focus, .button:active, .button:hover, .button.black:focus, .button.black:active, .button.black:hover {
-      color: #404040;
-      border-color: #404040; }
+      color: #595959;
+      border-color: #595959; }
   .button.info {
-    border-color: #27a7ff;
-    color: #27a7ff; }
+    border-color: #375e97;
+    color: #375e97; }
     .button.info:focus, .button.info:active, .button.info:hover {
-      color: #5abcff;
-      border-color: #5abcff; }
+      color: #6b91c9;
+      border-color: #6b91c9; }
   .button.success {
-    border-color: #28c05c;
-    color: #28c05c; }
+    border-color: #3f681c;
+    color: #3f681c; }
     .button.success:focus, .button.success:active, .button.success:hover {
-      color: #43d876;
-      border-color: #43d876; }
+      color: #70b832;
+      border-color: #70b832; }
   .button.warning {
-    border-color: #ffc31e;
-    color: #ffc31e; }
+    border-color: #ffbb00;
+    color: #ffbb00; }
     .button.warning:focus, .button.warning:active, .button.warning:hover {
-      color: #ffd151;
-      border-color: #ffd151; }
+      color: #ffd666;
+      border-color: #ffd666; }
   .button.danger {
-    border-color: #c50900;
-    color: #c50900; }
+    border-color: #fb6542;
+    color: #fb6542; }
     .button.danger:focus, .button.danger:active, .button.danger:hover {
-      color: #f80b00;
-      border-color: #f80b00; }
+      color: #fdb6a6;
+      border-color: #fdb6a6; }
+
+.badge {
+  font-size: .75em;
+  padding: .25em .5em;
+  text-transform: lowercase;
+  display: inline-block; }
+  .badge.info {
+    color: white;
+    background-color: #375e97; }
+  .badge.success {
+    color: white;
+    background-color: #3f681c; }
+  .badge.warning {
+    color: white;
+    background-color: #ffbb00; }
+  .badge.danger {
+    color: white;
+    background-color: #fb6542; }
+
+.alert {
+  box-sizing: border-box;
+  padding: .75em;
+  border: solid 1px; }
+  .alert li {
+    list-style: none; }
+  .alert, .alert.info {
+    border-color: #375e97;
+    color: #375e97; }
+  .alert.success {
+    border-color: #3f681c;
+    color: #3f681c; }
+  .alert.warning {
+    border-color: #ffbb00;
+    color: #ffbb00; }
+  .alert.error {
+    border-color: #fb6542;
+    color: #fb6542; }
+
+form fieldset {
+  margin: 0;
+  padding: 0;
+  border: none; }
 
 form .helptext {
   color: gray; }
@@ -372,10 +423,16 @@ form .helptext {
 form .errorlist {
   box-sizing: border-box;
   padding: .75em;
-  border: solid 1px #c50900;
-  color: #c50900; }
+  border: solid 1px #fb6542;
+  color: #fb6542; }
   form .errorlist li {
     list-style: none; }
+
+form .required label:after {
+  content: 'erforderlich';
+  font-size: .75em;
+  color: gray;
+  margin-left: .5em; }
 
 form label {
   display: block;
@@ -389,24 +446,17 @@ form input, form select {
   form input:focus, form select:focus {
     border-color: #030303; }
 
-.alert {
-  box-sizing: border-box;
-  padding: .75em;
-  border: solid 1px; }
-  .alert li {
-    list-style: none; }
-  .alert, .alert.info {
-    border-color: #27a7ff;
-    color: #27a7ff; }
-  .alert.success {
-    border-color: #28c05c;
-    color: #28c05c; }
-  .alert.warning {
-    border-color: #ffc31e;
-    color: #ffc31e; }
-  .alert.danger {
-    border-color: #c50900;
-    color: #c50900; }
+.table {
+  display: flex; }
+  .table .row {
+    width: 100%;
+    padding: .5em 0;
+    border-bottom: solid 1px #bfbfbf; }
+    .table .row:first-child {
+      border-top: solid 1px #bfbfbf; }
+  .table .column {
+    display: block;
+    padding: .5em 0; }
 
 nav {
   font-size: .8em; }
@@ -428,21 +478,22 @@ footer {
   flex-shrink: 0; }
 
 header {
-  padding: 1em 1em 2em 1em; }
-  header img {
-    margin-top: 1.5em; }
+  padding: 2em 1em; }
   header h1 {
     margin: .1em 0;
     font-size: 1.6em; }
-  header p {
-    margin: .5em 0 0 0; }
+  header #logo {
+    text-decoration: none;
+    color: #030303; }
+  header nav {
+    margin-top: 1em; }
 
 @media (min-width: 756px) {
   header {
     box-sizing: border-box;
+    display: flex;
+    align-items: center;
     height: 10rem; }
-    header img {
-      margin-top: 1.5em; }
     header h1 {
       display: inline;
       margin-left: .25em;
@@ -501,7 +552,7 @@ footer {
 main.vertical .column {
   display: flex;
   padding: 2rem 1rem;
-  background-color: #fbdcc6; }
+  background-color: #faf0e6; }
   main.vertical .column, main.vertical .column.top {
     align-items: start; }
   main.vertical .column.center {
@@ -548,13 +599,34 @@ main.vertical form {
   main.vertical .inner {
     width: 60%; } }
 
-ul#subscription_types {
+.manager #header {
+  padding: 1em;
+  background-color: #faf0e6; }
+
+.manager #content {
+  padding: 1em; }
+
+.price {
+  margin-bottom: 1em; }
+  .price .amount {
+    font-size: 2em; }
+
+#plans {
   padding: 0;
   margin: 0; }
-  ul#subscription_types li {
+  #plans li {
     list-style: none; }
+  #plans .plan {
+    padding: 2em 0; }
+    #plans .plan:not(:last-child) {
+      border-bottom: solid 1px rgba(3, 3, 3, 0.25); }
+    #plans .plan h3 {
+      margin: 0; }
 
-.price .amount {
-  font-size: 3em; }
+#purchase-form h3 {
+  margin-bottom: 0; }
+
+#purchase-form input[type="submit"] {
+  margin: 1em 0 2em 0; }
 
 /*# sourceMappingURL=main.css.map */

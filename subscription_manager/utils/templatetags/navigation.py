@@ -1,9 +1,7 @@
-# Pip imports
-from humanize import naturaldelta
-
 # Django imports
 from django import template
 from django.shortcuts import reverse
+
 
 register = template.Library()
 
@@ -20,12 +18,3 @@ def active(context, view_name):
     if reverse(view_name) in request.path:
         return 'active'
     return ''
-
-
-@register.simple_tag
-def natural_delta(value, months=True):
-    """
-    Tag function that provides timedelta humanization
-    for templates.
-    """
-    return naturaldelta(value, months)

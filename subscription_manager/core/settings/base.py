@@ -21,9 +21,10 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'subscription_manager.authentication.apps.AccountConfig',
+    'subscription_manager.manager.apps.ManagerConfig',
     'subscription_manager.payment.apps.PaymentConfig',
     'subscription_manager.subscription.apps.SubscriptionConfig',
-    'subscription_manager.user.apps.UserConfig',
+    'subscription_manager.user.apps.UserConfig'
 ]
 
 MIDDLEWARE = [
@@ -49,10 +50,10 @@ TEMPLATES = [
                 'django.template.context_processors.request',
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
-                'subscription_manager.utils.context_processors.organisation',
+                'subscription_manager.utils.context_processors.setting_variables'
             ],
             'libraries': {
-                'tags': 'subscription_manager.utils.tags',
+                'navigation': 'subscription_manager.utils.templatetags.navigation',
             },
         },
     },
@@ -66,10 +67,11 @@ AUTHENTICATION_BACKENDS = [
     'django.contrib.auth.backends.ModelBackend'
 ]
 
-# Maximum amount of tokens per user
-TOKENS_PER_USER = 2
-# Validity duration of a token
-TOKEN_EXPIRATION = timedelta(minutes=10)
+# Login tokens
+TOKENS_PER_USER = 3  # Maximum amount of tokens per user
+TOKEN_EXPIRATION = timedelta(minutes=10)  # Validity duration of a token
+
+ALLOWED_STUDENT_EMAIL_ADDRESSES = ['student.ethz.ch']
 
 # Password validation
 AUTH_PASSWORD_VALIDATORS = [
@@ -89,10 +91,10 @@ AUTH_PASSWORD_VALIDATORS = [
 
 # Fixed auth urls
 LOGIN_URL = '/auth/login/'
-LOGIN_REDIRECT_URL = '/auth/home/'
+LOGIN_REDIRECT_URL = '/manager/'
 
 # Internationalization
-LANGUAGE_CODE = 'en-us'
+LANGUAGE_CODE = 'de'
 TIME_ZONE = 'UTC'
 USE_I18N = True
 USE_L10N = True

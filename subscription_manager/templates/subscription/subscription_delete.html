@@ -1,0 +1,24 @@
+{% extends 'layouts/manager.html' %}
+
+{% load plans %}
+
+{% block title %}Abo löschen{% endblock %}
+
+{% block content %}
+    Abo #{{ subscription.id }}
+
+    <h4>{% plan_name subscription.plan %}</h4>
+    <address>
+        {{ subscription.address.address_line_1 }}<br>
+        {% if subscription.address.address_line_2 %}
+            {{ subscription.address.address_line_2 }}<br>
+        {% endif %}
+        {{ subscription.address.postcode }} {{ subscription.address.city }}
+    </address>
+
+    <form method="post">
+        {% csrf_token %}
+        <p>Bist du sicher, dass du das Abonnement unwiderruflich löschen willst?</p>
+        <input class="button danger" type="submit" value="Löschen" />
+    </form>
+{% endblock %}

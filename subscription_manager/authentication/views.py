@@ -3,10 +3,10 @@ from django.shortcuts import render, redirect, reverse, HttpResponse, HttpRespon
 from django.conf import settings
 from django.contrib.auth import authenticate, login, logout, get_user_model
 from django.contrib.auth.decorators import login_required
-from django.utils.translation import gettext_lazy as _
+from django.contrib import messages
 
 # Application imports
-from .models import LoginToken
+from .models import Token
 from .forms import SignUpForm, LoginForm
 from .decorators import anonymous_required
 
@@ -27,17 +27,17 @@ def signup_view(request):
             # Save user
             user = form.save()
 
-            # If user exists
+            # If successful
             if user is not None:
-                # Create and send token
-                LoginToken.objects.create_and_send(user=user)
-                # Redirect to login view with token sent alert
-                login_url = reverse('login')
-                login_url += str('?token_sent')
-                return redirect(login_url)
+                # Create and send verification token
+                Token.objects.create_and_send(user=user)
+                # Create success message
+                messages.success(request, 'Token an {} gesendet.'.format(user.email))
+                # Redirect to this page
+                return redirect(reverse('login'))
 
-            # If user does not exist, redirect to login page
-            return redirect('login')
+            # If user does not exist, display error
+            form.add_error(None, 'Account konnte nicht erstellt werden.')
 
     # If it is another request, instantiate empty form
     else:
@@ -69,17 +69,14 @@ def login_view(request):
             # If user exists
             if user is not None:
                 # Create and send token
-                LoginToken.objects.create_and_send(user=user)
-                # Render login template with token sent alert
-                form = LoginForm()
-                return render(request, 'authentication/login.html', {'form': form, 'token_sent': True})
+                Token.objects.create_and_send(user=user)
+                # Create success message
+                messages.success(request, 'Token an {} gesendet.'.format(user.email))
+                # Redirect to this page
+                return HttpResponseRedirect('')
 
     else:
         form = LoginForm()
-        if 'invalid_token' in request.GET:
-            return render(request, 'authentication/login.html', {'form': form, 'invalid_token': True})
-        if 'token_sent' in request.GET:
-            return render(request, 'authentication/login.html', {'form': form, 'token_sent': True})
 
     return render(request, 'authentication/login.html', {'form': form})
 
@@ -90,7 +87,8 @@ def token_verification_view(request, email_b64, code):
     redirected to the login home page. If not, she is being
     redirected to the login page and an error is displayed.
     """
-    email = LoginToken.b64_decoded(email_b64)
+    email = Token.b64_decoded(email_b64)
+
     # Authenticate
     user = authenticate(email=email, code=code)
     # If authentication is successful, log user in
@@ -98,10 +96,9 @@ def token_verification_view(request, email_b64, code):
         login(request, user)
         # Redirect user to login home
         return HttpResponseRedirect(settings.LOGIN_REDIRECT_URL)
-    # Render login template with invalid token parameter
-    login_url = reverse('login')
-    login_url += str('?invalid_token')
-    return redirect(login_url)
+
+    messages.error(request, 'Dein Token ist ungültig.')
+    return redirect(reverse('login'))
 
 
 @login_required(redirect_field_name=None)
@@ -110,12 +107,5 @@ def logout_view(request):
     Logs a user out and redirects her to the login page.
     """
     logout(request)
+    messages.success(request, 'Du hast dich ausgeloggt.')
     return redirect('login')
-
-
-@login_required(redirect_field_name=None)
-def home_view(request):
-    """
-    Login home view. For test purposes.
-    """
-    return HttpResponse(request.user.email)

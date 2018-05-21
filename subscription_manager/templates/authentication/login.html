@@ -1,22 +1,19 @@
-{% extends 'vertical_base.html' %}
+{% extends 'layouts/vertical.html' %}
 
-{% load i18n %}
-
-{% block title %}{% trans 'Log in' %}{% endblock %}
+{% block title %}Anmelden{% endblock %}
 
 {% block left_column %}
-    <h2>{% trans 'Log in' %}</h2>
-    <p class="description">{% trans 'Manage your subscriptions.' %}</p>
+    <h2>Anmelden</h2>
+    <p class="description">Verwalte deine Abonnements.</p>
+
+    {% for message in messages %}
+        <p class="alert{% if message.tags %} {{ message.tags }}{% endif %}">{{ message }}</p>
+    {% endfor %}
 
     <form action="{% url 'login' %}" method="post">
-        {% if token_sent %}
-            <div class="alert success">{% trans 'Token sent. Please check your emails.' %}</div>
-        {% elif invalid_token %}
-            <div class="alert danger">{% trans 'Token invalid. Please try again.' %}</div>
-        {% endif %}
         {% csrf_token %}
         {{ form.as_p }}
-        <input class="button black" type="submit" value="{% trans 'Log in' %}" />
+        <input class="button black" type="submit" value="Anmelden" />
     </form>
 {% endblock %}
 

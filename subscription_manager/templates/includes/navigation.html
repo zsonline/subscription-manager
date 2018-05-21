@@ -1,7 +1,11 @@
-{% load tags %}
+{% load navigation %}
 
 <nav>
-    <a href="http://zs-online.ch/">zs-online.ch</a>
-    <a class="{% active 'list_subscription_types' %}" href="{% url 'list_subscription_types' %}">Abonnieren</a>
-    <a class="{% active 'login' %}" href="{% url 'login' %}">Login</a>
+    {% if user.is_authenticated %}
+        <a href="{% url 'logout' %}">Logout</a>
+    {% else %}
+        <a class="{% active 'plans' %}" href="{% url 'plans' %}">Neues Abonnement</a>
+        <a class="{% active 'login' %}" href="{% url 'login' %}">Login</a>
+        <a href="http://zs-online.ch/">zs-online.ch</a>
+    {% endif %}
 </nav>

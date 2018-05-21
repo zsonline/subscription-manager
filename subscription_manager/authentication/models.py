@@ -8,29 +8,37 @@ from django.utils.http import urlsafe_base64_encode, urlsafe_base64_decode
 from django.utils import timezone
 
 # Application imports
-from .managers import LoginTokenManager
+from .managers import TokenManager
 
 
-class LoginToken(models.Model):
+class Token(models.Model):
     """
-    Login token model.
+    Token model.
     """
     # Fields
     user = models.ForeignKey(
         get_user_model(),
         on_delete=models.CASCADE,
+        verbose_name='Leser_in'
     )
     code = models.CharField(
+        'Code',
         max_length=100,
         unique=True,
-        editable=False,
+        editable=False
     )
-    valid_until = models.DateTimeField()
-    sent_at = models.DateTimeField(blank=True, null=True)
+    valid_until = models.DateTimeField(
+        'gültig bis'
+    )
+    sent_at = models.DateTimeField(
+        'gesendet am',
+        blank=True,
+        null=True
+    )
     created_at = models.DateTimeField(auto_now_add=True)
 
     # Custom model manager
-    objects = LoginTokenManager()
+    objects = TokenManager()
 
     def __str__(self):
         return 'Token({}, {})'.format(self.user.email, self.code)
@@ -67,9 +75,9 @@ class LoginToken(models.Model):
             return None
 
     @staticmethod
-    def login_url(email, code):
+    def url(email, code):
         """
-        Returns the login url for a given email address and code.
+        Returns the url for a given email address and code.
         Example: https://hostname.tld/auth/token/cmVkYWt0aW9uQHpzLW9ubGluZS5jaA/1836af19-67df-4090-8229-16ed13036480/
         """
         return '{}{}'.format(
@@ -77,7 +85,7 @@ class LoginToken(models.Model):
             reverse(
                 'token_verification',
                 kwargs={
-                    'email_b64': LoginToken.b64_encoded(email),
+                    'email_b64': Token.b64_encoded(email),
                     'code': code
                 }
             )

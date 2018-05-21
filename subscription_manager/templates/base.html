@@ -14,11 +14,13 @@
 </head>
 <body>
 
-    {% include 'includes/header.html' %}
+{% include 'includes/header.html' %}
 
+<main class="{% block main_classes %}{% endblock %}">
     {% block main %}{% endblock %}
+</main>
 
-    {% include 'includes/footer.html' %}
+{% include 'includes/footer.html' %}
 
 </body>
 </html>

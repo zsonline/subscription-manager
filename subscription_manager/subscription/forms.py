@@ -1,34 +1,42 @@
 # Django imports
 from django import forms
-from django.contrib.auth import get_user_model
-from django.conf import settings
-from django.utils.translation import gettext_lazy as _
-
-# Project imports
-from subscription_manager.authentication.forms import SignUpForm
 
 # Application imports
-from .models import Address, Subscription
+from .models import Address
 
 
-class AddressForm(forms.ModelForm):
+class AddressBaseForm(forms.ModelForm):
     """
-    Address form.
+    Address base form. It disables the country
+    field because only Swiss addresses are supported.
     """
     country = forms.CharField(
-        initial='Switzerland',
+        initial='Schweiz',
         disabled=True,
-        help_text=_('We can send our newspaper only to Swiss addresses.')
+        help_text='Wir können nur innerhalb der Schweiz versenden.'
     )
+
+    required_css_class = 'required'
 
     class Meta:
         model = Address
         fields = ('first_name', 'last_name', 'address_line_1', 'address_line_2', 'postcode', 'city', 'country')
 
 
-class AddressWithoutNamesForm(AddressForm):
+class AddressWithNamesForm(AddressBaseForm):
     """
-    Address form.
+    Address form that is similar to the base form
+    but requires first and last name.
+    """
+    # Require names
+    first_name = forms.CharField(required=True)
+    last_name = forms.CharField(required=True)
+
+
+class AddressWithoutNamesForm(AddressBaseForm):
+    """
+    Address form that does not include first and
+    last name.
     """
     class Meta:
         model = Address

@@ -1,18 +1,14 @@
-# Python imports
-import hashlib
-
 # Django imports
-from django.contrib.auth.backends import ModelBackend
+from django.contrib.auth import backends
 from django.conf import settings
 from django.core.mail import EmailMultiAlternatives
 from django.template.loader import render_to_string
-from django.utils.translation import gettext_lazy as _
 
 # Application imports
-from .models import LoginToken
+from .models import Token
 
 
-class LoginTokenBackend(ModelBackend):
+class TokenBackend(backends.ModelBackend):
     """
     Custom authentication backend that handles authentication
     by token.
@@ -25,23 +21,20 @@ class LoginTokenBackend(ModelBackend):
         # If email or code are None, authentication failed.
         if email is None or code is None:
             return None
-        try:
-            # Encode code and find it in database
-            encoded_code = hashlib.sha256(code.encode('utf-8')).hexdigest()
-            token = LoginToken.objects.get(code=encoded_code)
-            # If token is valid, delete token and return user
-            if token.is_valid():
-                user = token.user
-                if user.email == email:
-                    token.delete()
-                    if user.is_active:
-                        return user
-            return None
-        except LoginToken.DoesNotExist:
-            return None
+
+        # Encode code and find it in database
+        token = Token.objects.get_from_code(code)
+        # If token is valid, delete token and return user
+        if token is not None and token.is_valid():
+            user = token.user
+            if user.email == email:
+                token.delete()
+                if user.is_active:
+                    return user
+        return None
 
 
-class EmailBackend(LoginTokenBackend):
+class EmailBackend(TokenBackend):
     """
     Inherits LoginTokenBackend class and adds
     a send method that sends tokens via email.
@@ -57,14 +50,14 @@ class EmailBackend(LoginTokenBackend):
         context = {
             'to_name': token.user.first_name,
             'from_name': settings.ORGANISATION_NAME,
-            'url': LoginToken.login_url(token.user.email, code),
+            'url': Token.url(token.user.email, code),
         }
         # Render the content templates
         text_content = render_to_string('authentication/emails/login_token.txt', context)
         html_content = render_to_string('authentication/emails/login_token.html', context)
         # Create the text and html version of the email
         message = EmailMultiAlternatives(
-            subject=_('Login Token'),
+            subject='Token',
             body=text_content,
             from_email=settings.ORGANISATION_FROM_EMAIL,
             to=[token.user.email],

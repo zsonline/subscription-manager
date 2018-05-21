@@ -8,9 +8,9 @@ from django.conf import settings
 from django.utils import timezone
 
 
-class LoginTokenManager(models.Manager):
+class TokenManager(models.Manager):
     """
-    Custom manager for login tokens.
+    Custom manager for tokens.
     """
     def create(self, **obj_data):
         """
@@ -44,13 +44,25 @@ class LoginTokenManager(models.Manager):
         token.send(code)
         return token
 
+    def get_from_code(self, code):
+        # Encode code and find it in database
+        encoded_code = hashlib.sha256(code.encode('utf-8')).hexdigest()
+        try:
+            # Query
+            token = super().get(
+                code=encoded_code
+            )
+            return token
+        except self.DoesNotExist:
+            return None
+
     def valid_user_tokens_count(self, user):
         """
         Returns the count of valid tokens for a given user.
         """
         return self.filter(
             user=user,
-            valid_until__gte=timezone.now(),
+            valid_until__gte=timezone.now()
         ).count()
 
     def all_expired(self):

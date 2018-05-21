@@ -1,3 +1,13 @@
+@mixin button($colour, $hover-colour: lighten($colour, 10%)) {
+  border-color: $colour;
+  color: $colour;
+
+  &:focus, &:active, &:hover {
+    color: lighten($hover-colour, 10%);
+    border-color: lighten($hover-colour, 10%);
+  }
+}
+
 .button {
   // Reset input styles
   width: auto;
@@ -18,75 +28,33 @@
 
   // Primary coloured button
   &.primary {
-    border-color: $primary;
-    color: $primary;
-
-    &:focus, &:active, &:hover {
-      color: lighten($primary, 10%);
-      border-color: lighten($primary, 10%);
-    }
+    @include button($primary)
   }
 
   // Secondary coloured button
   &.secondary {
-    border-color: $secondary;
-    color: $secondary;
-
-    &:focus, &:active, &:hover {
-      color: lighten($secondary, 10%);
-      border-color: lighten($secondary, 10%);
-    }
+    @include button($secondary)
   }
 
   // Black button (default)
   &, &.black {
-    border-color: $black;
-    color: $black;
-
-    &:focus, &:active, &:hover {
-      color: $dark-grey;
-      border-color: $dark-grey;
-    }
+    @include button($black, $dark-grey)
   }
 
   &.info {
-    border-color: $info;
-    color: $info;
-
-    &:focus, &:active, &:hover {
-      color: lighten($info, 10%);
-      border-color: lighten($info, 10%);
-    }
+    @include button($info)
   }
 
   &.success {
-    border-color: $success;
-    color: $success;
-
-    &:focus, &:active, &:hover {
-      color: lighten($success, 10%);
-      border-color: lighten($success, 10%);
-    }
+    @include button($success)
   }
 
   &.warning {
-    border-color: $warning;
-    color: $warning;
-
-    &:focus, &:active, &:hover {
-      color: lighten($warning, 10%);
-      border-color: lighten($warning, 10%);
-    }
+    @include button($warning)
   }
 
   &.danger {
-    border-color: $danger;
-    color: $danger;
-
-    &:focus, &:active, &:hover {
-      color: lighten($danger, 10%);
-      border-color: lighten($danger, 10%);
-    }
+    @include button($danger)
   }
 
 }

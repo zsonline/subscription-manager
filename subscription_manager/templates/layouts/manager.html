@@ -1,0 +1,12 @@
+{% extends 'base.html' %}
+
+{% block main_classes %}manager{% endblock %}
+
+{% block main %}
+    <section id="header">
+        <h2>{% block title %}{% endblock %}</h2>
+    </section>
+    <section id="content">
+        {% block content %}{% endblock %}
+    </section>
+{% endblock %}
