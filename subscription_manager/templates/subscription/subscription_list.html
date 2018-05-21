@@ -5,25 +5,56 @@
 {% block title %}Abo-Verwaltung{% endblock %}
 
 {% block content %}
-    {% for subscription in subscriptions %}
+    <div class="table">
 
-        {% if subscription.is_active %}
-            <span class="badge success">aktiv</span>
-        {% elif subscription.has_ended %}
-            <span class="badge danger">abgelaufen</span>
-        {% else %}
-            <span class="badge danger">inaktiv</span>
-        {% endif %}
+        {% for subscription in subscriptions %}
+            <div class="row">
 
-        {% plan_name subscription.plan %}
+                <div class="column">
+                    Abo #{{ subscription.id }}
+                </div>
 
-        {% if subscription.payment.is_paid %}
-            Bezahlt am {{ subscription.payment.paid_at }}
-        {% else %}
-            Zahlung offen
-        {% endif %}
+                <div class="column">
+                    <h4>{% plan_name subscription.plan %}</h4>
+                    <address>
+                        {{ subscription.address.address_line_1 }}<br>
+                        {% if subscription.address.address_line_2 %}
+                            {{ subscription.address.address_line_2 }}<br>
+                        {% endif %}
+                        {{ subscription.address.postcode }} {{ subscription.address.city }}
+                    </address>
+                </div>
 
-    {% empty %}
-        <li>Du hast keine Abos.</li>
-    {% endfor %}
+                <div class="column">
+                    <h4>Status</h4>
+                    {% if subscription.is_active %}
+                        <span class="badge success">Aktiv</span>
+                    {% elif subscription.has_ended %}
+                        <span class="badge danger">Abgelaufen</span>
+                    {% else %}
+                        <span class="badge danger">Inaktiv</span>
+                    {% endif %}
+                </div>
+
+                <div class="column">
+                    <h4>Zahlung</h4>
+                    {% if subscription.payment.is_paid %}
+                        <span class="badge success">Bezahlt</span>
+                    {% else %}
+                        <span class="badge danger">Offen</span>
+                    {% endif %}
+                </div>
+
+                <div class="column">
+                    <a href="#" class="button black">Bearbeiten</a>
+                    <a href="#" class="button danger">Kündigen</a>
+                </div>
+
+            </div>
+        {% empty %}
+            <div class="row">
+                <li>Du hast keine Abos.</li>
+            </div>
+        {% endfor %}
+    </div>
 {% endblock %}
