@@ -121,7 +121,8 @@ def purchase_view(request, plan_slug):
     return render(request, 'subscription/purchase.html', {
         'plan': plan,
         'address_form': address_form,
-        'payment_form': payment_form
+        'payment_form': payment_form,
+        'user_form': user_form
     })
 
 
