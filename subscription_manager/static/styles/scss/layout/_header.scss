@@ -1,8 +1,10 @@
+$header-height: 9rem;
+
 header {
   padding: 2em 1em;
 
   h1 {
-    margin: .1em 0;
+    margin: .1em 0 0 0;
     font-size: 1.6em;
   }
 
@@ -20,23 +22,20 @@ header {
   header {
     box-sizing: border-box;
     display: flex;
+    justify-content: space-between;
     align-items: center;
-    height: $header-height-medium;
+    height: $header-height;
 
     h1 {
-      display: inline;
-      margin-left: .25em;
       font-size: 1.8em;
+    }
+
+    nav {
+      margin-right: 1em;
     }
   }
 }
 
 @media (min-width: $large) {
-  header {
-    height: $header-height-large;
-    h1 {
-      display: block;
-      margin-left: 0;
-    }
-  }
+
 }

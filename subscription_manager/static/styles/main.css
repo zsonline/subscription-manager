@@ -458,12 +458,11 @@ form input, form select {
     display: block;
     padding: .5em 0; }
 
-nav {
-  font-size: .8em; }
-  nav a {
-    margin-right: .7em; }
-    nav a.active {
-      font-weight: bold; }
+nav a:not(:last-child) {
+  margin: 0 .75em .75em 0; }
+
+nav a.active {
+  font-weight: bold; }
 
 html, body {
   min-height: 100vh; }
@@ -480,7 +479,7 @@ footer {
 header {
   padding: 2em 1em; }
   header h1 {
-    margin: .1em 0;
+    margin: .1em 0 0 0;
     font-size: 1.6em; }
   header #logo {
     text-decoration: none;
@@ -492,19 +491,13 @@ header {
   header {
     box-sizing: border-box;
     display: flex;
+    justify-content: space-between;
     align-items: center;
-    height: 10rem; }
+    height: 9rem; }
     header h1 {
-      display: inline;
-      margin-left: .25em;
-      font-size: 1.8em; } }
-
-@media (min-width: 1024px) {
-  header {
-    height: 12rem; }
-    header h1 {
-      display: block;
-      margin-left: 0; } }
+      font-size: 1.8em; }
+    header nav {
+      margin-right: 1em; } }
 
 main {
   flex: 1; }
@@ -513,11 +506,7 @@ main {
 
 @media (min-width: 756px) {
   main.full-height {
-    min-height: calc(100vh - 10rem); } }
-
-@media (min-width: 1024px) {
-  main.full-height {
-    min-height: calc(100vh - 12rem); } }
+    min-height: calc(100vh - 9rem); } }
 
 footer {
   padding: 1em; }

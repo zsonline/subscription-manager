@@ -2,21 +2,17 @@
 
 <header>
 
-    <div>
+    {% if user.is_authenticated %}
+        <a id="logo" href="{% url 'manager_index' %}">
+    {% else %}
+        <a id="logo" href="{% url 'index' %}">
+    {% endif %}
 
-        {% if user.is_authenticated %}
-            <a id="logo" href="{% url 'manager_index' %}">
-        {% else %}
-            <a id="logo" href="{% url 'index' %}">
-        {% endif %}
+        <img src="{% static 'images/zs-signet-small.png' %}">
+        <h1>{{ organisation_name }}</h1>
 
-            <img src="{% static 'images/zs-signet-small.png' %}">
-            <h1>{{ organisation_name }}</h1>
+    </a>
 
-        </a>
-
-        {% include 'includes/navigation.html' %}
-
-    </div>
+    {% include 'includes/navigation.html' %}
 
 </header>
