@@ -53,7 +53,7 @@ class TokenManager(models.Manager):
                 code=encoded_code
             )
             return token
-        except self.DoesNotExist:
+        except self.model.DoesNotExist:
             return None
 
     def valid_user_tokens_count(self, user):
