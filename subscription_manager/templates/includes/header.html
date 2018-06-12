@@ -4,15 +4,15 @@
 
     <div>
 
-        <a id="logo" href="
-            {% if user.is_authenticated %}
-                {% url 'manager_index' %}
-            {% else %}
-                {% url 'index' %}
-            {% endif %}
-        ">
+        {% if user.is_authenticated %}
+            <a id="logo" href="{% url 'manager_index' %}">
+        {% else %}
+            <a id="logo" href="{% url 'index' %}">
+        {% endif %}
+
             <img src="{% static 'images/zs-signet-small.png' %}">
             <h1>{{ organisation_name }}</h1>
+
         </a>
 
         {% include 'includes/navigation.html' %}
