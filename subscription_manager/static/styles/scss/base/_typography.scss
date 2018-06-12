@@ -2,18 +2,14 @@
 @import url('https://fonts.googleapis.com/css?family=Lora:400,400i,700,700i');
 
 body {
-   font-family: 'Lora', serif;
-   color: $black;
+  font-family: 'Lora', serif;
+  color: $black;
 }
 
-h2 {
-   color: $primary;
+h1, h2, h3, h4 {
+  margin: 0 0 .5em 0;
 }
 
-h3 {
-   color: $secondary;
-}
-
-h4 {
-   margin: 0 0 .25em 0;
+p {
+  margin: .5em 0;
 }

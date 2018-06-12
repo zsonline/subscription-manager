@@ -3,10 +3,8 @@
 {% block main_classes %}manager{% endblock %}
 
 {% block main %}
-    <section id="header">
-        <h2 class="container">{% block title %}{% endblock %}</h2>
-    </section>
-    <section id="content" class="container">
+    <div class="container">
+        <h2>{% block title %}{% endblock %}</h2>
         {% block content %}{% endblock %}
-    </section>
+    </div>
 {% endblock %}

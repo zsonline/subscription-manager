@@ -6,23 +6,30 @@
 
 {% block content %}
 
+    <nav class="controls">
+        <a href="{% url 'subscription_create' %}" class="button success">Neues Abonnement</a>
+    </nav>
+
     {% for message in messages %}
         <p class="alert{% if message.tags %} {{ message.tags }}{% endif %}">{{ message }}</p>
     {% endfor %}
 
-    <a href="{% url 'subscription_create' %}" class="button success">Neues Abonnement</a>
-
-    <div class="table">
+    <table>
+        <tr>
+            <th>Typ</th>
+            <th>Adresse</th>
+            <th>Status</th>
+            <th>Optionen</th>
+        </tr>
 
         {% for subscription in subscriptions %}
-            <div class="row">
+            <tr>
 
-                <div class="column">
-                    Abo #{{ subscription.id }}
-                </div>
+                <td>
+                    {% plan_name subscription.plan %}
+                </td>
 
-                <div class="column">
-                    <h4>{% plan_name subscription.plan %}</h4>
+                <td>
                     <address>
                         {{ subscription.address.address_line_1 }}<br>
                         {% if subscription.address.address_line_2 %}
@@ -30,10 +37,9 @@
                         {% endif %}
                         {{ subscription.address.postcode }} {{ subscription.address.city }}
                     </address>
-                </div>
+                </td>
 
-                <div class="column">
-                    <h4>Status</h4>
+                <td>
                     {% if subscription.is_active %}
                         <span class="badge success">Aktiv</span>
                     {% elif subscription.has_ended %}
@@ -41,31 +47,28 @@
                     {% else %}
                         <span class="badge danger">Inaktiv</span>
                     {% endif %}
-                </div>
 
-                <div class="column">
-                    <h4>Zahlung</h4>
                     {% if subscription.payment.is_paid %}
                         <span class="badge success">Bezahlt</span>
                     {% else %}
-                        <span class="badge danger">Offen</span>
+                        <span class="badge danger">Zahlung offen</span>
                     {% endif %}
-                </div>
+                </td>
 
-                <div class="column">
+                <td>
                     {% if subscription.payment.is_paid %}
                         <a href="{% url 'subscription_update' subscription.id %}" class="button black">Bearbeiten</a>
                         <a href="{% url 'subscription_delete' subscription.id %}" class="button danger">Kündigen</a>
                     {% else %}
                         <a href="{% url 'subscription_detail' subscription.id %}" class="button success">Zahlungsdetails</a>
                     {% endif %}
-                </div>
+                </td>
 
-            </div>
+            </tr>
         {% empty %}
-            <div class="row">
-                <li>Du hast keine Abos.</li>
-            </div>
+            <tr>
+                <td>Du hast keine Abos.</td>
+            </tr>
         {% endfor %}
-    </div>
+    </table>
 {% endblock %}

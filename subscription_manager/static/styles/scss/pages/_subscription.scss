@@ -19,18 +19,10 @@
     &:not(:last-child) {
       border-bottom: solid 1px rgba($black, .25);
     }
-
-    h3 {
-      margin: 0;
-    }
   }
 }
 
 #purchase-form {
-  h3 {
-    margin-bottom: 0;
-  }
-
   input[type="submit"] {
     margin: 1em 0 2em 0;
   }

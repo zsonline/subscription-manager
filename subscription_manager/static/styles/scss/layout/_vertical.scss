@@ -46,6 +46,14 @@ main.vertical {
     width: 100%;
   }
 
+  h2 {
+    color: $primary;
+  }
+
+  h3 {
+    color: $secondary;
+  }
+
   form {
     margin-top: 1em;
   }

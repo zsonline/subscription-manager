@@ -1,29 +1,38 @@
-.manager {
-  #header {
-    padding: 1em;
-    background-color: $beige;
-  }
-  #content {
-    padding: 1em;
-  }
+main.manager {
+  border-top: solid;
+  border-bottom: solid;
+  border-radius: 2px;
+  border-color: $black;
+
+  padding: 3rem 1rem;
+
   .container {
-    margin-left: auto;
-    margin-right: auto;
+    margin: 0 auto;
+  }
+
+  table {
+    .button {
+      margin: 0 .2em .2em 0;
+    }
   }
 }
 
+.controls {
+  margin-bottom: 1rem;
+}
+
 @media (min-width: $medium) {
-  .manager {
+  main.manager {
     .container {
-      width: calc(#{$medium} - 2em);
+      width: calc(#{$medium} - 2rem);
     }
   }
 }
 
 @media (min-width: $large) {
-    .manager {
+  main.manager {
     .container {
-      width: calc(#{$large} - 2em);
+      width: calc(#{$large} - 2rem);
     }
   }
 }
