@@ -18,7 +18,7 @@ from subscription_manager.payment.models import Payment
 
 # Application imports
 from .forms import AddressWithNamesForm, AddressWithoutNamesForm
-from .models import Subscription, Address
+from .models import Subscription
 from .plans import Plans
 
 
@@ -169,7 +169,7 @@ class SubscriptionCreateView(edit.CreateView):
 
 @method_decorator(login_required, name='dispatch')
 class SubscriptionUpdateView(edit.UpdateView):
-    model = Address
+    model = Subscription
     fields = ['first_name', 'last_name', 'address_line_1', 'address_line_2', 'postcode', 'city', 'country']
     template_name = 'subscription/subscription_update.html'
     success_url = reverse_lazy('subscription_list')

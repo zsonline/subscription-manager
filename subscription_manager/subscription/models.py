@@ -23,46 +23,6 @@ class Subscription(models.Model):
         max_length=7,
         choices=Plans.convert_to_choices()
     )
-    address = models.ForeignKey(
-        'Address',
-        on_delete=models.PROTECT
-    )
-    payment = models.OneToOneField(
-        Payment,
-        on_delete=models.PROTECT
-    )
-    start_date = models.DateField()
-    end_date = models.DateField()
-    created_at = models.DateTimeField(auto_now_add=True)
-
-    def __str__(self):
-        return 'Subscription({}, {})'.format(self.user.email, self.plan)
-
-    def has_started(self):
-        """
-        True if the subscription has started.
-        Otherwise false.
-        """
-        return self.start_date <= timezone.now().date()
-
-    def has_ended(self):
-        """
-        True if the subscription has ended.
-        Otherwise false.
-        """
-        return self.end_date <= timezone.now().date()
-
-    def is_active(self):
-        """
-        Checks whether the subscription is active.
-        """
-        return self.payment.is_paid() and self.has_started() and not self.has_ended()
-
-
-class Address(models.Model):
-    """
-    Address model.
-    """
     first_name = models.CharField(
         'Vorname',
         max_length=30,
@@ -98,7 +58,33 @@ class Address(models.Model):
         max_length=50,
         default='Schweiz'
     )
+    payment = models.OneToOneField(
+        Payment,
+        on_delete=models.PROTECT
+    )
+    start_date = models.DateField()
+    end_date = models.DateField()
     created_at = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
-        return 'Address({}, {})'.format(self.address_line_1, self.city)
+        return 'Subscription({}, {})'.format(self.user.email, self.plan)
+
+    def has_started(self):
+        """
+        True if the subscription has started.
+        Otherwise false.
+        """
+        return self.start_date <= timezone.now().date()
+
+    def has_ended(self):
+        """
+        True if the subscription has ended.
+        Otherwise false.
+        """
+        return self.end_date <= timezone.now().date()
+
+    def is_active(self):
+        """
+        Checks whether the subscription is active.
+        """
+        return self.payment.is_paid() and self.has_started() and not self.has_ended()

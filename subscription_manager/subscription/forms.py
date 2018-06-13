@@ -2,7 +2,7 @@
 from django import forms
 
 # Application imports
-from .models import Address
+from .models import Subscription
 
 
 class AddressBaseForm(forms.ModelForm):
@@ -19,7 +19,7 @@ class AddressBaseForm(forms.ModelForm):
     required_css_class = 'required'
 
     class Meta:
-        model = Address
+        model = Subscription
         fields = ('first_name', 'last_name', 'address_line_1', 'address_line_2', 'postcode', 'city', 'country')
 
 
@@ -39,5 +39,5 @@ class AddressWithoutNamesForm(AddressBaseForm):
     last name.
     """
     class Meta:
-        model = Address
+        model = Subscription
         fields = ('address_line_1', 'address_line_2', 'postcode', 'city', 'country')

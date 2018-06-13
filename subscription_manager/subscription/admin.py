@@ -1,2 +1,2 @@
 from django.contrib import admin
-from .models import Subscription, Address
+from .models import Subscription
