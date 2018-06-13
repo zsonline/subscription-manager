@@ -1,12 +1,61 @@
 {% extends 'layouts/manager.html' %}
 
-{% block title %}Neues Abonnement{% endblock %}
+{% load plans %}
+
+{% block title %}{{ plan.name }}{% endblock %}
 
 {% block content %}
-    <form method="post">
+    <p class="description">{{ plan.description }}</p>
+    <a href="{% url 'plan_list' %}">Alle Abonnements</a>
+
+    {% for message in messages %}
+        <p class="alert{% if message.tags %} {{ message.tags }}{% endif %}">{{ message }}</p>
+    {% endfor %}
+
+    <form action="{% url 'subscription_create' plan.slug %}" method="post">
         {% csrf_token %}
-        {{ form.as_p }}
-        <input class="button black" type="submit" value="Kaufen" />
+
+        <fieldset>
+            <h3>Abonnement</h3>
+            {{ subscription_form.as_p }}
+        </fieldset>
+
+        <fieldset>
+            <h3>Preis</h3>
+
+            {% if plan.price >= 0 %}
+                <div class="price">
+                    {% if plan.price == 0 %}
+                        <span class="amount">Gratis</span>
+                    {% else %}
+                        <span class="amount">{{ plan.price }}</span> Franken
+                    {% endif %}
+                    /
+                    {% humanize_months plan.duration %}
+                </div>
+            {% elif plan.min_price >= 0 %}
+                <p>
+                    Laufzeit:<br>
+                    {% humanize_months plan.duration %}
+                </p>
+                {{ payment_form.as_p }}
+            {% endif %}
+
+            {# Displays info box if subscription potentially costs something. #}
+            {% if not plan.price == 0 or plan.price < 0 and plan.min_price >= 0 %}
+                <p class="alert info">
+                    Wir unterstützen nur Zahlungen mittels Banküberweisung. Nach dem Kauf deines Abonnements,
+                    schicken wir dir eine Rechnung. Sobald die Zahlung bei uns eingetroffen ist, aktivieren wir es.
+                </p>
+            {% endif %}
+        </fieldset>
+
+        <fieldset>
+            {% if plan.price == 0 %}
+                <input class="button black" type="submit" value="Abonnieren" />
+            {% else %}
+                <input class="button black" type="submit" value="Kaufen" />
+            {% endif %}
+        </fieldset>
     </form>
 {% endblock %}
-

@@ -2,17 +2,16 @@
 
 {% load plans %}
 
-{% block title %}Abo-Verwaltung{% endblock %}
+{% block title %}Abonnements{% endblock %}
 
 {% block content %}
-
-    <nav class="controls">
-        <a href="{% url 'subscription_create' %}" class="button success">Neues Abonnement</a>
-    </nav>
-
     {% for message in messages %}
         <p class="alert{% if message.tags %} {{ message.tags }}{% endif %}">{{ message }}</p>
     {% endfor %}
+
+    <nav class="controls">
+        <a href="{% url 'plan_list' %}" class="button success">Neues Abonnement</a>
+    </nav>
 
     <table>
         <tr>
@@ -31,25 +30,19 @@
 
                 <td>
                     <address>
-                        {{ subscription.address.address_line_1 }}<br>
-                        {% if subscription.address.address_line_2 %}
-                            {{ subscription.address.address_line_2 }}<br>
+                        {{ subscription.address_line_1 }}<br>
+                        {% if subscription.address_line_2 %}
+                            {{ subscription.address_line_2 }}<br>
                         {% endif %}
-                        {{ subscription.address.postcode }} {{ subscription.address.city }}
+                        {{ subscription.postcode }} {{ subscription.city }}
                     </address>
                 </td>
 
                 <td>
                     {% if subscription.is_active %}
-                        <span class="badge success">Aktiv</span>
+                        <span class="badge success">Gültig bis {{ subscription.end_date }}</span>
                     {% elif subscription.has_ended %}
-                        <span class="badge danger">Abgelaufen</span>
-                    {% else %}
-                        <span class="badge danger">Inaktiv</span>
-                    {% endif %}
-
-                    {% if subscription.payment.is_paid %}
-                        <span class="badge success">Bezahlt</span>
+                        <span class="badge danger">Am {{ subscription.end_date }} abgelaufen</span>
                     {% else %}
                         <span class="badge danger">Zahlung offen</span>
                     {% endif %}

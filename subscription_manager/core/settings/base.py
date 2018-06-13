@@ -21,7 +21,6 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'subscription_manager.authentication.apps.AccountConfig',
-    'subscription_manager.manager.apps.ManagerConfig',
     'subscription_manager.payment.apps.PaymentConfig',
     'subscription_manager.subscription.apps.SubscriptionConfig',
     'subscription_manager.user.apps.UserConfig'
@@ -91,7 +90,7 @@ AUTH_PASSWORD_VALIDATORS = [
 
 # Fixed auth urls
 LOGIN_URL = '/auth/login/'
-LOGIN_REDIRECT_URL = '/manager/'
+LOGIN_REDIRECT_URL = '/home/'
 
 # Internationalization
 LANGUAGE_CODE = 'de'

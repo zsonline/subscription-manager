@@ -3,7 +3,7 @@
 <header>
 
     {% if user.is_authenticated %}
-        <a id="logo" href="{% url 'manager_index' %}">
+        <a id="logo" href="{% url 'login_index' %}">
     {% else %}
         <a id="logo" href="{% url 'index' %}">
     {% endif %}

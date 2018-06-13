@@ -8,6 +8,7 @@ from django.shortcuts import render, redirect, reverse, get_object_or_404
 from django.urls import reverse_lazy
 from django.utils import timezone
 from django.utils.decorators import method_decorator
+from django.views import View
 from django.views.generic import detail, edit, list
 
 # Project imports
@@ -17,7 +18,7 @@ from subscription_manager.payment.forms import MinimumPaymentForm
 from subscription_manager.payment.models import Payment
 
 # Application imports
-from .forms import AddressWithNamesForm, AddressWithoutNamesForm
+from .forms import SubscriptionWithNamesForm, SubscriptionWithoutNamesForm
 from .models import Subscription
 from .plans import Plans
 
@@ -53,9 +54,9 @@ def purchase_view(request, plan_slug):
         user_form = SignUpForm(request.POST, prefix='user')
 
         # Get data from right address form
-        address_form = AddressWithoutNamesForm(request.POST, prefix='address')
+        address_form = SubscriptionWithoutNamesForm(request.POST, prefix='address')
         if 'allow_different_name' in plan:
-            address_form = AddressWithNamesForm(request.POST, prefix='address')
+            address_form = SubscriptionWithNamesForm(request.POST, prefix='address')
 
         payment_form = None
         # Payment form in case of a dynamic price
@@ -101,9 +102,9 @@ def purchase_view(request, plan_slug):
         user_form = SignUpForm(prefix='user')
 
         # Choose right address form
-        address_form = AddressWithoutNamesForm(prefix='address')
+        address_form = SubscriptionWithoutNamesForm(prefix='address')
         if 'allow_different_name' in plan:
-            address_form = AddressWithNamesForm(prefix='address')
+            address_form = SubscriptionWithNamesForm(prefix='address')
 
         payment_form = None
         # Payment form in case the price is not fixed
@@ -122,6 +123,18 @@ def purchase_view(request, plan_slug):
         'payment_form': payment_form,
         'user_form': user_form
     })
+
+
+@method_decorator(login_required, name='dispatch')
+class PlanListView(list.ListView):
+    """
+    Lists all subscriptions of the current user.
+    """
+    context_object_name = 'plans'
+    template_name = 'subscription/plan_list.html'
+
+    def get_queryset(self):
+        return Plans.data
 
 
 @method_decorator(login_required, name='dispatch')
@@ -161,10 +174,113 @@ class SubscriptionDetailView(detail.DetailView):
 
 
 @method_decorator(login_required, name='dispatch')
-class SubscriptionCreateView(edit.CreateView):
-    model = Subscription
-    fields = ['address']
+class SubscriptionCreateView(View):
+    form_class = SubscriptionWithNamesForm
     template_name = 'subscription/subscription_create.html'
+
+    @classmethod
+    def get_plan(cls, **kwargs):
+        """
+        Read plan slug from URL parameters and return
+        if plan exists.
+        """
+        # Get from URL parameters
+        plan_slug = kwargs.get('plan_slug')
+
+        # Check if plan exists
+        if plan_slug not in Plans.slugs():
+            return None
+
+        return Plans.get(plan_slug)
+
+    def get(self, request, *args, **kwargs):
+        """
+        Handles get request. Renders empty form.
+        """
+        # Get plan
+        plan = self.get_plan(**kwargs)
+        if plan is None:
+            # If plan does not exist, return to list view and display
+            # error message
+            messages.error(request, 'Dieses Abonnement existiert nicht.')
+            return redirect(reverse('subscription_list'))
+
+        # Choose right subscription form
+        subscription_form = SubscriptionWithoutNamesForm(prefix='address')
+        if 'allow_different_name' in plan:
+            subscription_form = SubscriptionWithNamesForm(prefix='address')
+
+        payment_form = None
+        # Payment form in case the price is not fixed
+        if 'min_price' in plan:
+            payment_form = MinimumPaymentForm(
+                prefix='payment',
+                min_price=plan['min_price'],
+                initial={
+                    'amount': plan['min_price']
+                }
+            )
+
+        return render(request, 'subscription/subscription_create.html', {
+            'plan': plan,
+            'subscription_form': subscription_form,
+            'payment_form': payment_form
+        })
+
+    def post(self, request, *args, **kwargs):
+        """
+        Handles post request. Validates form and creates
+        subscription if data is valid.
+        """
+        # Get plan
+        plan = self.get_plan(**kwargs)
+        if plan is None:
+            # If plan does not exist, return to list view and display
+            # error message
+            messages.error(request, 'Dieses Abo existiert nicht.')
+            return redirect(reverse('subscription_list'))
+
+        # Get data from right subscription form
+        subscription_form = SubscriptionWithoutNamesForm(request.POST, prefix='address')
+        if 'allow_different_name' in plan:
+            subscription_form = SubscriptionWithNamesForm(request.POST, prefix='address')
+
+        payment_form = None
+        # Payment form in case of a dynamic price
+        if 'min_price' in plan:
+            payment_form = MinimumPaymentForm(
+                request.POST,
+                prefix='payment',
+                min_price=plan['min_price'],
+                initial={
+                    'amount': plan['min_price']
+                }
+            )
+
+        # Validate forms
+        if subscription_form.is_valid() and (payment_form is None or payment_form.is_valid()):
+            # Save payment
+            if payment_form is not None:
+                payment = payment_form.save()
+            else:
+                payment = Payment.objects.create(amount=plan['price'])
+            # Save subscription
+            subscription = subscription_form.save(commit=False)
+            subscription.user = request.user
+            subscription.plan = plan['slug']
+            subscription.payment = payment
+            subscription.start_date = timezone.now()
+            subscription.end_date = timezone.now() + relativedelta(months=+plan['duration'])
+            subscription.save()
+
+            messages.success(request, 'Abo-Kauf erfolgreich. Danke!')
+            return redirect('subscription_list')
+
+        return render(request, 'subscription/subscription_create.html', {
+            'plan': plan,
+            'subscription_form': subscription_form,
+            'payment_form': payment_form
+        })
 
 
 @method_decorator(login_required, name='dispatch')
