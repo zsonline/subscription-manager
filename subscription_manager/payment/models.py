@@ -1,3 +1,6 @@
+# Python imports
+from datetime import timedelta
+
 # Django imports
 from django.db import models
 
@@ -27,3 +30,6 @@ class Payment(models.Model):
 
     def is_paid(self):
         return self.paid_at is not None
+
+    def pay_until(self):
+        return (self.created_at + timedelta(days=30)).date()

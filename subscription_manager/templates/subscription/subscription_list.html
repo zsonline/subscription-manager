@@ -15,7 +15,8 @@
 
     <table>
         <tr>
-            <th>Typ</th>
+            <th></th>
+            <th>Abonnement</th>
             <th>Adresse</th>
             <th>Status</th>
             <th>Optionen</th>
@@ -23,6 +24,14 @@
 
         {% for subscription in subscriptions %}
             <tr>
+
+                <td>
+                    {% if subscription.is_active %}
+                        <span class="badge success">Aktiv</span>
+                    {% else %}
+                        <span class="badge danger">Inaktiv</span>
+                    {% endif %}
+                </td>
 
                 <td>
                     {% plan_name subscription.plan %}
@@ -40,11 +49,11 @@
 
                 <td>
                     {% if subscription.is_active %}
-                        <span class="badge success">Gültig bis {{ subscription.end_date }}</span>
+                        Gültig bis {{ subscription.end_date }}
                     {% elif subscription.has_ended %}
-                        <span class="badge danger">Am {{ subscription.end_date }} abgelaufen</span>
+                        Am {{ subscription.end_date }} abgelaufen
                     {% else %}
-                        <span class="badge danger">Zahlung offen</span>
+                        Zahlbar bis {{ subscription.payment.pay_until }}
                     {% endif %}
                 </td>
 
@@ -53,7 +62,7 @@
                         <a href="{% url 'subscription_update' subscription.id %}" class="button black">Bearbeiten</a>
                         <a href="{% url 'subscription_delete' subscription.id %}" class="button danger">Kündigen</a>
                     {% else %}
-                        <a href="{% url 'subscription_detail' subscription.id %}" class="button success">Zahlungsdetails</a>
+                        <a href="{% url 'subscription_detail' subscription.id %}" class="button black">Zahlungsdetails</a>
                     {% endif %}
                 </td>
 

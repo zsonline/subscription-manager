@@ -7,7 +7,7 @@
         <a class="button primary" href="{% url 'plan_list' %}">Abo kaufen</a>
         <a class="button black" href="{% url 'logout' %}">Logout</a>
     {% else %}
-        <a class="button primary {% active 'plans' %}" href="{% url 'plans' %}">Abo kaufen</a>
+        {# <a class="button primary {% active 'plans' %}" href="{% url 'plans' %}">Abo kaufen</a> #}
         <a class="button black {% active 'login' %}" href="{% url 'login' %}">Login</a>
     {% endif %}
 </nav>

@@ -5,5 +5,41 @@
 {% block title %}Zahlungsdetails{% endblock %}
 
 {% block content %}
-    {{ subscription.payment }}
+    <h3>{% plan_name subscription.plan %}</h3>
+
+    {% if subscription.is_active %}
+        <span class="badge success">Aktiv</span>
+    {% else %}
+        <span class="badge danger">Inaktiv</span>
+    {% endif %}
+
+    <h4>Adresse</h4>
+    <address>
+        {{ subscription.address_line_1 }}<br>
+        {% if subscription.address_line_2 %}
+            {{ subscription.address_line_2 }}<br>
+        {% endif %}
+        {{ subscription.postcode }} {{ subscription.city }}
+    </address>
+
+    <h4>Status</h4>
+    {% if subscription.is_active %}
+        Gültig bis {{ subscription.end_date }}
+    {% elif subscription.has_ended %}
+        Am {{ subscription.end_date }} abgelaufen
+    {% else %}
+        Zahlbar bis {{ subscription.payment.pay_until }}
+    {% endif %}
+
+    <h3>Rechnung</h3>
+
+    <h4>Betrag</h4>
+    {{ subscription.payment.amount }}
+
+    <h4>Mitteilungsfeld</h4>
+    {{ subscription.payment.code }}
+
+    <h4>Zahlungsdetails</h4>
+    Bank: <br>
+    IBAN: ???
 {% endblock %}
