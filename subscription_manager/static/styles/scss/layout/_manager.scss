@@ -1,13 +1,12 @@
 main.manager {
-  border-top: solid;
-  border-bottom: solid;
-  border-radius: 2px;
-  border-color: $black;
-
-  padding: 3rem 1rem;
+  padding: 2rem 0;
+  background-color: $lighter-grey;
 
   .container {
+    box-sizing: border-box;
     margin: 0 auto;
+    padding: 2rem 1rem;
+    background-color: $white;
   }
 
   table {
@@ -23,8 +22,10 @@ main.manager {
 
 @media (min-width: $medium) {
   main.manager {
+    padding: 3rem 0;
     .container {
       width: calc(#{$medium} - 2rem);
+      padding: 2rem;
     }
   }
 }

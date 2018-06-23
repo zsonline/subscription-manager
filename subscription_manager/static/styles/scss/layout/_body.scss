@@ -1,5 +1,3 @@
-@import "../base/colours";
-
 html, body {
   min-height: 100vh;
 }
@@ -11,6 +9,20 @@ body {
   line-height: 1.2;
 }
 
+main {
+  flex: 1;
+
+  p.description {
+    margin-top: .2em;
+  }
+}
+
 footer {
   flex-shrink: 0;
+}
+
+@media (min-width: $medium) {
+  main {
+    min-height: calc(100vh - #{$header-height});
+  }
 }

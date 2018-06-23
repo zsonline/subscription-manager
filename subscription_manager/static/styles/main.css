@@ -482,18 +482,6 @@ nav a:not(:last-child) {
 nav a.active {
   font-weight: bold; }
 
-html, body {
-  min-height: 100vh; }
-
-body {
-  display: flex;
-  flex-direction: column;
-  background-color: white;
-  line-height: 1.2; }
-
-footer {
-  flex-shrink: 0; }
-
 header {
   padding: 2em 1em; }
   header h1 {
@@ -517,13 +505,25 @@ header {
     header nav {
       margin-right: 1em; } }
 
+html, body {
+  min-height: 100vh; }
+
+body {
+  display: flex;
+  flex-direction: column;
+  background-color: white;
+  line-height: 1.2; }
+
 main {
   flex: 1; }
   main p.description {
     margin-top: .2em; }
 
+footer {
+  flex-shrink: 0; }
+
 @media (min-width: 756px) {
-  main.full-height {
+  main {
     min-height: calc(100vh - 9rem); } }
 
 footer {
@@ -613,13 +613,13 @@ main.vertical form {
     width: 60%; } }
 
 main.manager {
-  border-top: solid;
-  border-bottom: solid;
-  border-radius: 2px;
-  border-color: #030303;
-  padding: 3rem 1rem; }
+  padding: 2rem 0;
+  background-color: #f7f7f7; }
   main.manager .container {
-    margin: 0 auto; }
+    box-sizing: border-box;
+    margin: 0 auto;
+    padding: 2rem 1rem;
+    background-color: white; }
   main.manager table .button {
     margin: 0 .2em .2em 0; }
 
@@ -627,8 +627,11 @@ main.manager {
   margin-bottom: 1rem; }
 
 @media (min-width: 756px) {
-  main.manager .container {
-    width: calc(756px - 2rem); } }
+  main.manager {
+    padding: 3rem 0; }
+    main.manager .container {
+      width: calc(756px - 2rem);
+      padding: 2rem; } }
 
 @media (min-width: 1024px) {
   main.manager .container {

@@ -1,11 +1,9 @@
 {% extends 'base.html' %}
 
-{% block main_classes %}vertical full-height{% endblock %}
+{% block main_classes %}vertical{% endblock %}
 
 {% block main %}
-    <section
-            class="column {% block left_column_alignment %}center{% endblock %}"
-    >
+    <section class="column {% block left_column_alignment %}center{% endblock %}">
 
         <div class="inner">
             {% block left_column %}{% endblock %}
