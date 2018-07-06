@@ -286,7 +286,7 @@ class SubscriptionCreateView(View):
 @method_decorator(login_required, name='dispatch')
 class SubscriptionUpdateView(edit.UpdateView):
     model = Subscription
-    fields = ['first_name', 'last_name', 'address_line_1', 'address_line_2', 'postcode', 'city', 'country']
+    form_class = SubscriptionWithoutNamesForm
     template_name = 'subscription/subscription_update.html'
     success_url = reverse_lazy('subscription_list')
 

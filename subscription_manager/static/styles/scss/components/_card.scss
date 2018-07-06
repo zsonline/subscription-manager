@@ -16,6 +16,12 @@
   }
 }
 
+.subscription {
+  box-sizing: border-box;
+  background-color: $beige;
+  padding: .75rem;
+}
+
 @media (min-width: $medium) {
   .cards {
     display: flex;

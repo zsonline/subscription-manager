@@ -490,6 +490,11 @@ nav a.active {
   .card h4 {
     margin-bottom: .2em; }
 
+.subscription {
+  box-sizing: border-box;
+  background-color: #faf0e6;
+  padding: .75rem; }
+
 @media (min-width: 756px) {
   .cards {
     display: flex;
