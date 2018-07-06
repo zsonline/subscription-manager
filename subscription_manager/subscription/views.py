@@ -297,7 +297,6 @@ class SubscriptionUpdateView(edit.UpdateView):
         does not exist, the user is redirected to the subscription
         list page.
         """
-        # Parameters
         subscription_id = self.kwargs['subscription_id']
         user = self.request.user
         # Get object or raise 404
@@ -317,7 +316,6 @@ class SubscriptionDeleteView(edit.DeleteView):
         by the current user and does exist. Otherwise,
         a 404 exception.
         """
-        # Parameters
         subscription_id = self.kwargs['subscription_id']
         user = self.request.user
         # Get object or raise 404
