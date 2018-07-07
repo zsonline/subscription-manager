@@ -2,10 +2,13 @@
 from dateutil.relativedelta import relativedelta
 
 # Django imports
+from django.conf import settings
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
+from django.core.mail import EmailMultiAlternatives
 from django.http import Http404, HttpResponseRedirect
-from django.shortcuts import render, redirect, reverse, get_object_or_404
+from django.shortcuts import get_object_or_404, redirect, render, reverse
+from django.template.loader import render_to_string
 from django.urls import reverse_lazy
 from django.utils import timezone
 from django.utils.decorators import method_decorator
@@ -91,7 +94,6 @@ def purchase_view(request, plan_slug):
                 end_date=timezone.now() + relativedelta(months=+plan['duration'])
             )
 
-            # TODO: Send email
 
             messages.success(request, 'Abonnement-Kauf erfolgreich.')
             return redirect('login')
@@ -276,6 +278,29 @@ class SubscriptionCreateView(View):
             subscription.start_date = timezone.now()
             subscription.end_date = timezone.now() + relativedelta(months=+plan['duration'])
             subscription.save()
+
+            # Make a context variable for the templates
+            context = {
+                'to_name': request.user.first_name,
+                'from_name': settings.ORGANISATION_NAME,
+                'subscription': subscription
+            }
+            # Render the content templates
+            text_content = render_to_string('subscription/emails/purchase_confirmation.txt', context)
+            html_content = render_to_string('subscription/emails/purchase_confirmation.html', context)
+            # Create the text and html version of the email
+            message = EmailMultiAlternatives(
+                subject='Token',
+                body=text_content,
+                from_email=settings.ORGANISATION_FROM_EMAIL,
+                to=[request.user.email],
+                headers={
+                    'Reply-To': settings.ORGANISATION_REPLY_TO_EMAIL
+                }
+            )
+            message.attach_alternative(html_content, 'text/html')
+            # Send the email
+            message.send()
 
             messages.success(request, 'Abo gekauft.')
             return redirect('subscription_list')

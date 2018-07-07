@@ -1,0 +1,14 @@
+{% extends 'base_email.html' %}
+
+{% load plans %}
+
+{% block content %}
+    {% plan_name subscription.plan %}
+    {{ subscription.address_line_1 }}
+    {% if subscription.address_line_2 %}
+        {{ subscription.address_line_2 }}
+    {% endif %}
+    {{ subscription.postcode }} {{ subscription.city }}
+
+    Rechnung
+{% endblock %}
