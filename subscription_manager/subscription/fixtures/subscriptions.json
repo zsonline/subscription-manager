@@ -4,7 +4,7 @@
     "pk": 1,
     "fields": {
       "user": 3,
-      "plan": "regular",
+      "plan": 1,
       "first_name": null,
       "last_name": null,
       "address_line_1": "R\u00e4emistrasse 62",
@@ -24,7 +24,7 @@
     "pk": 2,
     "fields": {
       "user": 3,
-      "plan": "patron",
+      "plan": 3,
       "first_name": null,
       "last_name": null,
       "address_line_1": "Musterstrasse 34",

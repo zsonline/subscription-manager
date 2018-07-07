@@ -1,7 +1,5 @@
 {% extends 'layouts/manager.html' %}
 
-{% load plans %}
-
 {% block title %}Neues Abonnement{% endblock %}
 
 {% block content %}
@@ -15,7 +13,7 @@
 
 
     <ul id="plans">
-        {% for _, plan in plans.items %}
+        {% for plan in plans %}
 
             <li class="plan">
 
@@ -23,26 +21,30 @@
                 <p>{{ plan.description }}</p>
 
                 <div class="price">
-                    {% if plan.price >= 0 %}
+                    {% if not plan.is_min_price %}
                         {# Fixed price #}
                         {% if plan.price == 0 %}
                             <span class="amount">Gratis</span>
                         {% else %}
                             <span class="amount">{{ plan.price }}</span> Franken
                         {% endif %}
-                    {% elif plan.min_price >= 0 %}
+                    {% else %}
                         {# Flexible price #}
-                        {% if plan.min_price == 0 %}
+                        {% if plan.price == 0 %}
                             Soviel du willst
                         {% else %}
-                            <span class="amount">{{ plan.min_price }}</span> Franken oder mehr
+                            <span class="amount">{{ plan.price }}</span> Franken oder mehr
                         {% endif %}
                     {% endif %}
                     /
-                    {% humanize_months plan.duration %}
+                    {% if plan.duration == 1 %}
+                        1 Monat
+                    {% else %}
+                        {{ plan.duration }} Monate
+                    {% endif %}
                 </div>
 
-                {% if not plan.price == 0 or plan.price < 0 and plan.min_price >= 0 %}
+                {% if not plan.price == 0 %}
                     <a href="{% url 'subscription_create' plan.slug %}" class="button black">Kaufen</a>
                 {% else %}
                     <a href="{% url 'subscription_create' plan.slug %}" class="button black">Abonnieren</a>

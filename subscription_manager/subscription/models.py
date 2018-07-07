@@ -19,9 +19,10 @@ class Subscription(models.Model):
         get_user_model(),
         on_delete=models.CASCADE
     )
-    plan = models.CharField(
-        max_length=7,
-        choices=Plans.convert_to_choices()
+    plan = models.ForeignKey(
+        'Plan',
+        on_delete=models.PROTECT,
+        verbose_name='Abo-Typ'
     )
     first_name = models.CharField(
         'Vorname',
@@ -94,3 +95,47 @@ class Subscription(models.Model):
         Checks whether the subscription is active.
         """
         return self.payment.is_paid() and not self.is_canceled() and self.has_started() and not self.has_ended()
+
+
+class Plan(models.Model):
+    """
+    Model that holds the information for a
+    type of subscription (i.e. price).
+    """
+    name = models.CharField(
+        'Name',
+        max_length=50
+    )
+    description = models.TextField(
+        'Beschreibung'
+    )
+    slug = models.SlugField(
+        'Slug',
+        unique=True
+    )
+    duration = models.PositiveSmallIntegerField(
+        'Laufzeit',
+        default=12,
+        help_text='Laufzeit in Monaten'
+    )  # In months
+    price = models.PositiveSmallIntegerField(
+        'Preis'
+    )
+    is_min_price = models.BooleanField(
+        'Ist Mindestpreis',
+        default=False,
+        help_text='Interpretiere Preis als Mindestpreis'
+    )
+    allow_different_name = models.BooleanField(
+        'Erlaube andere Namen',
+        default=False,
+        help_text='Erlaube vom Account unterschiedliche Vor- und Nachnamen'
+    )
+    only_student = models.BooleanField(
+        'Nur für Studentinnen',
+        default=False,
+        help_text='Abo nur für Studenten'
+    )
+
+    def __str__(self):
+        return 'Plan({})'.format(self.name)

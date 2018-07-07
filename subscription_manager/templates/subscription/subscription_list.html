@@ -1,7 +1,5 @@
 {% extends 'layouts/manager.html' %}
 
-{% load plans %}
-
 {% block title %}Abonnements{% endblock %}
 
 {% block content %}
@@ -13,7 +11,7 @@
         {% for subscription in subscriptions %}
             <div class="card">
                 <div class="address">
-                    <h3>{% plan_name subscription.plan %}</h3>
+                    <h3>{{ subscription.plan.name }}</h3>
                     <address>
                         {{ subscription.address_line_1 }}<br>
                         {% if subscription.address_line_2 %}

@@ -1,7 +1,5 @@
-{% load plans %}
-
 <div class="subscription">
-    <h3>{% plan_name subscription.plan %}</h3>
+    <h3>{{ subscription.plan.name }}</h3>
     <address>
         {{ subscription.address_line_1 }}<br>
         {% if subscription.address_line_2 %}

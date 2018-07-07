@@ -17,14 +17,12 @@ from django.views.generic import detail, edit, list
 
 # Project imports
 from subscription_manager.authentication.decorators import anonymous_required
-from subscription_manager.authentication.forms import SignUpForm
 from subscription_manager.payment.forms import MinimumPaymentForm
 from subscription_manager.payment.models import Payment
 
 # Application imports
 from .forms import SubscriptionWithNamesForm, SubscriptionWithoutNamesForm
-from .models import Subscription
-from .plans import Plans
+from .models import Subscription, Plan
 
 
 @method_decorator(login_required, name='dispatch')
@@ -32,11 +30,9 @@ class PlanListView(list.ListView):
     """
     Lists all subscriptions of the current user.
     """
+    model = Plan
     context_object_name = 'plans'
     template_name = 'subscription/plan_list.html'
-
-    def get_queryset(self):
-        return Plans.data
 
 
 @method_decorator(login_required, name='dispatch')
@@ -93,10 +89,12 @@ class SubscriptionCreateView(View):
         plan_slug = kwargs.get('plan_slug')
 
         # Check if plan exists
-        if plan_slug not in Plans.slugs():
-            return None
+        try:
+            plan = Plan.objects.get(slug=plan_slug)
+        except Plan.DoesNotExist:
+            plan = None
 
-        return Plans.get(plan_slug)
+        return plan
 
     def get(self, request, *args, **kwargs):
         """
@@ -112,17 +110,17 @@ class SubscriptionCreateView(View):
 
         # Choose right subscription form
         subscription_form = SubscriptionWithoutNamesForm(prefix='address')
-        if 'allow_different_name' in plan:
+        if plan.allow_different_name:
             subscription_form = SubscriptionWithNamesForm(prefix='address')
 
         payment_form = None
         # Payment form in case the price is not fixed
-        if 'min_price' in plan:
+        if plan.is_min_price:
             payment_form = MinimumPaymentForm(
                 prefix='payment',
-                min_price=plan['min_price'],
+                min_price=plan.price,
                 initial={
-                    'amount': plan['min_price']
+                    'amount': plan.price
                 }
             )
 
@@ -147,18 +145,18 @@ class SubscriptionCreateView(View):
 
         # Get data from right subscription form
         subscription_form = SubscriptionWithoutNamesForm(request.POST, prefix='address')
-        if 'allow_different_name' in plan:
+        if plan.allow_different_name:
             subscription_form = SubscriptionWithNamesForm(request.POST, prefix='address')
 
         payment_form = None
         # Payment form in case of a dynamic price
-        if 'min_price' in plan:
+        if plan.is_min_price:
             payment_form = MinimumPaymentForm(
                 request.POST,
                 prefix='payment',
-                min_price=plan['min_price'],
+                min_price=plan.price,
                 initial={
-                    'amount': plan['min_price']
+                    'amount': plan.price
                 }
             )
 
@@ -168,14 +166,14 @@ class SubscriptionCreateView(View):
             if payment_form is not None:
                 payment = payment_form.save()
             else:
-                payment = Payment.objects.create(amount=plan['price'])
+                payment = Payment.objects.create(amount=plan.price)
             # Save subscription
             subscription = subscription_form.save(commit=False)
             subscription.user = request.user
-            subscription.plan = plan['slug']
+            subscription.plan = plan
             subscription.payment = payment
             subscription.start_date = timezone.now()
-            subscription.end_date = timezone.now() + relativedelta(months=+plan['duration'])
+            subscription.end_date = timezone.now() + relativedelta(months=+plan.duration)
             subscription.save()
 
             # Make a context variable for the templates

@@ -1,7 +1,5 @@
 {% extends 'layouts/manager.html' %}
 
-{% load plans %}
-
 {% block title %}{{ plan.name }}{% endblock %}
 
 {% block content %}
@@ -23,7 +21,7 @@
         <fieldset>
             <h3>Preis</h3>
 
-            {% if plan.price >= 0 %}
+            {% if not plan.is_min_price %}
                 <div class="price">
                     {% if plan.price == 0 %}
                         <span class="amount">Gratis</span>
@@ -31,18 +29,26 @@
                         <span class="amount">{{ plan.price }}</span> Franken
                     {% endif %}
                     /
-                    {% humanize_months plan.duration %}
+                    {% if plan.duration == 1 %}
+                        1 Monat
+                    {% else %}
+                        {{ plan.duration }} Monate
+                    {% endif %}
                 </div>
-            {% elif plan.min_price >= 0 %}
+            {% else %}
                 <p>
                     Laufzeit:<br>
-                    {% humanize_months plan.duration %}
+                    {% if plan.duration == 1 %}
+                        1 Monat
+                    {% else %}
+                        {{ plan.duration }} Monate
+                    {% endif %}
                 </p>
                 {{ payment_form.as_p }}
             {% endif %}
 
             {# Displays info box if subscription potentially costs something. #}
-            {% if not plan.price == 0 or plan.price < 0 and plan.min_price >= 0 %}
+            {% if not plan.price == 0 or plan.is_min_price %}
                 <p class="alert info">
                     Wir unterstützen nur Zahlungen mittels Banküberweisung. Nach dem Kauf deines Abonnements,
                     schicken wir dir eine Rechnung. Sobald die Zahlung bei uns eingetroffen ist, aktivieren wir es.
