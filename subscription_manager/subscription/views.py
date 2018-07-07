@@ -30,9 +30,17 @@ class PlanListView(list.ListView):
     """
     Lists all subscriptions of the current user.
     """
-    model = Plan
     context_object_name = 'plans'
     template_name = 'subscription/plan_list.html'
+
+    def get_queryset(self):
+        """
+        Excludes student plan if logged in user
+        is not an eligible student.
+        """
+        if not self.request.user.is_student():
+            return Plan.objects.filter(only_student=False)
+        return Plan.objects.all()
 
 
 @method_decorator(login_required, name='dispatch')
