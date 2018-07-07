@@ -52,7 +52,7 @@
                 <div class="actions">
                     {% if subscription.payment.is_paid %}
                         <a href="{% url 'subscription_update' subscription.id %}" class="button black">Bearbeiten</a>
-                        <a href="{% url 'subscription_delete' subscription.id %}" class="button danger">Kündigen</a>
+                        <a href="{% url 'subscription_cancel' subscription.id %}" class="button danger">Kündigen</a>
                     {% else %}
                         <a href="{% url 'subscription_detail' subscription.id %}" class="button black">Zahlungsdetails</a>
                     {% endif %}

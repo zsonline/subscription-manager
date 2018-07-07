@@ -4,7 +4,7 @@ from django.views.generic.base import RedirectView
 
 # Application imports
 from .views import plan_list_view, purchase_view, SubscriptionListView, SubscriptionCreateView, \
-    SubscriptionUpdateView, SubscriptionDetailView, SubscriptionDeleteView, PlanListView
+    SubscriptionUpdateView, SubscriptionDetailView, SubscriptionCancelView, PlanListView
 
 # URL patterns
 urlpatterns = [
@@ -16,5 +16,5 @@ urlpatterns = [
     path('subscription/buy/<plan_slug>/', SubscriptionCreateView.as_view(), name='subscription_create'),
     path('subscription/<int:subscription_id>/', SubscriptionDetailView.as_view(), name='subscription_detail'),
     path('subscription/<int:subscription_id>/edit/', SubscriptionUpdateView.as_view(), name='subscription_update'),
-    path('subscription/<int:subscription_id>/cancel/', SubscriptionDeleteView.as_view(), name='subscription_delete')
+    path('subscription/<int:subscription_id>/cancel/', SubscriptionCancelView.as_view(), name='subscription_cancel')
 ]

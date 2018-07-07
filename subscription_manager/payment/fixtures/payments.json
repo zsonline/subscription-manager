@@ -1,0 +1,22 @@
+[
+  {
+    "model": "payment.payment",
+    "pk": 1,
+    "fields": {
+      "amount": 50,
+      "code": "eMBajUCcYDHZ",
+      "paid_at": "2018-07-07T10:03:52.503Z",
+      "created_at": "2018-07-07T10:00:00.503Z"
+    }
+  },
+  {
+    "model": "payment.payment",
+    "pk": 2,
+    "fields": {
+      "amount": 80,
+      "code": "vzWj1PXjVOMZ",
+      "paid_at": null,
+      "created_at": "2018-07-07T10:01:30.307Z"
+    }
+  }
+]

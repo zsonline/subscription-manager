@@ -4,7 +4,7 @@ from dateutil.relativedelta import relativedelta
 # Django imports
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
-from django.http import Http404
+from django.http import Http404, HttpResponseRedirect
 from django.shortcuts import render, redirect, reverse, get_object_or_404
 from django.urls import reverse_lazy
 from django.utils import timezone
@@ -277,7 +277,7 @@ class SubscriptionCreateView(View):
             subscription.end_date = timezone.now() + relativedelta(months=+plan['duration'])
             subscription.save()
 
-            messages.success(request, 'Abo-Kauf erfolgreich. Danke!')
+            messages.success(request, 'Abo gekauft.')
             return redirect('subscription_list')
 
         return render(request, 'subscription/subscription_create.html', {
@@ -311,11 +311,11 @@ class SubscriptionUpdateView(edit.UpdateView):
 
 
 @method_decorator(login_required, name='dispatch')
-class SubscriptionDeleteView(edit.DeleteView):
+class SubscriptionCancelView(edit.DeleteView):
     model = Subscription
     success_url = reverse_lazy('subscription_list')
     context_object_name = 'subscription'
-    template_name = 'subscription/subscription_delete.html'
+    template_name = 'subscription/subscription_cancel.html'
 
     def get_object(self, queryset=None):
         """
@@ -331,3 +331,13 @@ class SubscriptionDeleteView(edit.DeleteView):
         if not subscription.is_active():
             raise Http404('Subscription is inactive')
         return subscription
+
+    def delete(self, request, *args, **kwargs):
+        """
+        Overwrites delete method to only cancel the subscription
+        and not delete it.
+        """
+        subscription = self.get_object()
+        subscription.canceled_at = timezone.now()
+        subscription.save()
+        return HttpResponseRedirect(self.success_url)
