@@ -64,6 +64,9 @@ class Subscription(models.Model):
     )
     start_date = models.DateField()
     end_date = models.DateField()
+    canceled_at = models.DateTimeField(
+        null=True
+    )
     created_at = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
@@ -83,8 +86,11 @@ class Subscription(models.Model):
         """
         return self.end_date <= timezone.now().date()
 
+    def is_canceled(self):
+        return self.canceled_at is not None
+
     def is_active(self):
         """
         Checks whether the subscription is active.
         """
-        return self.payment.is_paid() and self.has_started() and not self.has_ended()
+        return self.payment.is_paid() and not self.is_canceled() and self.has_started() and not self.has_ended()

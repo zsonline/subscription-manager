@@ -525,9 +525,7 @@ header {
     align-items: center;
     height: 9rem; }
     header h1 {
-      font-size: 1.8em; }
-    header nav {
-      margin-right: 1em; } }
+      font-size: 1.8em; } }
 
 html, body {
   min-height: 100vh; }
@@ -539,7 +537,8 @@ body {
   line-height: 1.2; }
 
 main {
-  flex: 1; }
+  flex: 1;
+  box-sizing: border-box; }
   main p.description {
     margin-top: .2em; }
 

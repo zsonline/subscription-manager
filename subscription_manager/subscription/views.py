@@ -4,6 +4,7 @@ from dateutil.relativedelta import relativedelta
 # Django imports
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
+from django.http import Http404
 from django.shortcuts import render, redirect, reverse, get_object_or_404
 from django.urls import reverse_lazy
 from django.utils import timezone
@@ -162,7 +163,7 @@ class SubscriptionDetailView(detail.DetailView):
 
     def get_object(self, queryset=None):
         """
-        Returns subscription object if it is owned
+        Returns subscription object if it is not paid, owned
         by the current user and does exist. Otherwise,
         a 404 exception.
         """
@@ -170,7 +171,10 @@ class SubscriptionDetailView(detail.DetailView):
         subscription_id = self.kwargs['subscription_id']
         user = self.request.user
         # Get object or raise 404
-        return get_object_or_404(Subscription, id=subscription_id, user=user)
+        subscription = get_object_or_404(Subscription, id=subscription_id, user=user)
+        if subscription.payment.is_paid():
+            raise Http404('Subscription is paid')
+        return subscription
 
 
 @method_decorator(login_required, name='dispatch')
@@ -292,15 +296,18 @@ class SubscriptionUpdateView(edit.UpdateView):
 
     def get_object(self, queryset=None):
         """
-        Returns address object for a subscription id. If
-        the subscription is not owned by the current user or
-        does not exist, the user is redirected to the subscription
-        list page.
+        Returns subscription object if it is active, owned
+        by the current user and does exist. Otherwise,
+        a 404 exception.
         """
         subscription_id = self.kwargs['subscription_id']
         user = self.request.user
         # Get object or raise 404
-        return get_object_or_404(Subscription, id=subscription_id, user=user)
+        subscription = get_object_or_404(Subscription, id=subscription_id, user=user)
+        # Check if subscription is active
+        if not subscription.is_active():
+            raise Http404('Subscription is inactive')
+        return subscription
 
 
 @method_decorator(login_required, name='dispatch')
@@ -312,11 +319,15 @@ class SubscriptionDeleteView(edit.DeleteView):
 
     def get_object(self, queryset=None):
         """
-        Returns subscription object if it is owned
+        Returns subscription object if it is active, owned
         by the current user and does exist. Otherwise,
         a 404 exception.
         """
         subscription_id = self.kwargs['subscription_id']
         user = self.request.user
         # Get object or raise 404
-        return get_object_or_404(Subscription, id=subscription_id, user=user)
+        subscription = get_object_or_404(Subscription, id=subscription_id, user=user)
+        # Check if subscription is active
+        if not subscription.is_active():
+            raise Http404('Subscription is inactive')
+        return subscription

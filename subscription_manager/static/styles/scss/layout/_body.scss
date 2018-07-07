@@ -11,6 +11,7 @@ body {
 
 main {
   flex: 1;
+  box-sizing: border-box;
 
   p.description {
     margin-top: .2em;
