@@ -1,39 +1,38 @@
-.card {
-  box-sizing: border-box;
-  padding: .5rem 0;
-  border-bottom: solid 1px $grey;
-
-  &:first-child {
-    border-top: solid 1px $grey;
-  }
-
-  div {
-    margin: 1rem 0;
-  }
-
-  h4 {
-    margin-bottom: .2em;
-  }
-}
-
 .subscription {
   box-sizing: border-box;
   background-color: $beige;
   padding: .75rem;
 }
 
+.card {
+  box-sizing: border-box;
+
+  &:not(:last-child) {
+    margin-bottom: 1.5rem;
+  }
+
+  h4 {
+    margin-bottom: .2em;
+  }
+
+  div:not(:last-child) {
+    margin-bottom: 1em;
+  }
+}
+
 @media (min-width: $medium) {
   .cards {
     display: flex;
     flex-wrap: wrap;
-    margin: -10px;
+    justify-content: space-between;
   }
 
   .card {
-    margin: 10px;
-    padding: .5rem 1rem;
-    border-top: solid 1px $grey;
-    border-bottom: solid 1px $grey;
+    width: 49%;
+
+    &:nth-last-child(2) {
+      margin-bottom: 0;
+    }
   }
 }
 
