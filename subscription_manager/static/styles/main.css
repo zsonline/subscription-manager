@@ -506,10 +506,11 @@ nav a.active {
 
 #breadcrumbs {
   margin: -.25rem 0 1rem 0; }
+  #breadcrumbs a, #breadcrumbs span {
+    font-size: .75rem;
+    color: #bfbfbf; }
   #breadcrumbs a {
     margin: 0;
-    font-size: .75rem;
-    color: #bfbfbf;
     text-decoration: none; }
     #breadcrumbs a:not(:last-child):after {
       content: '›';

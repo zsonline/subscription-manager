@@ -1,10 +1,13 @@
 #breadcrumbs {
   margin: -.25rem 0 1rem 0;
 
-  a {
-    margin: 0;
+  a, span {
     font-size: .75rem;
     color: $light-grey;
+  }
+
+  a {
+    margin: 0;
     text-decoration: none;
 
     &:not(:last-child):after {

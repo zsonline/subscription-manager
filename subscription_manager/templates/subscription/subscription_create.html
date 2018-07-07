@@ -2,9 +2,14 @@
 
 {% block title %}{{ plan.name }}{% endblock %}
 
+{% block breadcrumbs %}
+    <a href="{% url 'subscription_list' %}">Abonnements</a>
+    <a href="{% url 'plan_list' %}">Neues Abonnement</a>
+    <span>{{ plan.name }}</span>
+{% endblock %}
+
 {% block content %}
     <p class="description">{{ plan.description }}</p>
-    <a href="{% url 'plan_list' %}">Alle Abonnements</a>
 
     {% for message in messages %}
         <p class="alert{% if message.tags %} {{ message.tags }}{% endif %}">{{ message }}</p>

@@ -2,6 +2,11 @@
 
 {% block title %}Abo kündigen{% endblock %}
 
+{% block breadcrumbs %}
+    <a href="{% url 'subscription_list' %}">Abonnements</a>
+    <span>Abo kündigen</span>
+{% endblock %}
+
 {% block content %}
     {% include 'includes/subscription.html' %}
 

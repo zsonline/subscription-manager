@@ -2,6 +2,10 @@
 
 {% block title %}Abonnements{% endblock %}
 
+{% block breadcrumbs %}
+    <span>Abonnements</span>
+{% endblock %}
+
 {% block content %}
     {% for message in messages %}
         <p class="alert{% if message.tags %} {{ message.tags }}{% endif %}">{{ message }}</p>

@@ -2,6 +2,11 @@
 
 {% block title %}Adresse ändern{% endblock %}
 
+{% block breadcrumbs %}
+    <a href="{% url 'subscription_list' %}">Abonnements</a>
+    <span>Adresse ändern</span>
+{% endblock %}
+
 {% block content %}
     {% include 'includes/subscription.html' %}
 

@@ -2,6 +2,11 @@
 
 {% block title %}Neues Abonnement{% endblock %}
 
+{% block breadcrumbs %}
+    <a href="{% url 'subscription_list' %}">Abonnements</a>
+    <span>Neues Abonnement</span>
+{% endblock %}
+
 {% block content %}
     <p class="description">
         Die Zürcher Studierendenzeitung wird sechsmal jährlich an alle Abonnentinnen und Abonnenten nach Hause versandt.
