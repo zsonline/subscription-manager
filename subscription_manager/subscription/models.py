@@ -6,9 +6,6 @@ from django.contrib.auth import get_user_model
 from django.db import models
 from django.utils import timezone
 
-# Project imports
-from subscription_manager.payment.models import Payment
-
 # Application imports
 from .managers import SubscriptionManager
 
@@ -111,7 +108,7 @@ class Subscription(models.Model):
         Returns true if all payments associated with
         this subscription are paid. Otherwise false.
         """
-        payments = Payment.objects.filter(subscription=self)
+        payments = self.payment_set.all()
         if payments is None:
             return False
         for payment in payments:
