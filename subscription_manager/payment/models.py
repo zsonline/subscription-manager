@@ -4,11 +4,19 @@ from datetime import timedelta
 # Django imports
 from django.db import models
 
+# Project imports
+from subscription_manager.subscription.models import Subscription
+
 # Application imports
 from .managers import PaymentManager
 
 
 class Payment(models.Model):
+    subscription = models.ForeignKey(
+        Subscription,
+        on_delete=models.DO_NOTHING,
+        verbose_name='Abonnement'
+    )
     amount = models.IntegerField(
         'Betrag'
     )

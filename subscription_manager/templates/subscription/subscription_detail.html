@@ -7,13 +7,15 @@
 
     <h3>Rechnung</h3>
 
-    <h4>Betrag</h4>
-    {{ subscription.payment.amount }}
+    {% for payment in payments %}
+        <h4>Betrag</h4>
+        {{ payment.amount }}
 
-    <h4>Mitteilungsfeld</h4>
-    {{ subscription.payment.code }}
+        <h4>Mitteilungsfeld</h4>
+        {{ payment.code }}
 
-    <h4>Zahlungsdetails</h4>
-    Bank: <br>
-    IBAN: ???
+        <h4>Zahlungsdetails</h4>
+        Bank: <br>
+        IBAN: ???
+    {% endfor %}
 {% endblock %}

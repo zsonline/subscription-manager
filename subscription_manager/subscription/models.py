@@ -1,3 +1,6 @@
+# Pip imports
+from dateutil.relativedelta import relativedelta
+
 # Django imports
 from django.contrib.auth import get_user_model
 from django.db import models
@@ -5,6 +8,9 @@ from django.utils import timezone
 
 # Project imports
 from subscription_manager.payment.models import Payment
+
+# Application imports
+from .managers import SubscriptionManager
 
 
 class Subscription(models.Model):
@@ -56,16 +62,18 @@ class Subscription(models.Model):
         max_length=50,
         default='Schweiz'
     )
-    payment = models.OneToOneField(
-        Payment,
-        on_delete=models.PROTECT
+    start_date = models.DateField(
+        null=True
     )
-    start_date = models.DateField()
-    end_date = models.DateField()
+    end_date = models.DateField(
+        null=True
+    )
     canceled_at = models.DateTimeField(
         null=True
     )
     created_at = models.DateTimeField(auto_now_add=True)
+
+    objects = SubscriptionManager()
 
     def __str__(self):
         return 'Subscription({}, {})'.format(self.user.email, self.plan)
@@ -91,7 +99,25 @@ class Subscription(models.Model):
         """
         Checks whether the subscription is active.
         """
-        return self.payment.is_paid() and not self.is_canceled() and self.has_started() and not self.has_ended()
+        return not self.is_canceled() and self.has_started() and not self.has_ended()
+
+    def renew(self):
+        self.end_date = timezone.now().date() + relativedelta(months=+self.plan.duration)
+        self.save()
+        return self
+
+    def is_paid(self):
+        """
+        Returns true if all payments associated with
+        this subscription are paid. Otherwise false.
+        """
+        payments = Payment.objects.filter(subscription=self)
+        if payments is None:
+            return False
+        for payment in payments:
+            if not payment.is_paid():
+                return False
+        return True
 
 
 class Plan(models.Model):

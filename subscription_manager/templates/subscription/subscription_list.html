@@ -38,7 +38,7 @@
 
                 <div class="payment">
                     <h4>Zahlung</h4>
-                    {% if subscription.payment.is_paid %}
+                    {% if subscription.is_paid %}
                         <span class="badge success">Bezahlt</span>
                     {% else %}
                         <span class="badge danger">Nicht bezahlt</span>
@@ -48,7 +48,7 @@
                 </div>
 
                 <div class="actions">
-                    {% if subscription.payment.is_paid %}
+                    {% if subscription.is_paid %}
                         <a href="{% url 'subscription_update' subscription.id %}" class="button black">Bearbeiten</a>
                         <a href="{% url 'subscription_cancel' subscription.id %}" class="button danger">Kündigen</a>
                     {% else %}

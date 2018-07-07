@@ -69,9 +69,16 @@ class SubscriptionDetailView(detail.DetailView):
         user = self.request.user
         # Get object or raise 404
         subscription = get_object_or_404(Subscription, id=subscription_id, user=user)
-        if subscription.payment.is_paid():
-            raise Http404('Subscription is paid')
         return subscription
+
+    def get_context_data(self, **kwargs):
+        """
+        Adds all associated payments to the context.
+        """
+        data = super().get_context_data(**kwargs)
+        payments = Payment.objects.filter(subscription=self.get_object())
+        data['payments'] = payments
+        return data
 
 
 @method_decorator(login_required, name='dispatch')
@@ -173,19 +180,20 @@ class SubscriptionCreateView(View):
 
         # Validate forms
         if subscription_form.is_valid() and (payment_form is None or payment_form.is_valid()):
-            # Save payment
-            if payment_form is not None:
-                payment = payment_form.save()
-            else:
-                payment = Payment.objects.create(amount=plan.price)
             # Save subscription
             subscription = subscription_form.save(commit=False)
             subscription.user = request.user
             subscription.plan = plan
-            subscription.payment = payment
             subscription.start_date = timezone.now()
             subscription.end_date = timezone.now() + relativedelta(months=+plan.duration)
             subscription.save()
+            # Save payment
+            if payment_form is not None:
+                payment = payment_form.save(commit=False)
+                payment.subscription = subscription
+                payment.save()
+            else:
+                payment = Payment.objects.create(subscription=subscription, amount=plan.price)
 
             # Make a context variable for the templates
             context = {
@@ -261,7 +269,7 @@ class SubscriptionCancelView(edit.DeleteView):
         # Get object or raise 404
         subscription = get_object_or_404(Subscription, id=subscription_id, user=user)
         # Check if subscription is active
-        if not subscription.is_active():
+        if not subscription.is_active() or not subscription.is_paid():
             raise Http404('Subscription is inactive')
         return subscription
 
