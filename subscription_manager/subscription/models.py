@@ -6,9 +6,6 @@ from django.utils import timezone
 # Project imports
 from subscription_manager.payment.models import Payment
 
-# Application imports
-from .plans import Plans
-
 
 class Subscription(models.Model):
     """

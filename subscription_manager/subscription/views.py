@@ -96,9 +96,11 @@ class SubscriptionCreateView(View):
 
         return plan
 
-    def get(self, request, *args, **kwargs):
+    def dispatch(self, request, *args, **kwargs):
         """
-        Handles get request. Renders empty form.
+        Dispatch method is called before get or post method.
+        Checks if plan exists and whether the user is eligible
+        to buy a subscription of that plan.
         """
         # Get plan
         plan = self.get_plan(**kwargs)
@@ -106,7 +108,21 @@ class SubscriptionCreateView(View):
             # If plan does not exist, return to list view and display
             # error message
             messages.error(request, 'Dieses Abonnement existiert nicht.')
-            return redirect(reverse('subscription_list'))
+            return redirect(reverse('plan_list'))
+
+        # Check eligibility
+        if plan.only_student and not request.user.is_student():
+            messages.error(request, 'Dieses Abonnement ist nur für Studentinnen.')
+            return redirect(reverse('plan_list'))
+
+        return super().dispatch(request, *args, **kwargs)
+
+    def get(self, request, *args, **kwargs):
+        """
+        Handles get request. Renders empty form.
+        """
+        # Get plan (already checked in dispatch method)
+        plan = self.get_plan(**kwargs)
 
         # Choose right subscription form
         subscription_form = SubscriptionWithoutNamesForm(prefix='address')
@@ -135,13 +151,8 @@ class SubscriptionCreateView(View):
         Handles post request. Validates form and creates
         subscription if data is valid.
         """
-        # Get plan
+        # Get plan (already checked in dispatch method)
         plan = self.get_plan(**kwargs)
-        if plan is None:
-            # If plan does not exist, return to list view and display
-            # error message
-            messages.error(request, 'Dieses Abo existiert nicht.')
-            return redirect(reverse('subscription_list'))
 
         # Get data from right subscription form
         subscription_form = SubscriptionWithoutNamesForm(request.POST, prefix='address')

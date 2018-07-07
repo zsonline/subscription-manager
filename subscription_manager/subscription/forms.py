@@ -2,7 +2,6 @@
 from django import forms
 
 # Application imports
-from .plans import Plans
 from .models import Subscription
 
 
