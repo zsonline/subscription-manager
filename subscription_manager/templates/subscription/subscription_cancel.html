@@ -1,20 +1,9 @@
 {% extends 'layouts/manager.html' %}
 
-{% load plans %}
-
 {% block title %}Abo kündigen{% endblock %}
 
 {% block content %}
-    <div class="subscription">
-        <h3>{% plan_name subscription.plan %}</h3>
-        <address>
-            {{ subscription.address_line_1 }}<br>
-            {% if subscription.address_line_2 %}
-                {{ subscription.address_line_2 }}<br>
-            {% endif %}
-            {{ subscription.postcode }} {{ subscription.city }}
-        </address>
-    </div>
+    {% include 'includes/subscription.html' %}
 
     <form method="post">
         {% csrf_token %}

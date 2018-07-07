@@ -1,35 +1,9 @@
 {% extends 'layouts/manager.html' %}
 
-{% load plans %}
-
 {% block title %}Zahlungsdetails{% endblock %}
 
 {% block content %}
-    <h3>{% plan_name subscription.plan %}</h3>
-
-    {% if subscription.is_active %}
-        <span class="badge success">Aktiv</span>
-    {% else %}
-        <span class="badge danger">Inaktiv</span>
-    {% endif %}
-
-    <h4>Adresse</h4>
-    <address>
-        {{ subscription.address_line_1 }}<br>
-        {% if subscription.address_line_2 %}
-            {{ subscription.address_line_2 }}<br>
-        {% endif %}
-        {{ subscription.postcode }} {{ subscription.city }}
-    </address>
-
-    <h4>Status</h4>
-    {% if subscription.is_active %}
-        Gültig bis {{ subscription.end_date }}
-    {% elif subscription.has_ended %}
-        Am {{ subscription.end_date }} abgelaufen
-    {% else %}
-        Zahlbar bis {{ subscription.payment.pay_until }}
-    {% endif %}
+    {% include 'includes/subscription.html' %}
 
     <h3>Rechnung</h3>
 
