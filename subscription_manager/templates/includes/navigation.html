@@ -4,10 +4,9 @@
     {% if user.is_authenticated %}
         <a class="{% active 'subscription_list' %}" href="{% url 'subscription_list' %}">Abonnements</a>
         <a href="#">Account</a>
-        <a class="button primary" href="{% url 'plan_list' %}">Abo kaufen</a>
-        <a class="button black" href="{% url 'logout' %}">Logout</a>
+        <a href="{% url 'logout' %}">Logout</a>
     {% else %}
-        {# <a class="button primary {% active 'plans' %}" href="{% url 'plans' %}">Abo kaufen</a> #}
-        <a class="button black {% active 'login' %}" href="{% url 'login' %}">Login</a>
+        {# <a class="{% active 'plans' %}" href="{% url 'plans' %}">Abo kaufen</a> #}
+        <a class="{% active 'login' %}" href="{% url 'login' %}">Login</a>
     {% endif %}
 </nav>

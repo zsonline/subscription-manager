@@ -474,11 +474,18 @@ th, td {
   td {
     padding: 1em 0; } }
 
-nav a:not(:last-child) {
-  margin: 0 .75em .75em 0; }
+nav a {
+  display: block; }
+  nav a:not(:last-child) {
+    margin-bottom: .25em; }
+  nav a.active {
+    font-weight: bold; }
 
-nav a.active {
-  font-weight: bold; }
+@media (min-width: 756px) {
+  nav a {
+    display: inline; }
+    nav a:not(:last-child) {
+      margin: 0 1em 0 0; } }
 
 .subscription {
   box-sizing: border-box;
@@ -538,7 +545,9 @@ header {
     align-items: center;
     height: 9rem; }
     header h1 {
-      font-size: 1.8em; } }
+      font-size: 1.8em; }
+    header nav {
+      margin-top: 0; } }
 
 html, body {
   min-height: 100vh; }
