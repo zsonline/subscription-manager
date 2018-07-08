@@ -308,6 +308,9 @@ h1, h2, h3, h4 {
   margin: 0 0 .5em 0; }
 
 a {
+  white-space: nowrap; }
+
+a {
   color: #030303; }
   a:visited {
     color: #030303; }
@@ -373,8 +376,8 @@ a {
 .badge {
   font-size: .75em;
   padding: .25em .5em;
-  text-transform: lowercase;
-  display: inline-block; }
+  display: inline-block;
+  text-decoration: none; }
   .badge.info {
     color: white;
     background-color: #375e97; }
@@ -491,6 +494,8 @@ nav a {
   box-sizing: border-box;
   background-color: #faf0e6;
   padding: .75rem; }
+  .subscription.canceled {
+    background-color: #bfbfbf; }
 
 .card {
   box-sizing: border-box; }
@@ -500,6 +505,8 @@ nav a {
     margin-bottom: .2em; }
   .card div:not(:last-child) {
     margin-bottom: 1em; }
+  .card a {
+    display: block; }
 
 @media (min-width: 756px) {
   .cards {

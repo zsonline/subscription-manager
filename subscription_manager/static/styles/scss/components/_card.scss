@@ -2,6 +2,10 @@
   box-sizing: border-box;
   background-color: $beige;
   padding: .75rem;
+
+  &.canceled {
+    background-color: $light-grey;
+  }
 }
 
 .card {
@@ -17,6 +21,10 @@
 
   div:not(:last-child) {
     margin-bottom: 1em;
+  }
+
+  a {
+    display: block;
   }
 }
 

@@ -11,48 +11,55 @@
         <p class="alert{% if message.tags %} {{ message.tags }}{% endif %}">{{ message }}</p>
     {% endfor %}
 
-    <div class="cards">
-        {% for subscription in subscriptions %}
-            <div class="card">
-                {% include 'includes/subscription.html' %}
+    {% if subscriptions|length > 0 %}
+        <p>
+            <a class="button primary" href="{% url 'plan_list' %}">Neues Abonnement</a>
+        </p>
 
-                <div class="status">
-                    <h4>Status</h4>
-                    {% if subscription.is_active %}
-                        <span class="badge success">Aktiv</span>
-                        <br>
-                        Gültig bis {{ subscription.end_date }}
-                    {% else %}
-                        <span class="badge danger">Inaktiv</span>
-                        {% if subscription.has_ended %}
+        <div class="cards">
+            {% for subscription in subscriptions %}
+                <div class="card">
+                    {% include 'includes/subscription.html' %}
+
+                    <div class="status">
+                        <h4>Status</h4>
+                        {% if subscription.is_active %}
+                            <span class="badge success">Aktiv</span>
                             <br>
-                            Am {{ subscription.end_date }} abgelaufen
+                            Gültig von {{ subscription.start_date }} bis {{ subscription.end_date }}
+                        {% else %}
+                            <span class="badge danger">Inaktiv</span>
+                            {% if subscription.has_ended %}
+                                <br>
+                                Am {{ subscription.end_date }} abgelaufen
+                            {% elif subscription.is_canceled %}
+                                <br>
+                                Am {{ subscription.canceled_at }} gekündigt
+                            {% endif %}
                         {% endif %}
+                    </div>
+
+                    {% if subscription.has_open_payments %}
+                        <div class="payment">
+                            <h4>Zahlung</h4>
+                            <a href="{% url 'subscription_detail' subscription.id %}">Offene Rechnung</a>
+                        </div>
+                    {% endif %}
+
+                    {% if subscription.is_active %}
+                        <div class="actions">
+                            <h4>Optionen</h4>
+                            <a href="{% url 'subscription_update' subscription.id %}">Adresse ändern</a>
+                            {% if not subscription.has_open_payments %}
+                                <a href="{% url 'subscription_cancel' subscription.id %}">Kündigen</a>
+                            {% endif %}
+                        </div>
                     {% endif %}
                 </div>
-
-                <div class="payment">
-                    <h4>Zahlung</h4>
-                    {% if subscription.is_paid %}
-                        <span class="badge success">Bezahlt</span>
-                    {% else %}
-                        <span class="badge danger">Nicht bezahlt</span>
-                    {% endif %}
-                </div>
-
-                <div class="actions">
-                    {% if subscription.is_paid %}
-                        <a href="{% url 'subscription_update' subscription.id %}" class="button black">Bearbeiten</a>
-                        <a href="{% url 'subscription_cancel' subscription.id %}" class="button danger">Kündigen</a>
-                    {% else %}
-                        <a href="{% url 'subscription_detail' subscription.id %}" class="button black">Zahlungsdetails</a>
-                    {% endif %}
-                </div>
-            </div>
-        {% endfor %}
-    </div>
-
-    {% if subscriptions|length == 0 %}
-        <p>Du hast keine Abonnements. <a href="{% url 'plan_list' %}">Abo kaufen</a>.</p>
+            {% endfor %}
+        </div>
+    {% else %}
+        <p>Du hast keine Abonnements.</p>
+        <a class="button primary" href="{% url 'plan_list' %}">Neues Abonnement</a>
     {% endif %}
 {% endblock %}

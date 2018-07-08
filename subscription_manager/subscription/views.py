@@ -192,8 +192,6 @@ class SubscriptionCreateView(View):
             subscription = subscription_form.save(commit=False)
             subscription.user = request.user
             subscription.plan = plan
-            subscription.start_date = timezone.now()
-            subscription.end_date = timezone.now() + relativedelta(months=+plan.duration)
             subscription.save()
             # Save payment
             if payment_form is not None:
@@ -202,6 +200,12 @@ class SubscriptionCreateView(View):
                 payment.save()
             else:
                 payment = Payment.objects.create(subscription=subscription, amount=plan.price)
+
+            # Only set start and end date when subscription is free
+            if payment.amount == 0:
+                subscription.start_date = timezone.now()
+                subscription.end_date = timezone.now() + relativedelta(months=+plan.duration)
+                subscription.save()
 
             # Make a context variable for the templates
             context = {
@@ -277,7 +281,7 @@ class SubscriptionCancelView(edit.DeleteView):
         # Get object or raise 404
         subscription = get_object_or_404(Subscription, id=subscription_id, user=user)
         # Check if subscription is active
-        if not subscription.is_active() or not subscription.is_paid():
+        if not subscription.is_active() or subscription.has_open_payments():
             raise Http404('Subscription is inactive')
         return subscription
 

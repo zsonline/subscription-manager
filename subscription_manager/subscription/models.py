@@ -70,6 +70,7 @@ class Subscription(models.Model):
     )
     created_at = models.DateTimeField(auto_now_add=True)
 
+    # Custom model manager
     objects = SubscriptionManager()
 
     def __str__(self):
@@ -80,16 +81,20 @@ class Subscription(models.Model):
         True if the subscription has started.
         Otherwise false.
         """
-        return self.start_date <= timezone.now().date()
+        return self.start_date is not None and self.start_date <= timezone.now().date()
 
     def has_ended(self):
         """
         True if the subscription has ended.
         Otherwise false.
         """
-        return self.end_date <= timezone.now().date()
+        return self.end_date is not None and self.end_date <= timezone.now().date()
 
     def is_canceled(self):
+        """
+        Returns true if the canceled_at field
+        is set.
+        """
         return self.canceled_at is not None
 
     def is_active(self):
@@ -99,22 +104,26 @@ class Subscription(models.Model):
         return not self.is_canceled() and self.has_started() and not self.has_ended()
 
     def renew(self):
-        self.end_date = timezone.now().date() + relativedelta(months=+self.plan.duration)
+        """
+        Renews the subscription by the duration of the
+        plan.
+        """
+        self.end_date += relativedelta(months=+self.plan.duration)
         self.save()
         return self
 
-    def is_paid(self):
+    def has_open_payments(self):
         """
-        Returns true if all payments associated with
-        this subscription are paid. Otherwise false.
+        Returns true if at least one payment associated with
+        this subscription are open. Otherwise false.
         """
         payments = self.payment_set.all()
         if payments is None:
             return False
         for payment in payments:
             if not payment.is_paid():
-                return False
-        return True
+                return True
+        return False
 
 
 class Plan(models.Model):
