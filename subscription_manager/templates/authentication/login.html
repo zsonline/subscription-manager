@@ -1,5 +1,7 @@
 {% extends 'layouts/vertical.html' %}
 
+{% load static %}
+
 {% block title %}Anmelden{% endblock %}
 
 {% block left_column %}
@@ -17,9 +19,7 @@
     </form>
 {% endblock %}
 
-{% comment %}
-{% block background_image_url %}{% endblock %}
-{% endcomment %}
+{% block background_image_url %}{% static 'images/feature1.jpg' %}{% endblock %}
 
 {% block right_column %}
     <h3>Lorem ipsum</h3>

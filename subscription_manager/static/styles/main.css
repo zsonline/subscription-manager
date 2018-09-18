@@ -633,7 +633,7 @@ main.vertical .column {
       bottom: 0;
       left: 0;
       background-color: #030303;
-      opacity: .75; }
+      opacity: .25; }
     main.vertical .column.overlay .inner {
       z-index: 0; }
 
