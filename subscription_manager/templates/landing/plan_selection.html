@@ -1,0 +1,60 @@
+{% extends 'layouts/vertical.html' %}
+
+{% load static %}
+
+{% block title %} kaufen{% endblock %}
+
+{% block left_column %}
+    <h2>Abonnements</h2>
+
+    <p class="description">
+        Die Zürcher Studierendenzeitung wird sechsmal jährlich an alle Abonnentinnen und Abonnenten nach Hause versandt.
+    </p>
+
+    {% for message in messages %}
+        <p class="alert{% if message.tags %} {{ message.tags }}{% endif %}">{{ message }}</p>
+    {% endfor %}
+
+    <ul id="plans">
+        {% for plan in plans %}
+
+            <li class="plan">
+
+                <h3>{{ plan.name }}</h3>
+                <p>{{ plan.description }}</p>
+
+                <div class="price">
+                    {% if plan.price == 0 %}
+                        <span class="amount">Gratis</span>
+                    {% else %}
+                        <span class="amount">{{ plan.price }}</span> Franken
+                        /
+                        {% if plan.duration == 1 %}
+                            1 Monat
+                        {% else %}
+                            {{ plan.duration }} Monate
+                        {% endif %}
+                    {% endif %}
+                </div>
+
+                {% if not plan.price == 0 %}
+                    <a href="{% url 'subscription_create' plan.slug %}" class="button black">Kaufen</a>
+                {% else %}
+                    <a href="{% url 'subscription_create' plan.slug %}" class="button black">Abonnieren</a>
+                {% endif %}
+
+
+            </li>
+
+        {% endfor %}
+    </ul>
+{% endblock %}
+
+{% block background_image_url %}{% static 'images/feature1.jpg' %}{% endblock %}
+
+{% block right_column_alignment %}top{% endblock %}
+
+{% block right_column %}
+    <h3>Lorem ipsum</h3>
+    <p>{% lorem %}</p>
+{% endblock %}
