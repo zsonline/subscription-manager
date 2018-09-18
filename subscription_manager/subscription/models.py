@@ -15,7 +15,7 @@ class Subscription(models.Model):
     Model that holds the information for a
     user's subscription.
     """
-    user = models.ForeignKey(
+    user = models.OneToOneField(
         get_user_model(),
         on_delete=models.CASCADE
     )
@@ -23,18 +23,6 @@ class Subscription(models.Model):
         'Plan',
         on_delete=models.PROTECT,
         verbose_name='Abo-Typ'
-    )
-    first_name = models.CharField(
-        'Vorname',
-        max_length=30,
-        blank=True,
-        null=True
-    )
-    last_name = models.CharField(
-        'Nachname',
-        max_length=150,
-        blank=True,
-        null=True
     )
     address_line_1 = models.CharField(
         'Adresse',
@@ -115,7 +103,7 @@ class Subscription(models.Model):
     def has_open_payments(self):
         """
         Returns true if at least one payment associated with
-        this subscription are open. Otherwise false.
+        this subscription is open. Otherwise false.
         """
         payments = self.payment_set.all()
         if payments is None:
@@ -149,21 +137,6 @@ class Plan(models.Model):
     )  # In months
     price = models.PositiveSmallIntegerField(
         'Preis'
-    )
-    is_min_price = models.BooleanField(
-        'Ist Mindestpreis',
-        default=False,
-        help_text='Interpretiere Preis als Mindestpreis'
-    )
-    allow_different_name = models.BooleanField(
-        'Erlaube andere Namen',
-        default=False,
-        help_text='Erlaube vom Account unterschiedliche Vor- und Nachnamen'
-    )
-    only_student = models.BooleanField(
-        'Nur für Studentinnen',
-        default=False,
-        help_text='Abo nur für Studenten'
     )
 
     def __str__(self):

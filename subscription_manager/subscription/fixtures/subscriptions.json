@@ -3,10 +3,8 @@
     "model": "subscription.subscription",
     "pk": 1,
     "fields": {
-      "user": 3,
+      "user": 2,
       "plan": 1,
-      "first_name": null,
-      "last_name": null,
       "address_line_1": "R\u00e4emistrasse 62",
       "address_line_2": null,
       "postcode": "8617",
@@ -23,9 +21,7 @@
     "pk": 2,
     "fields": {
       "user": 3,
-      "plan": 3,
-      "first_name": null,
-      "last_name": null,
+      "plan": 2,
       "address_line_1": "Musterstrasse 34",
       "address_line_2": "Postfach 1",
       "postcode": "1234",

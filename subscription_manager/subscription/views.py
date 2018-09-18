@@ -21,7 +21,7 @@ from subscription_manager.payment.forms import MinimumPaymentForm
 from subscription_manager.payment.models import Payment
 
 # Application imports
-from .forms import SubscriptionWithNamesForm, SubscriptionWithoutNamesForm
+from .forms import SubscriptionForm
 from .models import Subscription, Plan
 
 
@@ -91,7 +91,7 @@ class SubscriptionDetailView(detail.DetailView):
 
 @method_decorator(login_required, name='dispatch')
 class SubscriptionCreateView(View):
-    form_class = SubscriptionWithNamesForm
+    form_class = SubscriptionForm
     template_name = 'subscription/subscription_create.html'
 
     @classmethod
@@ -140,9 +140,7 @@ class SubscriptionCreateView(View):
         plan = self.get_plan(**kwargs)
 
         # Choose right subscription form
-        subscription_form = SubscriptionWithoutNamesForm(prefix='address')
-        if plan.allow_different_name:
-            subscription_form = SubscriptionWithNamesForm(prefix='address')
+        subscription_form = SubscriptionForm(prefix='address')
 
         payment_form = None
         # Payment form in case the price is not fixed
@@ -170,9 +168,7 @@ class SubscriptionCreateView(View):
         plan = self.get_plan(**kwargs)
 
         # Get data from right subscription form
-        subscription_form = SubscriptionWithoutNamesForm(request.POST, prefix='address')
-        if plan.allow_different_name:
-            subscription_form = SubscriptionWithNamesForm(request.POST, prefix='address')
+        subscription_form = SubscriptionForm(request.POST, prefix='address')
 
         payment_form = None
         # Payment form in case of a dynamic price
@@ -243,7 +239,7 @@ class SubscriptionCreateView(View):
 @method_decorator(login_required, name='dispatch')
 class SubscriptionUpdateView(edit.UpdateView):
     model = Subscription
-    form_class = SubscriptionWithoutNamesForm
+    form_class = SubscriptionForm
     template_name = 'subscription/subscription_update.html'
     success_url = reverse_lazy('subscription_list')
 
