@@ -3,8 +3,10 @@ main.vertical {
     display: flex;
     padding: 2rem 1rem;
     background-color: $beige;
+    background-size: cover;
+    background-position: center;
 
-    &, &.top {
+    &.top {
       align-items: start;
     }
 
@@ -12,32 +14,17 @@ main.vertical {
       align-items: center;
     }
 
-    &.bottom {
+    &, &.bottom {
       align-items: end;
     }
 
-    &.overlay {
-      color: $white;
-      text-shadow: 0 0 2px $black;
-
-      background-color: $black;
-      position: relative;
-      background-size: cover;
-      background-position: center;
-
-      &:before {
-        content: '';
-        position: absolute;
-        top: 0;
-        right: 0;
-        bottom: 0;
-        left: 0;
-        background-color: $black;
-        opacity: .25;
-      }
+    &.image {
+      padding: 0;
 
       .inner {
-        z-index: 0;
+        padding: 2rem 1rem 1rem 1rem;
+        background-color: rgba($black, 0.5);
+        color: $white;
       }
     }
   }
@@ -68,6 +55,15 @@ main.vertical {
       flex: 1;
       justify-content: center;
       padding: 3rem 1rem;
+
+      &.image {
+        justify-content: normal;
+
+        .inner {
+          width: 100%;
+          padding: 2rem 2rem 1rem 2rem;
+        }
+      }
     }
 
     .inner {
