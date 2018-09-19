@@ -2,7 +2,7 @@
 
 {% load static %}
 
-{% block title %} kaufen{% endblock %}
+{% block title %}Abonnements{% endblock %}
 
 {% block left_column %}
     <h2>Abonnements</h2>
@@ -38,9 +38,9 @@
                 </div>
 
                 {% if not plan.price == 0 %}
-                    <a href="{% url 'subscription_create' plan.slug %}" class="button black">Kaufen</a>
+                    <a href="{% url 'purchase' plan.slug %}" class="button black">Kaufen</a>
                 {% else %}
-                    <a href="{% url 'subscription_create' plan.slug %}" class="button black">Abonnieren</a>
+                    <a href="{% url 'purchase' plan.slug %}" class="button black">Abonnieren</a>
                 {% endif %}
 
 

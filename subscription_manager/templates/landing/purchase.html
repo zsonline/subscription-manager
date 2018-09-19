@@ -1,0 +1,72 @@
+{% extends 'layouts/vertical.html' %}
+
+{% load static %}
+
+{% block title %}{{ plan.name }}{% endblock %}
+
+{% block left_column %}
+    <h2>{{ plan.name }}</h2>
+
+    <p class="description">{{ plan.description }}</p>
+
+    {% for message in messages %}
+        <p class="alert{% if message.tags %} {{ message.tags }}{% endif %}">{{ message }}</p>
+    {% endfor %}
+
+    <form action="{% url 'purchase' plan.slug %}" method="post">
+        {% csrf_token %}
+
+        <fieldset>
+            <h3>Account</h3>
+            {{ user_form.as_p }}
+
+            {% if plan.slug == 'student' %}
+                <p class="alert info">
+                    Gib deine studentische E-Mail-Adresse an. Folgende Adressen sind anerkannt:
+                    {% for email_address in allowed_student_email_addresses %}
+                        @{{ email_address }}
+                        {% if not forloop.last %}, {% endif %}
+                    {% endfor %}.
+                </p>
+            {% endif %}
+        </fieldset>
+
+        <fieldset>
+            <h3>Abonnement</h3>
+            {{ subscription_form.as_p }}
+        </fieldset>
+
+        <fieldset>
+            <h3>Preis</h3>
+
+            <p>Wir freuen uns über jeden Franken, den du mehr bezahlst. So können wir uns mal einen neuen Computer anschaffen oder unser selbstgekochtes Weihnachtsessen aufpeppen.</p>
+
+            {{ payment_form.as_p }}
+
+            <p>
+                Laufzeit:
+                {% if plan.duration == 1 %}
+                    1 Monat
+                {% else %}
+                    {{ plan.duration }} Monate
+                {% endif %}
+            </p>
+
+            <p class="alert info">
+                Wir unterstützen nur Zahlungen mittels Banküberweisung. Nach dem Kauf deines Abonnements,
+                schicken wir dir eine Rechnung. Sobald die Zahlung bei uns eingetroffen ist, aktivieren wir es.
+            </p>
+        </fieldset>
+
+        <fieldset>
+            <input class="button black" type="submit" value="Abonnieren" />
+        </fieldset>
+    </form>
+{% endblock %}
+
+{% block background_image_url %}{% static 'images/feature1.jpg' %}{% endblock %}
+
+{% block right_column %}
+    <h3>Lorem ipsum</h3>
+    <p>{% lorem %}</p>
+{% endblock %}

@@ -9,7 +9,9 @@ from .models import Payment
 
 class PaymentForm(forms.ModelForm):
     """
-    Base payment model form.
+    Payment model form with one input field for the amount.
+    Has custom validation that checks whether the price is
+    correct.
     """
     required_css_class = 'required'
 
@@ -17,13 +19,6 @@ class PaymentForm(forms.ModelForm):
         model = Payment
         fields = ('amount',)
 
-
-class MinimumPaymentForm(PaymentForm):
-    """
-    Payment model form with one input field for the amount.
-    Has custom validation that checks whether the price is
-    correct.
-    """
     def __init__(self, *args, **kwargs):
         """
         Constructor. Should get two additional parameters, price (int)
@@ -42,6 +37,10 @@ class MinimumPaymentForm(PaymentForm):
         # Add help text
         self.fields['amount'].help_text = \
             'Der Preis muss mindestens {} Franken betragen.'.format(self.min_price)
+        if self.min_price == 0:
+            self.fields['amount'].help_text = \
+                'Zahl so viel du willst.'.format(self.min_price)
+
 
     def clean_amount(self):
         """

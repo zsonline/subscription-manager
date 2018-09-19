@@ -2,10 +2,10 @@
 from django.urls import path
 
 # Application imports
-from .views import PlanSelection
+from .views import PlanSelection, Purchase
 
 # URL patterns
 urlpatterns = [
     path('', PlanSelection.as_view(), name='index'),
-    #path('abo/kaufen/<plan_slug>/', SubscriptionCreateView.as_view(), name='subscription_create')
+    path('abo/<plan_slug>/', Purchase.as_view(), name='purchase')
 ]

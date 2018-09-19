@@ -15,7 +15,7 @@
     "pk": 2,
     "fields": {
       "name": "Studentisches Abonnement",
-      "description": "Studierende der ETH erhalten die ZS gratis. Registriere dich hierf\u00fcr mit deiner studentischen E-Mail-Adresse.",
+      "description": "Studierende erhalten die ZS gratis. Registriere dich hierf\u00fcr mit deiner studentischen E-Mail-Adresse.",
       "slug": "student",
       "duration": 12,
       "price": 0

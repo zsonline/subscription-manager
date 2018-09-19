@@ -17,7 +17,7 @@ from django.views.generic import detail, edit, list
 
 # Project imports
 from subscription_manager.authentication.decorators import anonymous_required
-from subscription_manager.payment.forms import MinimumPaymentForm
+from subscription_manager.payment.forms import PaymentForm
 from subscription_manager.payment.models import Payment
 
 # Application imports
