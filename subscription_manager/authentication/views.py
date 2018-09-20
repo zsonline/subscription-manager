@@ -5,6 +5,9 @@ from django.contrib.auth import authenticate, login, logout, get_user_model
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
 
+# Project imports
+from subscription_manager.subscription.models import Plan
+
 # Application imports
 from .models import Token
 from .forms import SignUpForm, LoginForm
@@ -17,6 +20,9 @@ def signup_view(request):
     Renders or processes the signup form through which
     a user can register himself.
     """
+    # Read next parameter
+    next_page = request.GET.get('next')
+
     # For POST requests, process the form data
     if request.method == 'POST':
 
@@ -30,9 +36,9 @@ def signup_view(request):
             # If successful
             if user is not None:
                 # Create and send verification token
-                Token.objects.create_and_send(user=user)
+                Token.objects.create_and_send(user=user, action='signup', next_page=next_page)
                 # Create success message
-                messages.success(request, 'Token an {} gesendet.'.format(user.email))
+                messages.success(request, 'Bestätigungs-E-Mail an {} gesendet.'.format(user.email))
                 # Redirect to this page
                 return redirect(reverse('login'))
 
@@ -43,7 +49,7 @@ def signup_view(request):
     else:
         form = SignUpForm()
 
-    return render(request, 'authentication/signup.html', {'form': form})
+    return render(request, 'authentication/signup.html', {'form': form, 'next': next_page})
 
 
 @anonymous_required
@@ -53,6 +59,9 @@ def login_view(request):
     a token is sent and the user redirected to the token verification
     page. Otherwise, the login form is rendered.
     """
+    # Read next parameter
+    next_page = request.GET.get('next', None)
+
     # For POST requests, process the form data
     if request.method == 'POST':
 
@@ -69,7 +78,7 @@ def login_view(request):
             # If user exists
             if user is not None:
                 # Create and send token
-                Token.objects.create_and_send(user=user)
+                Token.objects.create_and_send(user=user, action='login', next_page=next_page)
                 # Create success message
                 messages.success(request, 'Token an {} gesendet.'.format(user.email))
                 # Redirect to this page
@@ -78,7 +87,7 @@ def login_view(request):
     else:
         form = LoginForm()
 
-    return render(request, 'authentication/login.html', {'form': form})
+    return render(request, 'authentication/login.html', {'form': form, 'next': next_page})
 
 
 def token_verification_view(request, email_b64, code):
@@ -88,13 +97,22 @@ def token_verification_view(request, email_b64, code):
     redirected to the login page and an error is displayed.
     """
     email = Token.b64_decoded(email_b64)
+    token = Token.objects.get_from_code(code)
 
     # Authenticate
     user = authenticate(email=email, code=code)
     # If authentication is successful, log user in
     if user is not None:
         login(request, user)
-        # Redirect user to login home
+        if token.action == 'signup':
+            messages.success(request, 'Deine E-Mail-Adresse ist bestätigt.')
+        elif token.action == 'login':
+            messages.success(request, 'Du bist eingeloggt.')
+        # Handle next parameter
+        next_page = request.GET.get('next', None)
+        if next_page is not None:
+            return HttpResponseRedirect(next_page)
+        # Redirect user to login home otherwise
         return HttpResponseRedirect(settings.LOGIN_REDIRECT_URL)
 
     messages.error(request, 'Dein Token ist ungültig.')

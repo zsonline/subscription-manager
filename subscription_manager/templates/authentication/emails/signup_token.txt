@@ -1,0 +1,5 @@
+{% extends 'base_email.txt' %}
+
+{% block content %}
+Bitte bestätige deine E-Mail-Adresse, indem du auf folgenden Link klickst: {{ url }}.
+{% endblock %}

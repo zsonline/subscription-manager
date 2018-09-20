@@ -1,7 +1,8 @@
 # Django imports
 from django.contrib.auth import backends
 from django.conf import settings
-from django.core.mail import EmailMultiAlternatives
+from django.core.mail import send_mail
+from django.shortcuts import reverse
 from django.template.loader import render_to_string
 
 # Application imports
@@ -40,31 +41,29 @@ class EmailBackend(TokenBackend):
     a send method that sends tokens via email.
     """
     @staticmethod
-    def send(token, code):
+    def send(token, code, action, next_page):
         """
-        Creates and sends a login token email for a
-        given token object and a code. It makes a .txt
-        and a .html version of the email.
+        Creates and sends a token email for a
+        given token object and a code.
         """
-        # Make a context variable for the templates
-        context = {
-            'to_name': token.user.first_name,
-            'from_name': settings.ORGANISATION_NAME,
-            'url': Token.url(token.user.email, code),
-        }
-        # Render the content templates
-        text_content = render_to_string('authentication/emails/login_token.txt', context)
-        html_content = render_to_string('authentication/emails/login_token.html', context)
-        # Create the text and html version of the email
-        message = EmailMultiAlternatives(
-            subject='Token',
-            body=text_content,
-            from_email=settings.ORGANISATION_FROM_EMAIL,
-            to=[token.user.email],
-            headers={
-                'Reply-To': settings.ORGANISATION_REPLY_TO_EMAIL
-            }
+        # Select template
+        template = 'authentication/emails/login_token.txt'
+        if action == 'signup':
+            template = 'authentication/emails/signup_token.txt'
+
+        # Generate url
+        url = Token.url(token.user.email, code)
+        if next_page is not None:
+            url += '?next=' + next_page
+
+        # Send email
+        send_mail(
+            '[ZS] Abonnement abgeschlossen',
+            render_to_string(template, {
+                'to_name': token.user.first_name,
+                'url': url,
+            }),
+            settings.ORGANISATION_FROM_EMAIL,
+            [token.user.email],
+            fail_silently=False
         )
-        message.attach_alternative(html_content, 'text/html')
-        # Send the email
-        message.send()

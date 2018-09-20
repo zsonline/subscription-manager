@@ -21,6 +21,14 @@ class Token(models.Model):
         on_delete=models.CASCADE,
         verbose_name='Leser_in'
     )
+    action = models.CharField(
+        'Typ',
+        max_length=6,
+        choices=(
+            ('signup', 'Bestätigungs-Token'),
+            ('login', 'Login-Token')
+        )
+    )
     code = models.CharField(
         'Code',
         max_length=100,
@@ -91,7 +99,7 @@ class Token(models.Model):
             )
         )
 
-    def send(self, code):
+    def send(self, code, next_page=None):
         """
         Sends the token code with each backend that has a
         send method defined and updates sent_at field.
@@ -99,7 +107,7 @@ class Token(models.Model):
         # Send token
         for backend in get_backends():
             if hasattr(backend, 'send'):
-                backend.send(self, code)
+                backend.send(self, code, self.action, next_page)
         # Update sent_at field
         self.sent_at = timezone.now()
         self.save()

@@ -3,4 +3,6 @@
 {% block content %}{% endblock %}
 
 {% block bye %}Liebe Grüsse,
-{{ from_name }}{% endblock %}
+{{ organisation_name }}{% endblock %}
+
+Hast du Fragen? Schreib uns: informatik@medienverein.ch.

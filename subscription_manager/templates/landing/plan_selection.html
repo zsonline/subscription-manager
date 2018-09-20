@@ -37,12 +37,7 @@
                     {% endif %}
                 </div>
 
-                {% if not plan.price == 0 %}
-                    <a href="{% url 'purchase' plan.slug %}" class="button black">Kaufen</a>
-                {% else %}
-                    <a href="{% url 'purchase' plan.slug %}" class="button black">Abonnieren</a>
-                {% endif %}
-
+                <a href="{% url 'signup' %}?next={% url 'subscription_create' plan.slug %}" class="button black">Abonnieren</a>
 
             </li>
 

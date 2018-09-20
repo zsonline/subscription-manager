@@ -5,6 +5,7 @@ import uuid
 # Django imports
 from django.db import models, IntegrityError
 from django.conf import settings
+from django.shortcuts import reverse
 from django.utils import timezone
 
 
@@ -35,13 +36,13 @@ class TokenManager(models.Manager):
             break
         return str(code), token
 
-    def create_and_send(self, **obj_data):
+    def create_and_send(self, next_page, **obj_data):
         """
         Creates and sends a token object.
         """
         # Create and send token
         code, token = self.create(**obj_data)
-        token.send(code)
+        token.send(code, next_page)
         return token
 
     def get_from_code(self, code):
