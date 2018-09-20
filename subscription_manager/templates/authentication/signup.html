@@ -12,7 +12,7 @@
         <p class="alert{% if message.tags %} {{ message.tags }}{% endif %}">{{ message }}</p>
     {% endfor %}
 
-    {% if plan == 'student' %}
+    {% if 'student' in next %}
         <p class="alert info">
             Bitte gib deine studentische E-Mail-Adresse an. Wir anerkennen folgende Adressen:
             {% for email_address in allowed_student_email_addresses %}
