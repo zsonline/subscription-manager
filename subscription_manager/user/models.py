@@ -46,7 +46,7 @@ class User(AbstractUser):
         Checks whether the user has a student email address.
         """
         # Extract domain from email address
-        email_domain = self.email.split('@')[1]
+        email_domain = self.email.split('@')[-1]
         # Check if extracted domain is in list
         if email_domain in settings.ALLOWED_STUDENT_EMAIL_ADDRESSES:
             return True

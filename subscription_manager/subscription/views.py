@@ -38,9 +38,10 @@ class PlanListView(list.ListView):
         Excludes student plan if logged in user
         is not an eligible student.
         """
+        plans = Plan.objects.all()
         if not self.request.user.is_student():
-            return Plan.objects.filter(only_student=False)
-        return Plan.objects.all()
+            plans = plans.exclude(slug='student')
+        return plans
 
 
 @method_decorator(login_required, name='dispatch')

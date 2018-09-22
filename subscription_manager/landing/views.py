@@ -26,7 +26,7 @@ from subscription_manager.subscription.views import PlanListView
 class PlanSelection(list.ListView):
     model = Plan
     context_object_name = 'plans'
-    template_name = 'landing/plan_selection.html'
+    template_name = 'landing/plan_list.html'
 
 
 @method_decorator(anonymous_required, name='dispatch')

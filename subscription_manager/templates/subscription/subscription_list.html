@@ -1,9 +1,9 @@
 {% extends 'layouts/manager.html' %}
 
-{% block title %}Abonnements{% endblock %}
+{% block title %}Abonnement{% endblock %}
 
 {% block breadcrumbs %}
-    <span>Abonnements</span>
+    <span>Abonnement</span>
 {% endblock %}
 
 {% block content %}
@@ -59,7 +59,7 @@
             {% endfor %}
         </div>
     {% else %}
-        <p>Du hast keine Abonnements.</p>
+        <p>Du hast kein Abonnement.</p>
         <a class="button primary" href="{% url 'plan_list' %}">Neues Abonnement</a>
     {% endif %}
 {% endblock %}
