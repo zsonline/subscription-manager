@@ -5,7 +5,7 @@ from dateutil.relativedelta import relativedelta
 from django.conf import settings
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
-from django.core.mail import EmailMultiAlternatives
+from django.core.mail import send_mail
 from django.http import Http404, HttpResponseRedirect
 from django.shortcuts import get_object_or_404, redirect, render, reverse
 from django.template.loader import render_to_string
@@ -32,6 +32,14 @@ class PlanListView(list.ListView):
     """
     context_object_name = 'plans'
     template_name = 'subscription/plan_list.html'
+
+    def dispatch(self, request, *args, **kwargs):
+        # Check whether user has already a subscription
+        if  Subscription.objects.filter(user=request.user).count() >= 1:
+            messages.error(request, 'Du hast bereits ein Abonnement.')
+            return redirect(reverse('subscription_list'))
+
+        return super().dispatch(request, *args, **kwargs)
 
     def get_queryset(self):
         """
@@ -118,6 +126,11 @@ class SubscriptionCreateView(View):
         Checks if plan exists and whether the user is eligible
         to buy a subscription of that plan.
         """
+        # Check whether user has already a subscription
+        if  Subscription.objects.filter(user=request.user).count() >= 1:
+            messages.error(request, 'Du hast bereits ein Abonnement.')
+            return redirect(reverse('subscription_list'))
+
         # Get plan
         plan = self.get_plan(**kwargs)
         if plan is None:
@@ -127,7 +140,7 @@ class SubscriptionCreateView(View):
             return redirect(reverse('plan_list'))
 
         # Check eligibility
-        if plan.only_student and not request.user.is_student():
+        if plan.slug == 'student' and not request.user.is_student():
             messages.error(request, 'Dieses Abonnement ist nur für Studentinnen.')
             return redirect(reverse('plan_list'))
 
@@ -140,19 +153,14 @@ class SubscriptionCreateView(View):
         # Get plan (already checked in dispatch method)
         plan = self.get_plan(**kwargs)
 
-        # Choose right subscription form
-        subscription_form = SubscriptionForm(prefix='address')
-
-        payment_form = None
-        # Payment form in case the price is not fixed
-        if plan.is_min_price:
-            payment_form = MinimumPaymentForm(
-                prefix='payment',
-                min_price=plan.price,
-                initial={
-                    'amount': plan.price
-                }
-            )
+        # Forms
+        subscription_form = SubscriptionForm()
+        payment_form = PaymentForm(
+            min_price=plan.price,
+            initial={
+                'amount': plan.price
+            }
+        )
 
         return render(request, 'subscription/subscription_create.html', {
             'plan': plan,
@@ -168,67 +176,37 @@ class SubscriptionCreateView(View):
         # Get plan (already checked in dispatch method)
         plan = self.get_plan(**kwargs)
 
-        # Get data from right subscription form
-        subscription_form = SubscriptionForm(request.POST, prefix='address')
-
-        payment_form = None
-        # Payment form in case of a dynamic price
-        if plan.is_min_price:
-            payment_form = MinimumPaymentForm(
-                request.POST,
-                prefix='payment',
-                min_price=plan.price,
-                initial={
-                    'amount': plan.price
-                }
-            )
+        # Get data from forms
+        subscription_form = SubscriptionForm(request.POST)
+        payment_form = PaymentForm(
+            request.POST,
+            min_price=plan.price,
+            initial={
+                'amount': plan.price
+            })
 
         # Validate forms
-        if subscription_form.is_valid() and (payment_form is None or payment_form.is_valid()):
+        if subscription_form.is_valid() and payment_form.is_valid():
             # Save subscription
             subscription = subscription_form.save(commit=False)
             subscription.user = request.user
             subscription.plan = plan
             subscription.save()
             # Save payment
-            if payment_form is not None:
-                payment = payment_form.save(commit=False)
-                payment.subscription = subscription
-                payment.save()
-            else:
-                payment = Payment.objects.create(subscription=subscription, amount=plan.price)
+            payment = payment_form.save(commit=False)
+            payment.subscription = subscription
+            payment.save()
 
             # Only set start and end date when subscription is free
             if payment.amount == 0:
-                subscription.start_date = timezone.now()
-                subscription.end_date = timezone.now() + relativedelta(months=+plan.duration)
-                subscription.save()
+                payment.confirm()
+                messages.success(request, 'Vielen Dank! Ab sofort erhälst du die ZS nach Hause geliefert.')
+                return redirect('subscription_list')
 
-            # Make a context variable for the templates
-            context = {
-                'to_name': request.user.first_name,
-                'from_name': settings.ORGANISATION_NAME,
-                'subscription': subscription
-            }
-            # Render the content templates
-            text_content = render_to_string('subscription/emails/purchase_confirmation.txt', context)
-            html_content = render_to_string('subscription/emails/purchase_confirmation.html', context)
-            # Create the text and html version of the email
-            message = EmailMultiAlternatives(
-                subject='Token',
-                body=text_content,
-                from_email=settings.ORGANISATION_FROM_EMAIL,
-                to=[request.user.email],
-                headers={
-                    'Reply-To': settings.ORGANISATION_REPLY_TO_EMAIL
-                }
-            )
-            message.attach_alternative(html_content, 'text/html')
-            # Send the email
-            message.send()
-
-            messages.success(request, 'Abo gekauft.')
-            return redirect('subscription_list')
+            # Send invoice
+            payment.send_invoice()
+            messages.success(request, 'Vielen Dank! Wir haben dir eine Rechnung per E-Mail geschickt.')
+            return redirect('subscription_details', kwargs={'subscription_id': subscription.id})
 
         return render(request, 'subscription/subscription_create.html', {
             'plan': plan,

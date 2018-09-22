@@ -26,51 +26,27 @@
         <fieldset>
             <h3>Preis</h3>
 
+            <p>Wir freuen uns über jeden Franken, den du mehr bezahlst. So können wir uns mal einen neuen Computer anschaffen oder unser selbstgekochtes Weihnachtsessen aufpeppen.</p>
+
+            {{ payment_form.as_p }}
+
             <p>
-                Wir freuen uns über jeden Franken, den du mehr bezahlst. So können wir uns mal einen neuen Computer anschaffen oder unser selbstgekochtes Weihnachtsessen aufpeppen.
+                Laufzeit:
+                {% if plan.duration == 1 %}
+                    1 Monat
+                {% else %}
+                    {{ plan.duration }} Monate
+                {% endif %}
             </p>
 
-            {% if not plan.is_min_price %}
-                <div class="price">
-                    {% if plan.price == 0 %}
-                        <span class="amount">Gratis</span>
-                    {% else %}
-                        <span class="amount">{{ plan.price }}</span> Franken
-                    {% endif %}
-                    /
-                    {% if plan.duration == 1 %}
-                        1 Monat
-                    {% else %}
-                        {{ plan.duration }} Monate
-                    {% endif %}
-                </div>
-            {% else %}
-                <p>
-                    Laufzeit:<br>
-                    {% if plan.duration == 1 %}
-                        1 Monat
-                    {% else %}
-                        {{ plan.duration }} Monate
-                    {% endif %}
-                </p>
-                {{ payment_form.as_p }}
-            {% endif %}
-
-            {# Displays info box if subscription potentially costs something. #}
-            {% if not plan.price == 0 or plan.is_min_price %}
-                <p class="alert info">
-                    Wir unterstützen nur Zahlungen mittels Banküberweisung. Nach dem Kauf deines Abonnements,
-                    schicken wir dir eine Rechnung. Sobald die Zahlung bei uns eingetroffen ist, aktivieren wir es.
-                </p>
-            {% endif %}
+            <p class="alert info">
+                Wir unterstützen nur Zahlungen mittels Banküberweisung. Nach dem Kauf deines Abonnements,
+                schicken wir dir eine Rechnung. Sobald die Zahlung bei uns eingetroffen ist, aktivieren wir es.
+            </p>
         </fieldset>
 
         <fieldset>
-            {% if plan.price == 0 %}
-                <input class="button black" type="submit" value="Abonnieren" />
-            {% else %}
-                <input class="button black" type="submit" value="Kaufen" />
-            {% endif %}
+            <input class="button black" type="submit" value="Abonnieren" />
         </fieldset>
     </form>
 {% endblock %}

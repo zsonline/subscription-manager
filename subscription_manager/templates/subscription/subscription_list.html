@@ -12,10 +12,6 @@
     {% endfor %}
 
     {% if subscriptions|length > 0 %}
-        <p>
-            <a class="button primary" href="{% url 'plan_list' %}">Neues Abonnement</a>
-        </p>
-
         <div class="cards">
             {% for subscription in subscriptions %}
                 <div class="card">
@@ -59,6 +55,9 @@
             {% endfor %}
         </div>
     {% else %}
+        <p>
+            <a class="button primary" href="{% url 'plan_list' %}">Neues Abonnement</a>
+        </p>
         <p>Du hast kein Abonnement.</p>
         <a class="button primary" href="{% url 'plan_list' %}">Neues Abonnement</a>
     {% endif %}

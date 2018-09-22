@@ -1,6 +1,14 @@
 {% extends 'base_email.txt' %}
 
 {% block content %}
+{% if payment.is_renewal %}
+vielen Dank, dass du die ZS verlängerst.
+{% else %}
+vielen Dank, dass du die ZS abonniert hast.
+{% endif %}
+
+Um den Vorgang abzuschliessen, zahle die Rechnung bis {{ payment.pay_until }} an folgende Bankverbindung ein:
+
     {{ subscription.plan.name }}
     {{ subscription.address_line_1 }}
     {% if subscription.address_line_2 %}

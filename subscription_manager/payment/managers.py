@@ -15,8 +15,8 @@ class PaymentManager(models.Manager):
         # Try creating unique code object
         while True:
             try:
-                # Generates a UUID
-                code = get_random_string()
+                # Generate a code
+                code = 'zs-' + obj_data['subscription'].slug + '-' + get_random_string(12)
                 # Try creating token object
                 obj_data['code'] = code
                 payment = super().create(**obj_data)

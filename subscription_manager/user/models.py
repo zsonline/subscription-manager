@@ -1,7 +1,9 @@
+# Django imports
 from django.conf import settings
 from django.db.models import CharField, EmailField
 from django.contrib.auth.models import AbstractUser
 
+# Application imports
 from .managers import UserManager
 
 
