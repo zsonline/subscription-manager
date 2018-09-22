@@ -15,7 +15,7 @@ class Subscription(models.Model):
     Model that holds the information for a
     user's subscription.
     """
-    user = models.OneToOneField(
+    user = models.ForeignKey(
         get_user_model(),
         on_delete=models.CASCADE
     )

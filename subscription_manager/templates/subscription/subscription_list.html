@@ -12,6 +12,10 @@
     {% endfor %}
 
     {% if subscriptions|length > 0 %}
+        <p>
+            <a class="button primary" href="{% url 'plan_list' %}">Neues Abonnement</a>
+        </p>
+
         <div class="cards">
             {% for subscription in subscriptions %}
                 <div class="card">
@@ -22,7 +26,7 @@
                         {% if subscription.is_active %}
                             <span class="badge success">Aktiv</span>
                             <br>
-                            Gültig von {{ subscription.start_date }} bis {{ subscription.end_date }}
+                            Gültig bis {{ subscription.end_date }}
                         {% else %}
                             <span class="badge danger">Inaktiv</span>
                             {% if subscription.has_ended %}
@@ -30,7 +34,7 @@
                                 Am {{ subscription.end_date }} abgelaufen
                             {% elif subscription.is_canceled %}
                                 <br>
-                                Am {{ subscription.canceled_at }} gekündigt
+                                Am {{ subscription.canceled_at.date }} gekündigt
                             {% endif %}
                         {% endif %}
                     </div>
@@ -55,9 +59,6 @@
             {% endfor %}
         </div>
     {% else %}
-        <p>
-            <a class="button primary" href="{% url 'plan_list' %}">Neues Abonnement</a>
-        </p>
         <p>Du hast kein Abonnement.</p>
         <a class="button primary" href="{% url 'plan_list' %}">Neues Abonnement</a>
     {% endif %}

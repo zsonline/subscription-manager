@@ -33,14 +33,6 @@ class PlanListView(list.ListView):
     context_object_name = 'plans'
     template_name = 'subscription/plan_list.html'
 
-    def dispatch(self, request, *args, **kwargs):
-        # Check whether user has already a subscription
-        if  Subscription.objects.filter(user=request.user).count() >= 1:
-            messages.error(request, 'Du hast bereits ein Abonnement.')
-            return redirect(reverse('subscription_list'))
-
-        return super().dispatch(request, *args, **kwargs)
-
     def get_queryset(self):
         """
         Excludes student plan if logged in user
@@ -126,11 +118,6 @@ class SubscriptionCreateView(View):
         Checks if plan exists and whether the user is eligible
         to buy a subscription of that plan.
         """
-        # Check whether user has already a subscription
-        if  Subscription.objects.filter(user=request.user).count() >= 1:
-            messages.error(request, 'Du hast bereits ein Abonnement.')
-            return redirect(reverse('subscription_list'))
-
         # Get plan
         plan = self.get_plan(**kwargs)
         if plan is None:
@@ -206,7 +193,7 @@ class SubscriptionCreateView(View):
             # Send invoice
             payment.send_invoice()
             messages.success(request, 'Vielen Dank! Wir haben dir eine Rechnung per E-Mail geschickt.')
-            return redirect('subscription_details', kwargs={'subscription_id': subscription.id})
+            return redirect('subscription_detail', subscription_id=subscription.id)
 
         return render(request, 'subscription/subscription_create.html', {
             'plan': plan,
