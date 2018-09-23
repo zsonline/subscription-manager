@@ -11,10 +11,6 @@
 {% block content %}
     <p class="description">{{ plan.description }}</p>
 
-    {% for message in messages %}
-        <p class="alert{% if message.tags %} {{ message.tags }}{% endif %}">{{ message }}</p>
-    {% endfor %}
-
     <form action="{% url 'subscription_create' plan.slug %}" method="post">
         {% csrf_token %}
 

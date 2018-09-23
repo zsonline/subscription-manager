@@ -7,10 +7,6 @@
 {% endblock %}
 
 {% block content %}
-    {% for message in messages %}
-        <p class="alert{% if message.tags %} {{ message.tags }}{% endif %}">{{ message }}</p>
-    {% endfor %}
-
     {% if subscriptions|length > 0 %}
         <p>
             <a class="button primary" href="{% url 'plan_list' %}">Neues Abonnement</a>
