@@ -22,7 +22,6 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'subscription_manager.authentication.apps.AccountConfig',
     'subscription_manager.landing.apps.LandingConfig',
-    'subscription_manager.manager.apps.ManagerConfig',
     'subscription_manager.payment.apps.PaymentConfig',
     'subscription_manager.subscription.apps.SubscriptionConfig',
     'subscription_manager.user.apps.UserConfig'
