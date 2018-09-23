@@ -6,6 +6,7 @@ from django.views.generic.base import RedirectView
 urlpatterns = [
     path('', include('subscription_manager.landing.urls')),
     path('', include('subscription_manager.subscription.urls')),
+    path('', include('subscription_manager.payment.urls')),
     path('auth/', include('subscription_manager.authentication.urls')),
     path('admin/', admin.site.urls),
 ]

@@ -1,14 +1,14 @@
 {% extends 'base_email.txt' %}
 
-{% load plans %}
-
 {% block content %}
-    {% plan_name subscription.plan %}
+    {% subscription.plan.name %}
     {{ subscription.address_line_1 }}
     {% if subscription.address_line_2 %}
         {{ subscription.address_line_2 }}<br>
     {% endif %}
     {{ subscription.postcode }} {{ subscription.city }}
+
+    {{ url }}
 
     Abgelaufen.
 {% endblock %}

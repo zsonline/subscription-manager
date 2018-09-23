@@ -101,7 +101,7 @@ class Subscription(models.Model):
         Renews the subscription by the duration of the
         plan.
         """
-        self.end_date += relativedelta(months=+self.plan.duration)
+        self.end_date += relativedelta(months=self.plan.duration)
         self.save()
         return self
 
@@ -117,6 +117,13 @@ class Subscription(models.Model):
             if not payment.is_paid():
                 return True
         return False
+
+    def expires_in_lt(self, days=30):
+        """
+        Returns true if subscription expires in less than
+        the given amount of days.
+        """
+        return timezone.now().date() - self.end_date <= relativedelta(days=days)
 
 
 class Plan(models.Model):
