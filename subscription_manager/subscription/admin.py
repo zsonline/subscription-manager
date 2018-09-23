@@ -1,7 +1,9 @@
+# Python imports
 import csv
 
 # Django imports
 from django.contrib import admin
+from django.contrib.admin.views.decorators import staff_member_required
 from django.http import HttpResponse
 from django.urls import path
 
@@ -19,7 +21,9 @@ class SubscriptionAdmin(admin.ModelAdmin):
         ]
         return new_urls + urls
 
-    def export_active_as_csv(self, request):
+    @staticmethod
+    @staff_member_required
+    def export_active_as_csv(request):
         """
         Exports all active subscriptions as
         CSV document.
