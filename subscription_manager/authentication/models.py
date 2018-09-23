@@ -19,7 +19,7 @@ class Token(models.Model):
     user = models.ForeignKey(
         get_user_model(),
         on_delete=models.CASCADE,
-        verbose_name='Leser_in'
+        verbose_name='Abonnentin'
     )
     action = models.CharField(
         'Typ',
@@ -47,6 +47,9 @@ class Token(models.Model):
 
     # Custom model manager
     objects = TokenManager()
+
+    class Meta:
+        verbose_name = 'Token'
 
     def __str__(self):
         return 'Token({}, {})'.format(self.user.email, self.code)

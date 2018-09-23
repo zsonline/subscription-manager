@@ -41,7 +41,7 @@ class User(AbstractUser):
     objects = UserManager()
 
     def __str__(self):
-        return 'User({})'.format(self.email)
+        return '{} ({})'.format(self.full_name(), self.email)
 
     def is_student(self):
         """
@@ -53,3 +53,6 @@ class User(AbstractUser):
         if email_domain in settings.ALLOWED_STUDENT_EMAIL_ADDRESSES:
             return True
         return False
+
+    def full_name(self):
+        return '{} {}'.format(self.first_name, self.last_name)

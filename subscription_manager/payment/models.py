@@ -29,6 +29,7 @@ class Payment(models.Model):
         unique=True
     )
     paid_at = models.DateTimeField(
+        'Bezahlt am',
         blank=True,
         null=True,
         default=None
@@ -37,11 +38,16 @@ class Payment(models.Model):
 
     objects = PaymentManager()
 
+    class Meta:
+        verbose_name = 'Zahlung'
+        verbose_name_plural = 'Zahlungen'
+
     def __str__(self):
         return 'Payment({}, {}, {})'.format(self.subscription.user.email, self.amount, self.paid_at)
 
     def is_paid(self):
         return self.paid_at is not None
+    is_paid.boolean = True
 
     def pay_until(self):
         return (self.created_at + relativedelta(days=30)).date()

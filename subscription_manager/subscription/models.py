@@ -62,8 +62,11 @@ class Subscription(models.Model):
     # Custom model manager
     objects = SubscriptionManager()
 
+    class Meta:
+        verbose_name = 'Abonnement'
+
     def __str__(self):
-        return 'Subscription({}, {})'.format(self.user.email, self.plan)
+        return '{} #{} von {}'.format(self.plan, self.id, self.user.full_name())
 
     def has_started(self):
         """
@@ -91,6 +94,7 @@ class Subscription(models.Model):
         Checks whether the subscription is active.
         """
         return not self.is_canceled() and self.has_started() and not self.has_ended()
+    is_active.boolean = True
 
     def renew(self):
         """
@@ -140,5 +144,8 @@ class Plan(models.Model):
         'Preis'
     )
 
+    class Meta:
+        verbose_name = 'Abo-Typ'
+
     def __str__(self):
-        return 'Plan({})'.format(self.name)
+        return self.name
