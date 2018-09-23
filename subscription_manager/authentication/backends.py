@@ -47,9 +47,11 @@ class EmailBackend(TokenBackend):
         given token object and a code.
         """
         # Select template
-        template = 'authentication/emails/login_token.txt'
+        template = 'emails/login_token.txt'
+        subject = 'Login Token'
         if action == 'signup':
-            template = 'authentication/emails/signup_token.txt'
+            template = 'emails/signup_token.txt'
+            subject = 'Account bestätigen'
 
         # Generate url
         url = Token.url(token.user.email, code)
@@ -58,7 +60,7 @@ class EmailBackend(TokenBackend):
 
         # Send email
         send_mail(
-            '[ZS] Abonnement abgeschlossen',
+            '[ZS] ' + subject,
             render_to_string(template, {
                 'to_name': token.user.first_name,
                 'url': url,
