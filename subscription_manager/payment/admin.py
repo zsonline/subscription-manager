@@ -6,7 +6,7 @@ from .models import Payment
 
 
 class PaymentAdmin(admin.ModelAdmin):
-    list_display = ['subscription', 'amount', 'is_paid', 'paid_at', 'code']
+    list_display = ['subscription', 'code', 'amount', 'is_paid', 'paid_at']
     search_fields = ['code']
     actions = ['confirm_payments']
 
