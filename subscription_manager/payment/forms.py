@@ -67,8 +67,8 @@ class PaymentForm(forms.ModelForm):
         # Try creating unique code object
         while True:
             try:
-                # Generates a UUID
-                code = get_random_string()
+                # Generate a code
+                code = 'ZS-' + get_random_string(12)
                 payment.code = code
                 if commit:
                     payment.save()

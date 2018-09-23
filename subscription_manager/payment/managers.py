@@ -16,8 +16,7 @@ class PaymentManager(models.Manager):
         while True:
             try:
                 # Generate a code
-                code = 'zs-' + obj_data['subscription'].slug + '-' + get_random_string(12)
-                print(code)
+                code = 'ZS-' + get_random_string(12)
                 # Try creating token object
                 obj_data['code'] = code
                 payment = super().create(**obj_data)
