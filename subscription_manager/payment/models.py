@@ -81,8 +81,11 @@ class Payment(models.Model):
         self.paid_at = timezone.now()
         self.save()
 
+        # Fetch is_renewal value
+        renewal = self.is_renewal()
+
         # Adjust subscription details
-        if self.subscription.start_date is None:
+        if not renewal:
             self.subscription.start_date = timezone.now()
             self.subscription.end_date = timezone.now() + relativedelta(months=self.subscription.plan.duration)
             subject = 'Abo aktiviert'
@@ -96,7 +99,8 @@ class Payment(models.Model):
             '[ZS] ' + subject,
             render_to_string('emails/payment_confirmation.txt', {
                 'to_name': self.subscription.user.first_name,
-                'payment': self
+                'payment': self,
+                'renewal': renewal
             }),
             settings.ORGANISATION_FROM_EMAIL,
             [self.subscription.user.email],

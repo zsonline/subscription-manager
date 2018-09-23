@@ -1,7 +1,7 @@
 {% extends 'base_email.txt' %}
 
 {% block content %}
-{% if payment.is_renewal %}
+{% if renewal %}
 dein Abonnement wurde verlängert und ist gültig bis am {{ payment.subscription.end_date }}.
 {% else %}
 dein Abonnement wurde aktiviert und ist gültig bis am {{ payment.subscription.end_date }}.
