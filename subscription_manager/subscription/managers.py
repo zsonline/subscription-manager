@@ -5,6 +5,8 @@ from django.db import models
 from django.template.loader import render_to_string
 from django.utils import timezone
 
+# Application imports
+
 
 class SubscriptionManager(models.Manager):
     """
@@ -12,6 +14,22 @@ class SubscriptionManager(models.Manager):
     """
     def expire_today(self):
         subscriptions = self.filter(end_date=timezone.now().date()).filter(canceled_at__isnull=True)
+
+    def has_student_subscriptions(self, user):
+        """
+        Returns true if given user has no student
+        subscription.
+        """
+        # Get all subscriptions of a user
+        subscriptions = self.filter(user=user)
+        # Exclude inactive or non-student subscriptions
+        to_be_removed = []
+        for subscription in subscriptions:
+            if not subscription.is_active() or not subscription.plan.slug == 'student':
+                to_be_removed.append(subscription.id)
+        subscriptions.exclude(id__in=to_be_removed)
+        # Return true if count is 0
+        return subscriptions.count() > 0
 
     @staticmethod
     def send_expiration_email(subscription):

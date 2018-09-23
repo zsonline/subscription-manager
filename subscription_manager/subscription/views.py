@@ -39,7 +39,7 @@ class PlanListView(list.ListView):
         is not an eligible student.
         """
         plans = Plan.objects.all()
-        if not self.request.user.is_student():
+        if not self.request.user.is_student() or Subscription.objects.has_student_subscriptions(self.request.user):
             plans = plans.exclude(slug='student')
         return plans
 
@@ -127,7 +127,8 @@ class SubscriptionCreateView(View):
             return redirect(reverse('plan_list'))
 
         # Check eligibility
-        if plan.slug == 'student' and not request.user.is_student():
+        if plan.slug == 'student' and \
+                (not request.user.is_student() or Subscription.objects.has_student_subscriptions(request.user)):
             messages.error(request, 'Dieses Abonnement ist nur für Studentinnen.')
             return redirect(reverse('plan_list'))
 

@@ -6,7 +6,7 @@
 
 {% block left_column %}
     <h2>Registrieren</h2>
-    <p class="description">Erstelle einen Account und verwalte deine Abonnements</p>
+    <p class="description">Erstelle einen Account.</p>
 
     {% for message in messages %}
         <p class="alert{% if message.tags %} {{ message.tags }}{% endif %}">{{ message }}</p>
