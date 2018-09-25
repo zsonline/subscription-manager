@@ -18,11 +18,11 @@
   }
 
   &.warning {
-    @include badge($warning);
+    @include badge($warning, $black);
   }
 
   &.danger {
-    @include badge($danger);
+    @include badge($danger, $black);
   }
 
 }

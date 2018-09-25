@@ -1,0 +1,21 @@
+.announcement {
+  padding: 1rem;
+
+  &.info {
+    background-color: $info;
+    color: $white;
+  }
+
+  &.success {
+    background-color: $success;
+    color: $white;
+  }
+
+  &.warning {
+    background-color: $warning;
+  }
+
+  &.danger {
+    background-color: $danger;
+  }
+}

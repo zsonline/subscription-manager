@@ -386,10 +386,10 @@ a {
     color: white;
     background-color: #3f681c; }
   .badge.warning {
-    color: white;
+    color: #030303;
     background-color: #ffbb00; }
   .badge.danger {
-    color: white;
+    color: #030303;
     background-color: #fb6542; }
 
 .alert {
@@ -533,6 +533,19 @@ nav a {
       color: #bfbfbf; }
     #breadcrumbs a:hover, #breadcrumbs a:active, #breadcrumbs a:focus {
       color: gray; }
+
+.announcement {
+  padding: 1rem; }
+  .announcement.info {
+    background-color: #375e97;
+    color: white; }
+  .announcement.success {
+    background-color: #3f681c;
+    color: white; }
+  .announcement.warning {
+    background-color: #ffbb00; }
+  .announcement.danger {
+    background-color: #fb6542; }
 
 header {
   padding: 2em 1em; }

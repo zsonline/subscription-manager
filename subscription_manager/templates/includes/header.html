@@ -1,5 +1,9 @@
 {% load static %}
 
+{% if announcement %}
+<div class="announcement {{ announcement_class }}">{{ announcement }}</div>
+{% endif %}
+
 <header>
 
     {% if user.is_authenticated %}
