@@ -537,7 +537,7 @@ nav a {
 
 .announcement {
   padding: 1rem; }
-  .announcement.info {
+  .announcement, .announcement.info {
     background-color: #375e97;
     color: white; }
   .announcement.success {
@@ -619,8 +619,8 @@ footer {
       flex: 1; }
     footer #credits {
       display: flex;
-      justify-content: right;
-      align-items: end;
+      justify-content: flex-end;
+      align-items: flex-end;
       text-align: right; } }
 
 main.vertical .column {
@@ -630,11 +630,11 @@ main.vertical .column {
   background-size: cover;
   background-position: center; }
   main.vertical .column.top {
-    align-items: start; }
+    align-items: flex-start; }
   main.vertical .column.center {
     align-items: center; }
   main.vertical .column, main.vertical .column.bottom {
-    align-items: end; }
+    align-items: flex-end; }
   main.vertical .column.image {
     padding: 0; }
     main.vertical .column.image .inner {

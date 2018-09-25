@@ -1,7 +1,7 @@
 .announcement {
   padding: 1rem;
 
-  &.info {
+  &, &.info {
     background-color: $info;
     color: $white;
   }

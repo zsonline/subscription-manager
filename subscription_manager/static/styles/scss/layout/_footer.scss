@@ -42,8 +42,8 @@ footer {
 
     #credits {
       display: flex;
-      justify-content: right;
-      align-items: end;
+      justify-content: flex-end;
+      align-items: flex-end;
       text-align: right;
     }
   }
