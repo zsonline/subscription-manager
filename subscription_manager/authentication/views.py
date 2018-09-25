@@ -40,7 +40,7 @@ def signup_view(request):
                 # Create success message
                 messages.success(request, 'Bestätigungs-E-Mail an {} gesendet.'.format(user.email))
                 # Redirect to this page
-                return redirect(reverse('login'))
+                return redirect('login')
 
             # If user does not exist, display error
             form.add_error(None, 'Account konnte nicht erstellt werden.')
@@ -82,7 +82,7 @@ def login_view(request):
                 # Create success message
                 messages.success(request, 'Token an {} gesendet.'.format(user.email))
                 # Redirect to this page
-                return HttpResponseRedirect('')
+                return redirect('login')
 
     else:
         form = LoginForm()
@@ -116,7 +116,7 @@ def token_verification_view(request, email_b64, code):
         return HttpResponseRedirect(settings.LOGIN_REDIRECT_URL)
 
     messages.error(request, 'Dein Token ist ungültig.')
-    return redirect(reverse('login'))
+    return redirect('login')
 
 
 @login_required(redirect_field_name=None)
