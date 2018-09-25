@@ -3,6 +3,7 @@ from dateutil.relativedelta import relativedelta
 
 # Django imports
 from django.contrib.auth import get_user_model
+from django.core.exceptions import ObjectDoesNotExist
 from django.db import models
 from django.utils import timezone
 
@@ -117,6 +118,17 @@ class Subscription(models.Model):
             if not payment.is_paid():
                 return True
         return False
+
+    def last_payment_amount(self):
+        """
+        Returns the last payment's amount. If no
+        payment exists, None is returned.
+        """
+        try:
+            last_payment = self.payment_set.latest('created_at')
+        except ObjectDoesNotExist:
+            return None
+        return last_payment.amount
 
     def expires_in_lt(self, days=30):
         """

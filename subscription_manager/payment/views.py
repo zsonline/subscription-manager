@@ -61,17 +61,33 @@ class PaymentCreateView(CreateView):
         return super().dispatch(request, *args, **kwargs)
 
     def get_form_kwargs(self):
+        """
+        Provide arguments for form initialisation
+        so that the given price can be checked.
+        """
         kwargs = super().get_form_kwargs()
+        # Add min price to arguments
         kwargs['min_price'] = self.subscription.plan.price
         return kwargs
 
     def get_context_data(self, **kwargs):
+        """
+        Adds subscription to template context.
+        """
         data = super().get_context_data(**kwargs)
         data['subscription'] = self.subscription
         return data
 
     def get_initial(self):
-        # TODO: use last paid price
+        """
+        Uses price of last payment. If no last payment exists,
+        the initial plan price is used.
+        """
         data = super().get_initial()
-        data['amount'] = self.subscription.plan.price
+        # Load last payment
+        last_payment = self.subscription.last_payment_amount()
+        if last_payment is not None:
+            data['amount'] = last_payment
+        else:
+            data['amount'] = self.subscription.plan.price
         return data
