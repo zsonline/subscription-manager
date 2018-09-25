@@ -124,13 +124,13 @@ class SubscriptionCreateView(View):
             # If plan does not exist, return to list view and display
             # error message
             messages.error(request, 'Dieses Abonnement existiert nicht.')
-            return redirect(reverse('plan_list'))
+            return redirect('plan_list')
 
         # Check eligibility
         if plan.slug == 'student' and \
                 (not request.user.is_student() or Subscription.objects.has_student_subscriptions(request.user)):
             messages.error(request, 'Dieses Abonnement ist nur für Studentinnen.')
-            return redirect(reverse('plan_list'))
+            return redirect('plan_list')
 
         return super().dispatch(request, *args, **kwargs)
 

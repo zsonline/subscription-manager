@@ -48,19 +48,19 @@ class PaymentCreateView(CreateView):
             # If subscription does not exist, return to list view and display
             # error message
             messages.error(request, 'Dieses Abonnement existiert nicht.')
-            return redirect(reverse('subscription_list'))
+            return redirect('subscription_list')
         self.subscription = subscription
 
         # Check student eligibility
         if subscription.plan.slug == 'student' and \
                 (not request.user.is_student() or Subscription.objects.has_student_subscriptions(request.user)):
             messages.error(request, 'Dieses Abonnement ist nur für Studenten.')
-            return redirect(reverse('subscription_list'))
+            return redirect('subscription_list')
 
         # Check other eligibility
         if not subscription.expires_soon() or subscription.has_open_payments():
             messages.error(request, 'Dieses Abonnement kann nicht verlängert werden.')
-            return redirect(reverse('subscription_list'))
+            return redirect('subscription_list')
 
         return super().dispatch(request, *args, **kwargs)
 
