@@ -139,9 +139,9 @@ class Subscription(models.Model):
         the given amount of days.
         """
         # Check if end_date is instance of date
-        if not isinstance(self.end_date, date):
-            return False
-        return timezone.now().date() - self.end_date <= timezone.timedelta(days=days)
+        if isinstance(self.end_date, date) and self.end_date >= timezone.now().date():
+            return self.end_date - timezone.now().date() <= timezone.timedelta(days=days)
+        return False
 
     def expires_soon(self):
         """
