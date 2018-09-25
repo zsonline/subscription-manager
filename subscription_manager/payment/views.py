@@ -64,6 +64,24 @@ class PaymentCreateView(CreateView):
 
         return super().dispatch(request, *args, **kwargs)
 
+    def form_valid(self, payment_form):
+        """
+        Sends confirmation email and redirects to
+        appropriate page.
+        """
+        payment = self.object
+
+        # Only set start and end date when subscription is free
+        if payment.amount == 0:
+            payment.confirm()
+            messages.success(self.request, 'Vielen Dank! Du erhältst die ZS weiterhin nach Hause geliefert.')
+            return redirect('subscription_list')
+
+        # Send invoice
+        payment.send_invoice()
+        messages.success(self.request, 'Vielen Dank! Wir haben dir eine Rechnung per E-Mail geschickt.')
+        return redirect('subscription_detail', subscription_id=payment.subscription.id)
+
     def get_form_kwargs(self):
         """
         Provide arguments for form initialisation
