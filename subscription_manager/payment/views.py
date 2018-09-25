@@ -20,7 +20,7 @@ class PaymentCreateView(CreateView):
     subscription = None
 
     @classmethod
-    def get_subscription(cls, **kwargs):
+    def get_subscription(cls, user, **kwargs):
         """
         Read subscription id from URL parameters and return
         if subscription exists.
@@ -34,6 +34,10 @@ class PaymentCreateView(CreateView):
         except Subscription.DoesNotExist:
             subscription = None
 
+        # Check if it is the right user
+        if user != subscription.user:
+            subscription = None
+
         return subscription
 
     def dispatch(self, request, *args, **kwargs):
@@ -43,7 +47,7 @@ class PaymentCreateView(CreateView):
         to renew it.
         """
         # Get subscription
-        subscription = self.get_subscription(**kwargs)
+        subscription = self.get_subscription(request.user, **kwargs)
         if subscription is None:
             # If subscription does not exist, return to list view and display
             # error message
