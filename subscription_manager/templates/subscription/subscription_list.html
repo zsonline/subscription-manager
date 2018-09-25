@@ -46,6 +46,9 @@
                         <div class="actions">
                             <h4>Optionen</h4>
                             <a href="{% url 'subscription_update' subscription.id %}">Adresse ändern</a>
+                            {% if subscription.expires_soon and not subscription.has_open_payments %}
+                                <a href="{% url 'payment_create' subscription.id %}">Verlängern</a>
+                            {% endif %}
                             {% if not subscription.has_open_payments %}
                                 <a href="{% url 'subscription_cancel' subscription.id %}">Kündigen</a>
                             {% endif %}

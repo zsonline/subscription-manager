@@ -1,3 +1,6 @@
+# Python imports
+from datetime import date
+
 # Pip imports
 from dateutil.relativedelta import relativedelta
 
@@ -130,12 +133,22 @@ class Subscription(models.Model):
             return None
         return last_payment.amount
 
-    def expires_in_lt(self, days=30):
+    def expires_in_lt(self, days):
         """
         Returns true if subscription expires in less than
         the given amount of days.
         """
-        return timezone.now().date() - self.end_date <= relativedelta(days=days)
+        # Check if end_date is instance of date
+        if not isinstance(self.end_date, date):
+            return False
+        return timezone.now().date() - self.end_date <= timezone.timedelta(days=days)
+
+    def expires_soon(self):
+        """
+        Returns true if subscription expires in less than
+        30 days.
+        """
+        return self.expires_in_lt(30)
 
 
 class Plan(models.Model):

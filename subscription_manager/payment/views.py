@@ -14,11 +14,10 @@ from .models import Payment
 
 @method_decorator(login_required, name='dispatch')
 class PaymentCreateView(CreateView):
+    model = Payment
     form_class = PaymentForm
     template_name = 'payment/payment_create.html'
     subscription = None
-    model = Payment
-
 
     @classmethod
     def get_subscription(cls, **kwargs):
@@ -45,17 +44,22 @@ class PaymentCreateView(CreateView):
         """
         # Get subscription
         subscription = self.get_subscription(**kwargs)
-        self.subscription = subscription
         if subscription is None:
             # If subscription does not exist, return to list view and display
             # error message
             messages.error(request, 'Dieses Abonnement existiert nicht.')
             return redirect(reverse('subscription_list'))
+        self.subscription = subscription
 
-        # Check eligibility
+        # Check student eligibility
         if subscription.plan.slug == 'student' and \
                 (not request.user.is_student() or Subscription.objects.has_student_subscriptions(request.user)):
             messages.error(request, 'Dieses Abonnement ist nur für Studenten.')
+            return redirect(reverse('subscription_list'))
+
+        # Check other eligibility
+        if not subscription.expires_soon() or subscription.has_open_payments():
+            messages.error(request, 'Dieses Abonnement kann nicht verlängert werden.')
             return redirect(reverse('subscription_list'))
 
         return super().dispatch(request, *args, **kwargs)
