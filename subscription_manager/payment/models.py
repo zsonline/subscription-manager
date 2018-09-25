@@ -18,7 +18,7 @@ from .managers import PaymentManager
 class Payment(models.Model):
     subscription = models.ForeignKey(
         Subscription,
-        on_delete=models.DO_NOTHING,
+        on_delete=models.CASCADE,
         verbose_name='Abonnement'
     )
     amount = models.IntegerField(

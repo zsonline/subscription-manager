@@ -501,7 +501,7 @@ nav a {
 .card {
   box-sizing: border-box; }
   .card:not(:last-child) {
-    margin-bottom: 1.5rem; }
+    margin-bottom: 2rem; }
   .card h4 {
     margin-bottom: .2em; }
   .card div:not(:last-child) {
@@ -522,6 +522,7 @@ nav a {
 #breadcrumbs {
   margin: -.25rem 0 1rem 0; }
   #breadcrumbs a, #breadcrumbs span {
+    display: inline-block;
     font-size: .75rem;
     color: #bfbfbf; }
   #breadcrumbs a {
