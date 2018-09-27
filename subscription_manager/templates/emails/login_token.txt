@@ -1,5 +1,5 @@
 {% extends 'base_email.txt' %}
 
 {% block content %}
-Melde dich an, indem du auf folgenden Link klickst: {{ url }}
+melde dich an, indem du auf folgenden Link klickst: {{ url }}.
 {% endblock %}

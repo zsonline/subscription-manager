@@ -6,4 +6,6 @@ dein Abonnement wurde verlängert und ist gültig bis am {{ payment.subscription
 {% else %}
 dein Abonnement wurde aktiviert und ist gültig bis am {{ payment.subscription.end_date }}.
 {% endif %}
+
+Wir wünschen dir viel Spass beim Lesen.
 {% endblock %}

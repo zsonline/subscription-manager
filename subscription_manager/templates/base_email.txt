@@ -2,7 +2,6 @@
 
 {% block content %}{% endblock %}
 
-{% block bye %}Liebe Grüsse,
-{{ organisation_name }}{% endblock %}
+{% block bye %}Deine {{ organisation_name }}{% endblock %}
 
-Hast du Fragen? Schreib uns: informatik@medienverein.ch.
+Hast du Fragen? Schreib uns: redaktion@medienverein.ch.

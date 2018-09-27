@@ -4,17 +4,19 @@
 {% if payment.is_renewal %}
 vielen Dank, dass du die ZS verlängerst.
 {% else %}
-vielen Dank, dass du die ZS abonniert hast.
+wir freuen uns, dich zu unserer Leserschaft zählen zu dürfen.
+
+Um die Bestellung abzuschliessen, zahle den Rechnungsbetrag auf folgendes Konto ein:
+
+IBAN:
+Lautend auf:
+
+Wir danken und wünschen dir eine anregende Lektüre.
 {% endif %}
-
-Um den Vorgang abzuschliessen, zahle die Rechnung bis {{ payment.pay_until }} an folgende Bankverbindung ein:
-
     {{ subscription.plan.name }}
     {{ subscription.address_line_1 }}
     {% if subscription.address_line_2 %}
         {{ subscription.address_line_2 }}
     {% endif %}
     {{ subscription.postcode }} {{ subscription.city }}
-
-    Rechnung
 {% endblock %}

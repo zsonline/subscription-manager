@@ -4,7 +4,7 @@
     "pk": 1,
     "fields": {
       "name": "Regul\u00e4res Abonnement",
-      "description": "Unser ganz normales Abonnement. Du zahlst, wir liefern. Sechs Mal j\u00e4hrlich schicken wir dir Geschichten aus der Uni und ETH nach Hause.",
+      "description": "Unser ganz normales Abonnement. Du zahlst, wir liefern.",
       "slug": "regular",
       "duration": 12,
       "price": 50
@@ -15,7 +15,7 @@
     "pk": 2,
     "fields": {
       "name": "Studentisches Abonnement",
-      "description": "Studierende erhalten die ZS gratis. Registriere dich hierf\u00fcr mit deiner studentischen E-Mail-Adresse.",
+      "description": "Für Studierende ist die ZS gratis. Registriere dich mit der E-Mail-Adresse deiner Uni.",
       "slug": "student",
       "duration": 12,
       "price": 0
