@@ -2,11 +2,9 @@
 import os
 from datetime import timedelta
 
-
 # Organisation
 ORGANISATION_NAME = 'Zürcher Studierendenzeitung'
 ORGANISATION_ABBREVIATION = 'ZS'
-ORGANISATION_REPLY_TO_EMAIL = 'support@zs-online.ch'
 ORGANISATION_FROM_EMAIL = 'server@zs-online.ch'
 
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
@@ -98,7 +96,13 @@ LOGIN_REDIRECT_URL = '/home/'
 
 # Internationalization
 LANGUAGE_CODE = 'de'
-TIME_ZONE = 'UTC'
-USE_I18N = True
+TIME_ZONE = 'Europe/Zurich'
+USE_I18N = False
 USE_L10N = True
 USE_TZ = True
+
+# Static files
+STATIC_URL = '/static/'
+STATICFILES_DIRS = (
+    os.path.join(BASE_DIR, 'static'),
+)
