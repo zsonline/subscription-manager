@@ -9,7 +9,7 @@ https://docs.djangoproject.com/en/dev/howto/deployment/checklist/
 SECRET_KEY = os.environ['SECRET_KEY']
 
 DEBUG = False
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['abo.zs-online.ch', 'www.abo.zs-online.ch', 'localhost']
 
 DATABASES = {
     'default': {
@@ -30,9 +30,9 @@ EMAIL_PORT = os.environ['EMAIL_PORT']
 EMAIL_HOST_USER = os.environ['EMAIL_HOST_USER']
 EMAIL_HOST_PASSWORD = os.environ['EMAIL_HOST_PASSWORD']
 
-WSGI_APPLICATION = 'subscription_manager.wsgi.application'
+WSGI_APPLICATION = 'subscription_manager.core.wsgi.application'
 
-STATIC_ROOT = "/var/www/static/"
+STATIC_ROOT = "/srv/http/static/"
 
 # TODO: Logging
 # TODO: Cached template loader
