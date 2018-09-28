@@ -32,11 +32,10 @@ EMAIL_HOST_PASSWORD = os.environ['EMAIL_HOST_PASSWORD']
 
 WSGI_APPLICATION = 'subscription_manager.wsgi.application'
 
-STATIC_ROOT = "/var/www/subscription_manager/static/"
+STATIC_ROOT = "/var/www/static/"
 
 # TODO: Logging
 # TODO: Cached template loader
 
 CSRF_COOKIE_SECURE = True
 SESSION_COOKIE_SECURE = True
-
