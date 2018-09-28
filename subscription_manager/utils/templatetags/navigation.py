@@ -15,6 +15,8 @@ def active(context, view_name):
     Otherwise an empty string.
     """
     request = context['request']
+    if reverse(view_name) == '/' and request.path != '/':
+        return ''
     if reverse(view_name) in request.path:
         return 'active'
     return ''
