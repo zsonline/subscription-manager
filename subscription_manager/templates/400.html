@@ -1,9 +1,6 @@
-{% extends 'base.html' %}
+{% extends 'layouts/error.html' %}
 
-{% block title %}Ungültige Anforderung{% endblock %}
-
-{% block main_classes %}error{% endblock %}
-
-{% block main %}
-    <h2>Ungültige Anforderung</h2>
+{% block content %}
+    <h2>{% block error_title %}Ungültige Anforderung{% endblock %}</h2>
+    <p>Deine Anfrage ist ungültig und kann darum nicht verarbeitet werden.</p>
 {% endblock %}

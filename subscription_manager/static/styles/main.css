@@ -696,6 +696,24 @@ main.manager {
   main.manager .container {
     width: calc(1024px - 2rem); } }
 
+main.error {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: #f7f7f7; }
+  main.error .inner {
+    padding: 2rem 1rem; }
+  main.error p {
+    margin: 0; }
+
+@media (min-width: 756px) {
+  main.error .inner {
+    max-width: 75%; } }
+
+@media (min-width: 1024px) {
+  main.error .inner {
+    max-width: 50%; } }
+
 .price {
   margin-bottom: 1em; }
   .price .amount {
