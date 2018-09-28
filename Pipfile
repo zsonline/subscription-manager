@@ -8,8 +8,9 @@ django = "*"
 python-dotenv = "*"
 humanize = "*"
 python-dateutil = "*"
+gunicorn = "*"
+psycopg2-binary = "*"
 
 [dev-packages]
 
 [requires]
-python_version = "3.7"
