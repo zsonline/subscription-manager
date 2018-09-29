@@ -32,7 +32,7 @@ EMAIL_HOST_PASSWORD = os.environ['EMAIL_HOST_PASSWORD']
 
 WSGI_APPLICATION = 'subscription_manager.core.wsgi.application'
 
-STATIC_ROOT = "/srv/http/static/"
+STATIC_ROOT = "/srv/static/"
 
 # TODO: Logging
 # TODO: Cached template loader
