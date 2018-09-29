@@ -5,8 +5,6 @@ name = "pypi"
 
 [packages]
 django = "*"
-python-dotenv = "*"
-humanize = "*"
 python-dateutil = "*"
 gunicorn = "*"
 psycopg2-binary = "*"

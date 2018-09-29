@@ -4,12 +4,7 @@
 import os
 import sys
 
-# Pip imports
-from dotenv import load_dotenv
-
 if __name__ == '__main__':
-    # Load .env file
-    load_dotenv()
     # Load settings
     os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'subscription_manager.core.settings.production')
     try:
