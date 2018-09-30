@@ -97,14 +97,6 @@ class Payment(models.Model):
             template = 'emails/payment_confirmation_renewal.txt'
         self.subscription.save()
 
-        print('log1')
-        print(settings.EMAIL_SUBJECT_PREFIX + subject)
-        print(template)
-        print(self.subscription.user.first_name)
-        print(self)
-        print(settings.DEFAULT_FROM_EMAIL)
-        print(self.subscription.user.email)
-
         # Send confirmation email
         send_mail(
             subject=settings.EMAIL_SUBJECT_PREFIX + subject,
@@ -116,5 +108,3 @@ class Payment(models.Model):
             recipient_list=[self.subscription.user.email],
             fail_silently=True
         )
-
-        print('log2')
