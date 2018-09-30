@@ -5,6 +5,7 @@ from .base import *
 Check before deploying:
 https://docs.djangoproject.com/en/dev/howto/deployment/checklist/
 """
+BASE_URL = 'https://www.abo.zs-online.ch'
 
 SECRET_KEY = os.environ['SECRET_KEY']
 
