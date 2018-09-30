@@ -73,7 +73,7 @@ class Payment(models.Model):
             }),
             from_email=settings.DEFAULT_FROM_EMAIL,
             recipient_list=[self.subscription.user.email],
-            fail_silently=True
+            fail_silently=False
         )
 
     def confirm(self):
@@ -106,5 +106,5 @@ class Payment(models.Model):
             }),
             from_email=settings.DEFAULT_FROM_EMAIL,
             recipient_list=[self.subscription.user.email],
-            fail_silently=False
+            fail_silently=True
         )
