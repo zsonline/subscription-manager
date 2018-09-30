@@ -39,7 +39,7 @@ LOGGING = {
         'file': {
             'level': 'DEBUG',
             'class': 'logging.FileHandler',
-            'filename': '/var/log/subscription_manager.log',
+            'filename': '/srv/subscription-manager/django.log',
         }
     },
     'loggers': {
