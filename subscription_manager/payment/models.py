@@ -66,7 +66,7 @@ class Payment(models.Model):
                 'to_name': self.subscription.user.first_name,
                 'payment': self
             }),
-            from_email=None,
+            from_email=settings.DEFAULT_FROM_EMAIL,
             recipient_list=[self.subscription.user.email],
             fail_silently=True
         )
@@ -102,7 +102,7 @@ class Payment(models.Model):
                 'payment': self,
                 'renewal': renewal
             }),
-            from_email=None,
+            from_email=settings.DEFAULT_FROM_EMAIL,
             recipient_list=[self.subscription.user.email],
             fail_silently=True
         )

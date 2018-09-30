@@ -65,7 +65,7 @@ class EmailBackend(TokenBackend):
                 'to_name': token.user.first_name,
                 'url': url,
             }),
-            from_email=None,
+            from_email=settings.DEFAULT_FROM_EMAIL,
             recipient_list=[token.user.email],
             fail_silently=True
         )

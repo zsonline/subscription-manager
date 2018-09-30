@@ -46,7 +46,7 @@ class SubscriptionManager(models.Manager):
                 'url': '{}{}'.format(settings.BASE_URL, reverse('login'))
                        + '?next=' + reverse('payment_create', kwargs={'subscription_id': subscription.id})
             }),
-            from_email=None,
+            from_email=settings.DEFAULT_FROM_EMAIL,
             recipient_list=[subscription.user.email],
             fail_silently=True
         )
