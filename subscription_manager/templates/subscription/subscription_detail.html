@@ -10,17 +10,32 @@
 {% block content %}
     {% include 'includes/subscription.html' %}
 
-    <h3>Rechnung</h3>
-
     {% for payment in payments %}
-        <h4>Betrag</h4>
-        {{ payment.amount }}
+        <div class="invoice">
+            <h3>Rechnung</h3>
 
-        <h4>Mitteilungsfeld</h4>
-        {{ payment.code }}
+            <h4>Betrag</h4>
+            {{ payment.amount }}
 
-        <h4>Zahlungsdetails</h4>
-        Bank: <br>
-        IBAN: ???
+            <h4>Mitteilungsfeld</h4>
+            {{ payment.code }}<br>
+            <small>Das Mitteilungsfeld brauchen wir, um die Zahlung deiner Bestellung zuzuordnen.</small>
+
+            <h4>Bankverbindung</h4>
+            <h5>IBAN</h5>
+            CH32 0070 0110 0030 6727 2
+
+            <h5>Bankkonto-Nummer</h5>
+            1100-3067.272
+
+            <h5>Kontoinhaber</h5>
+            Medienverein ZS<br>
+            8001 Zürich
+
+            <h5>Finanzinstitut</h5>
+            Zürcher Kantonalbank<br>
+            Postfach<br>
+            8010 Zürich
+        </div>
     {% endfor %}
 {% endblock %}

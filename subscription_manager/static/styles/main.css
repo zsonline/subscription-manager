@@ -719,6 +719,13 @@ main.error {
   .price .amount {
     font-size: 2em; }
 
+.invoice {
+  margin-top: 1rem; }
+  .invoice h4 {
+    margin: .75em 0 0 0; }
+  .invoice h5 {
+    margin: .5em 0 0 0; }
+
 #plans {
   padding: 0;
   margin: 2em 0 0 0; }
