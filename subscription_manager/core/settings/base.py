@@ -3,8 +3,6 @@ import os
 from datetime import timedelta
 
 # Organisation
-ORGANISATION_NAME = 'Zürcher Studierendenzeitung'
-ORGANISATION_ABBREVIATION = 'ZS'
 ORGANISATION_FROM_EMAIL = 'server@zs-online.ch'
 
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))

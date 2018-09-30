@@ -2,6 +2,6 @@
 
 {% block content %}{% endblock %}
 
-{% block bye %}Deine {{ organisation_name }}{% endblock %}
+{% block bye %}Deine ZS{% endblock %}
 
 Hast du Fragen? Schreib uns: redaktion@medienverein.ch.
