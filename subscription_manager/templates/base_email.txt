@@ -1,7 +1,13 @@
-{% block hello %}{{ to_name }},{% endblock %}
+{{ to_name }},
 
 {% block content %}{% endblock %}
 
-{% block bye %}Deine ZS{% endblock %}
+Deine Zürcher Studierendenzeitung
 
+
+---
 Hast du Fragen? Schreib uns: redaktion@medienverein.ch.
+
+Medienverein ZS
+Rämistrasse 62
+8001 Zürich

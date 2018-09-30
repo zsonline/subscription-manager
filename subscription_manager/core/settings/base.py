@@ -104,5 +104,5 @@ STATICFILES_DIRS = (
 
 # Email
 EMAIL_SUBJECT_PREFIX = '[ZS] '
-DEFAULT_FROM_EMAIL = 'server@zs-online.ch'
+DEFAULT_FROM_EMAIL = 'Zürcher Studierendenzeitung <server@zs-online.ch>'
 SERVER_EMAIL = 'server@zs-online.ch'

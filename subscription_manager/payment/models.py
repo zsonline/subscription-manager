@@ -60,9 +60,14 @@ class Payment(models.Model):
         Sends an email that contains the payment details
         for this payment.
         """
+        if not self.is_renewal():
+            template = 'emails/invoice_new.txt'
+        else:
+            template = 'emails/invoice_renewal.txt'
+
         send_mail(
-            subject='Rechnung',
-            message=render_to_string('emails/invoice.txt', {
+            subject=settings.EMAIL_SUBJECT_PREFIX + 'Rechnung',
+            message=render_to_string(template, {
                 'to_name': self.subscription.user.first_name,
                 'payment': self
             }),
@@ -70,7 +75,6 @@ class Payment(models.Model):
             recipient_list=[self.subscription.user.email],
             fail_silently=True
         )
-
 
     def confirm(self):
         """
@@ -81,26 +85,24 @@ class Payment(models.Model):
         self.paid_at = timezone.now()
         self.save()
 
-        # Fetch is_renewal value
-        renewal = self.is_renewal()
-
         # Adjust subscription details
-        if not renewal:
+        if not self.is_renewal():
             self.subscription.start_date = timezone.now()
             self.subscription.end_date = timezone.now() + relativedelta(months=self.subscription.plan.duration)
             subject = 'Abo aktiviert'
+            template = 'emails/payment_confirmation_new.txt'
         else:
             self.subscription.end_date += relativedelta(months=self.subscription.plan.duration)
             subject = 'Abo verlängert'
+            template = 'emails/payment_confirmation_renewal.txt'
         self.subscription.save()
 
-        # Send renewal confirmation email
+        # Send confirmation email
         send_mail(
-            subject=subject,
-            message=('emails/payment_confirmation.txt', {
+            subject=settings.EMAIL_SUBJECT_PREFIX + subject,
+            message=(template, {
                 'to_name': self.subscription.user.first_name,
-                'payment': self,
-                'renewal': renewal
+                'payment': self
             }),
             from_email=settings.DEFAULT_FROM_EMAIL,
             recipient_list=[self.subscription.user.email],

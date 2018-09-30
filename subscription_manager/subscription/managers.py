@@ -39,7 +39,7 @@ class SubscriptionManager(models.Manager):
         subscription.
         """
         send_mail(
-            subject='Abonnement verlängern',
+            subject=settings.EMAIL_SUBJECT_PREFIX + 'Abo verlängern',
             message=render_to_string('emails/expiration.txt', {
                 'to_name': subscription.user.first_name,
                 'subscription': subscription,

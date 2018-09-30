@@ -1,5 +1,3 @@
 {% extends 'base_email.txt' %}
 
-{% block content %}
-melde dich an, indem du auf folgenden Link klickst: {{ url }}.
-{% endblock %}
+{% block content %}das ist dein Anmelde-Link: {{ url }}.{% endblock %}

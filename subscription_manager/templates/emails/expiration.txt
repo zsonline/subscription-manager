@@ -1,14 +1,10 @@
 {% extends 'base_email.txt' %}
 
-{% block content %}
-    {% subscription.plan.name %}
-    {{ subscription.address_line_1 }}
-    {% if subscription.address_line_2 %}
-        {{ subscription.address_line_2 }}<br>
-    {% endif %}
-    {{ subscription.postcode }} {{ subscription.city }}
+{% block content %}dein Abonnement für folgende Adresse läuft in 30 Tagen aus:
+{{ subscription.address_line_1 }}
+{% if subscription.address_line_2 %}{{ subscription.address_line_2 }}{% endif %}
+{{ subscription.postcode }} {{ subscription.city }}
 
-    {{ url }}
+Verlängere jetzt, damit du die ZS weiterhin erhältst. Klicke dafür auf diesen Link: {{ url }}.
 
-    Abgelaufen.
-{% endblock %}
+Es würde uns freuen, dich weiterhin zu unserer Leserschaft zählen zu dürfen.{% endblock %}
