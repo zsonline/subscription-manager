@@ -12,6 +12,7 @@ class PaymentAdmin(admin.ModelAdmin):
 
     def confirm_payments(self, request, queryset):
         for obj in queryset:
+            print(obj)
             obj.confirm()
     confirm_payments.short_description = 'Ausgewählte Zahlungen bestätigen'
 
