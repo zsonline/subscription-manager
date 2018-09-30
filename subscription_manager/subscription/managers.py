@@ -39,14 +39,14 @@ class SubscriptionManager(models.Manager):
         subscription.
         """
         send_mail(
-            '[ZS] Abonnement verlängern',
-            render_to_string('emails/expiration.txt', {
+            subject='Abonnement verlängern',
+            message=render_to_string('emails/expiration.txt', {
                 'to_name': subscription.user.first_name,
                 'subscription': subscription,
                 'url': '{}{}'.format(settings.BASE_URL, reverse('login'))
                        + '?next=' + reverse('payment_create', kwargs={'subscription_id': subscription.id})
             }),
-            settings.ORGANISATION_FROM_EMAIL,
-            [subscription.user.email],
-            fail_silently=False
+            from_email=None,
+            recipient_list=[subscription.user.email],
+            fail_silently=True
         )

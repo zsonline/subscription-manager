@@ -5,13 +5,21 @@ from .base import *
 Check before deploying:
 https://docs.djangoproject.com/en/dev/howto/deployment/checklist/
 """
-BASE_URL = 'https://www.abo.zs-online.ch'
-
-SECRET_KEY = os.environ['SECRET_KEY']
-
+# General
 DEBUG = False
 ALLOWED_HOSTS = ['abo.zs-online.ch', 'www.abo.zs-online.ch', 'localhost']
+BASE_URL = 'https://www.abo.zs-online.ch'
 
+# Security
+SECRET_KEY = os.environ['SECRET_KEY']
+CSRF_COOKIE_SECURE = True
+SESSION_COOKIE_SECURE = True
+
+# Server
+WSGI_APPLICATION = 'subscription_manager.core.wsgi.application'
+STATIC_ROOT = "/srv/static/"
+
+# Database
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
@@ -24,6 +32,7 @@ DATABASES = {
 }
 CONN_MAX_AGE = None
 
+# Email
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 EMAIL_USE_SSL = True
 EMAIL_HOST = os.environ['EMAIL_HOST']
@@ -31,8 +40,7 @@ EMAIL_PORT = os.environ['EMAIL_PORT']
 EMAIL_HOST_USER = os.environ['EMAIL_HOST_USER']
 EMAIL_HOST_PASSWORD = os.environ['EMAIL_HOST_PASSWORD']
 
-WSGI_APPLICATION = 'subscription_manager.core.wsgi.application'
-
+# Logging
 LOGGING = {
     'version': 1,
     'disable_existing_loggers': False,
@@ -51,11 +59,3 @@ LOGGING = {
         }
     }
 }
-
-STATIC_ROOT = "/srv/static/"
-
-# TODO: Logging
-# TODO: Cached template loader
-
-CSRF_COOKIE_SECURE = True
-SESSION_COOKIE_SECURE = True

@@ -2,9 +2,6 @@
 import os
 from datetime import timedelta
 
-# Organisation
-ORGANISATION_FROM_EMAIL = 'server@zs-online.ch'
-
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 PROJECT_ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
@@ -93,7 +90,7 @@ LOGIN_URL = '/auth/login/'
 LOGIN_REDIRECT_URL = '/home/'
 
 # Internationalization
-LANGUAGE_CODE = 'de'
+LANGUAGE_CODE = 'de-ch'
 TIME_ZONE = 'Europe/Zurich'
 USE_I18N = False
 USE_L10N = True
@@ -104,3 +101,8 @@ STATIC_URL = '/static/'
 STATICFILES_DIRS = (
     os.path.join(BASE_DIR, 'static'),
 )
+
+# Email
+EMAIL_SUBJECT_PREFIX = '[ZS] '
+DEFAULT_FROM_EMAIL = 'server@zs-online.ch'
+SERVER_EMAIL = 'server@zs-online.ch'

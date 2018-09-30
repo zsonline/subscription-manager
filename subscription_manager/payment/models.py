@@ -61,14 +61,14 @@ class Payment(models.Model):
         for this payment.
         """
         send_mail(
-            '[ZS] Rechnung',
-            render_to_string('emails/invoice.txt', {
+            subject='Rechnung',
+            message=render_to_string('emails/invoice.txt', {
                 'to_name': self.subscription.user.first_name,
                 'payment': self
             }),
-            settings.ORGANISATION_FROM_EMAIL,
-            [self.subscription.user.email],
-            fail_silently=False
+            from_email=None,
+            recipient_list=[self.subscription.user.email],
+            fail_silently=True
         )
 
 
@@ -96,13 +96,13 @@ class Payment(models.Model):
 
         # Send renewal confirmation email
         send_mail(
-            '[ZS] ' + subject,
-            render_to_string('emails/payment_confirmation.txt', {
+            subject=subject,
+            message=('emails/payment_confirmation.txt', {
                 'to_name': self.subscription.user.first_name,
                 'payment': self,
                 'renewal': renewal
             }),
-            settings.ORGANISATION_FROM_EMAIL,
-            [self.subscription.user.email],
-            fail_silently=False
+            from_email=None,
+            recipient_list=[self.subscription.user.email],
+            fail_silently=True
         )
