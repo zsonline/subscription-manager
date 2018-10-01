@@ -58,7 +58,7 @@ LOGGING = {
     },
     'loggers': {
         'django': {
-            'handlers': ['file'],
+            'handlers': ['file', 'mail_admins'],
             'level': 'DEBUG',
             'propagate': True
         }
