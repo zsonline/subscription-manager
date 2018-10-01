@@ -2,7 +2,6 @@
 from django.conf import settings
 from django.contrib import admin
 from django.urls import path, include
-from django.views.defaults import page_not_found, server_error
 from django.views.generic.base import RedirectView, TemplateView
 
 urlpatterns = [
@@ -12,6 +11,11 @@ urlpatterns = [
     path('auth/', include('subscription_manager.authentication.urls')),
     path('admin/', admin.site.urls),
 ]
+
+handler400 = TemplateView.as_view(template_name='400.html')
+handler403 = TemplateView.as_view(template_name='403.html')
+handler404 = TemplateView.as_view(template_name='404.html')
+handler500 = TemplateView.as_view(template_name='500.html')
 
 if settings.DEBUG:
     urlpatterns += [
