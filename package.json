@@ -12,6 +12,7 @@
   "homepage": "https://github.com/robinbisping/zsavs#readme",
   "devDependencies": {
     "gulp": "^3.9.1",
+    "gulp-clean-css": "^3.10.0",
     "gulp-sass": "^4.0.1",
     "gulp-shell": "^0.6.5",
     "gulp-sourcemaps": "^2.6.4"

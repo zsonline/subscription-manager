@@ -5,6 +5,7 @@ const gulp = require('gulp');
 const sass = require('gulp-sass');
 const shell = require('gulp-shell');
 const sourcemaps = require('gulp-sourcemaps');
+const cleanCSS = require('gulp-clean-css');
 
 /*
 Default task. Starts watching for style changes.
@@ -21,6 +22,7 @@ gulp.task('styles', function () {
     gulp.src('./subscription_manager/static/styles/scss/**/*.scss')
         .pipe(sourcemaps.init())
         .pipe(sass().on('error', sass.logError))
+        .pipe(cleanCSS())
         .pipe(sourcemaps.write('.'))
         .pipe(gulp.dest('./subscription_manager/static/styles'));
 });
