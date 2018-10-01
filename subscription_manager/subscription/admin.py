@@ -35,19 +35,30 @@ class SubscriptionAdmin(admin.ModelAdmin):
         subscriptions = Subscription.objects.all()
         # Write header row
         writer = csv.writer(response)
-        writer.writerow(['last_name', 'first_name', 'title', 'address_line_1', 'address_line_2', 'city', 'postcode'])
+        writer.writerow(['last_name', 'first_name', 'title', 'department', 'Adress', 'primary_address_city', 'primary_address_postalcode'])
         # Add each active subscription to file
         for subscription in subscriptions:
             if subscription.is_active():
-                writer.writerow([
-                    subscription.user.last_name,
-                    subscription.user.first_name,
-                    '',
-                    subscription.address_line_1,
-                    subscription.address_line_2,
-                    subscription.city,
-                    subscription.postcode
-                ])
+                if subscription.address_line_2 is not None:
+                    writer.writerow([
+                        subscription.user.last_name,
+                        subscription.user.first_name,
+                        '',
+                        subscription.address_line_1,
+                        subscription.address_line_2,
+                        subscription.city,
+                        subscription.postcode
+                    ])
+                else:
+                    writer.writerow([
+                        subscription.user.last_name,
+                        subscription.user.first_name,
+                        '',
+                        '',
+                        subscription.address_line_1,
+                        subscription.city,
+                        subscription.postcode
+                    ])
         return response
 
 
