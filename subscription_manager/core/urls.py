@@ -12,11 +12,6 @@ urlpatterns = [
     path('admin/', admin.site.urls),
 ]
 
-handler400 = TemplateView.as_view(template_name='400.html')
-handler403 = TemplateView.as_view(template_name='403.html')
-handler404 = TemplateView.as_view(template_name='404.html')
-handler500 = TemplateView.as_view(template_name='500.html')
-
 if settings.DEBUG:
     urlpatterns += [
         path('400/', TemplateView.as_view(template_name='400.html')),

@@ -13,14 +13,27 @@
     <link rel="icon" type="image/png" sizes="32x32" href="{% static 'images/favicon-32x32.png' %}">
     <link rel="icon" type="image/png" sizes="16x16" href="{% static 'images/favicon-16x16.png' %}">
 
-    <title>{% block title %}Aboverwaltung{% endblock %} - Zürcher Studierendenzeitung</title>
+    <title>{% block title %}Fehler{% endblock %} - Zürcher Studierendenzeitung</title>
 </head>
 <body>
 
-{% include 'includes/header.html' %}
+<header>
 
-<main class="{% block main_classes %}{% endblock %}">
-    {% block main %}{% endblock %}
+    <a id="logo" href="{% url 'index' %}">
+        <img src="{% static 'images/zs-signet-small.png' %}">
+        <h1>Zürcher Studierendenzeitung</h1>
+    </a>
+
+    <nav>
+        <a href="{% url 'index' %}">Startseite</a>
+    </nav>
+
+</header>
+
+<main class="error">
+    <div class="inner">
+        {% block content %}{% endblock %}
+    </div>
 </main>
 
 {% include 'includes/footer.html' %}
