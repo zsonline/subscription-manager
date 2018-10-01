@@ -100,7 +100,7 @@ class Payment(models.Model):
         # Send confirmation email
         send_mail(
             subject=settings.EMAIL_SUBJECT_PREFIX + subject,
-            message=(template, {
+            message=render_to_string(template, {
                 'to_name': self.subscription.user.first_name,
                 'payment': self
             }),
