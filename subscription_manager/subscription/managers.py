@@ -6,15 +6,27 @@ from django.shortcuts import reverse
 from django.template.loader import render_to_string
 from django.utils import timezone
 
-# Application imports
-
 
 class SubscriptionManager(models.Manager):
     """
     Custom manager for payments.
     """
-    def expire_today(self):
-        subscriptions = self.filter(end_date=timezone.now().date()).filter(canceled_at__isnull=True)
+    def notify_to_be_expired_subscribers(self):
+        """
+        Sends an email to users whose subscriptions
+        expire.
+        """
+        subscriptions = self.all_expire_in(30)
+        for subscription in subscriptions:
+            self.send_expiration_email(subscription)
+
+    def all_expire_in(self, days):
+        """
+        Returns all subscriptions that expire in a
+        given amount of days (exactly).
+        """
+        subscriptions = self.filter(end_date=timezone.now().date()+timezone.timedelta(days=days)).filter(canceled_at__isnull=True)
+        return subscriptions
 
     def has_student_subscriptions(self, user):
         """
