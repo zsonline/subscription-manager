@@ -38,7 +38,7 @@ class SubscriptionManager(models.Manager):
         # Exclude inactive or non-student subscriptions
         to_be_removed = []
         for subscription in subscriptions:
-            if not subscription.is_active() or not subscription.plan.slug == 'student':
+            if not (subscription.plan.slug == 'student' and subscription.is_active()):
                 to_be_removed.append(subscription.id)
         subscriptions.exclude(id__in=to_be_removed)
         # Return true if count is 0
