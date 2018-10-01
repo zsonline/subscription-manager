@@ -48,5 +48,5 @@ class SubscriptionManager(models.Manager):
             }),
             from_email=settings.DEFAULT_FROM_EMAIL,
             recipient_list=[subscription.user.email],
-            fail_silently=True
+            fail_silently=False
         )

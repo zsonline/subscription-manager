@@ -1,7 +1,9 @@
+# Python imports
+from random import randint
+
 # Django imports
 from django import forms
 from django.db import IntegrityError
-from django.utils.crypto import get_random_string
 
 # Application imports
 from .models import Payment
@@ -68,7 +70,7 @@ class PaymentForm(forms.ModelForm):
         while True:
             try:
                 # Generate a code
-                code = 'ZS-' + get_random_string(6).upper()
+                code = 'ZS1-' + randint(1000, 9999) + randint(1000, 9999)
                 payment.code = code
                 if commit:
                     payment.save()

@@ -1,7 +1,8 @@
+# Python imports
+from random import randint
+
 # Django imports
 from django.db import models, IntegrityError
-from django.utils.crypto import get_random_string
-
 
 class PaymentManager(models.Manager):
     """
@@ -16,7 +17,7 @@ class PaymentManager(models.Manager):
         while True:
             try:
                 # Generate a code
-                code = 'ZS-' + get_random_string(6).upper()
+                code = 'ZS1-' + randint(1000, 9999) + randint(1000, 9999)
                 # Try creating token object
                 obj_data['code'] = code
                 payment = super().create(**obj_data)
