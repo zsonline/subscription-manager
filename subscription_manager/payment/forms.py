@@ -68,7 +68,7 @@ class PaymentForm(forms.ModelForm):
         while True:
             try:
                 # Generate a code
-                code = 'ZS-' + get_random_string(12)
+                code = 'ZS-' + get_random_string(6).upper()
                 payment.code = code
                 if commit:
                     payment.save()
