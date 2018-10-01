@@ -36,13 +36,12 @@ class SubscriptionManager(models.Manager):
         # Get all subscriptions of a user
         subscriptions = self.filter(user=user)
         # Exclude inactive or non-student subscriptions
-        to_be_removed = []
+        count = 0
         for subscription in subscriptions:
-            if not (subscription.plan.slug == 'student' and subscription.is_active()):
-                to_be_removed.append(subscription.id)
-        subscriptions.exclude(id__in=to_be_removed)
+            if subscription.plan.slug == 'student' and subscription.is_active():
+                count += 1
         # Return true if count is 0
-        return subscriptions.count() > 0
+        return count > 0
 
     @staticmethod
     def send_expiration_email(subscription):
