@@ -1,6 +1,6 @@
 {% extends 'base_email.txt' %}
 
-{% block content %}dein Abonnement wurde aktiviert und ist gültig bis am {{ payment.subscription.end_date }}. Deine ZS schicken wir dir ab jetzt an folgende Adresse:
+{% block content %}dein Abonnement wurde aktiviert und ist gültig bis am {{ payment.subscription.end_date }}. Die ZS schicken wir dir ab jetzt an folgende Adresse:
 {{ payment.subscription.address_line_1 }}{% if payment.subscription.address_line_2 %}
 {{ payment.subscription.address_line_2 }}{% endif %}
 {{ payment.subscription.postcode }} {{ payment.subscription.city }}
