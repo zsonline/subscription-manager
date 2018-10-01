@@ -87,8 +87,8 @@ class Payment(models.Model):
 
         # Adjust subscription details
         if not self.is_renewal():
-            self.subscription.start_date = timezone.now()
-            self.subscription.end_date = timezone.now() + relativedelta(months=self.subscription.plan.duration)
+            self.subscription.start_date = timezone.now().date()
+            self.subscription.end_date = timezone.now().date() + relativedelta(months=self.subscription.plan.duration)
             subject = 'Abo aktiviert'
             template = 'emails/payment_confirmation_new.txt'
         else:
