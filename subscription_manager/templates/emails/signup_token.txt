@@ -1,3 +1,3 @@
 {% extends 'base_email.txt' %}
 
-{% block content %}bevor du fortfahren kannst, musst du kurz deine E-Mail-Adresse bestätigen. Klicke dafür auf diesen Link: {{ url }}.{% endblock %}
+{% block content %}bevor du fortfahren kannst, musst du deine E-Mail-Adresse bestätigen. Klicke dafür auf diesen Link: {{ url }}.{% endblock %}
