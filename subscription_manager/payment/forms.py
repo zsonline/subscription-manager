@@ -70,7 +70,7 @@ class PaymentForm(forms.ModelForm):
         while True:
             try:
                 # Generate a code
-                code = 'ZS1-' + randint(1000, 9999) + randint(1000, 9999)
+                code = 'ZS1-' + str(randint(1000, 9999)) + '-' + str(randint(1000, 9999))
                 payment.code = code
                 if commit:
                     payment.save()
