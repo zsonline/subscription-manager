@@ -66,8 +66,8 @@ TOKEN_EXPIRATION = timedelta(minutes=10)  # Validity duration of a token
 
 ALLOWED_STUDENT_EMAIL_ADDRESSES = ['student.ethz.ch']
 
-ANNOUNCEMENT = "Die Applikation wird vor Veröffentlichung zurückgesetzt. Alle Daten werden gelöscht."
-ANNOUNCEMENT_CLASS = "info"  # info, success, warning, danger
+ANNOUNCEMENT = ''  # "Die Applikation wird vor Veröffentlichung zurückgesetzt. Alle Daten werden gelöscht."
+ANNOUNCEMENT_CLASS = 'info'  # info, success, warning, danger
 
 # Password validation
 AUTH_PASSWORD_VALIDATORS = [
