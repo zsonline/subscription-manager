@@ -19,6 +19,7 @@ from django.views.generic import detail, edit, list
 from subscription_manager.authentication.decorators import anonymous_required
 from subscription_manager.payment.forms import PaymentForm
 from subscription_manager.payment.models import Payment
+from subscription_manager.utils.language import humanize_list
 
 # Application imports
 from .forms import SubscriptionForm
@@ -123,13 +124,14 @@ class SubscriptionCreateView(View):
         if plan is None:
             # If plan does not exist, return to list view and display
             # error message
-            messages.error(request, 'Dieses Abonnement existiert nicht.')
+            messages.error(request, 'Das Abonnement existiert nicht.')
             return redirect('plan_list')
 
         # Check eligibility
         if plan.slug == 'student' and \
                 (not request.user.is_student() or Subscription.objects.has_student_subscriptions(request.user)):
-            messages.error(request, 'Dieses Abonnement ist nur für Studentinnen.')
+            messages.error(request, 'Dein gewähltes Abonnement ist nur für ETH-Studierende ({}). Darum kannst du es nicht abonnieren. Wähle stattdessen ein anderes Abo.'
+                           .format(humanize_list(['@' + s for s in settings.ALLOWED_STUDENT_EMAIL_ADDRESSES], 'oder')))
             return redirect('plan_list')
 
         return super().dispatch(request, *args, **kwargs)
@@ -188,7 +190,7 @@ class SubscriptionCreateView(View):
             # Only set start and end date when subscription is free
             if payment.amount == 0:
                 payment.confirm()
-                messages.success(request, 'Vielen Dank! Ab sofort erhälst du die ZS nach Hause geliefert.')
+                messages.success(request, 'Vielen Dank! Ab sofort erhältst du die ZS nach Hause geliefert.')
                 return redirect('subscription_list')
 
             # Send invoice

@@ -17,6 +17,11 @@ class SignUpForm(forms.ModelForm):
     class Meta:
         model = get_user_model()
         fields = ('first_name', 'last_name', 'email')
+        error_messages = {
+            'email': {
+                'unique': 'Ein Account mit dieser E-Mail-Adresse existiert bereits. Versuche dich stattdessen anzumelden.'
+            }
+        }
 
     def save(self, commit=True):
         """
@@ -56,18 +61,18 @@ class LoginForm(forms.Form):
             user = get_user_model().objects.get(email=self.cleaned_data['email'])
         except get_user_model().DoesNotExist:
             # Add error if user does not exist
-            self.add_error(None, 'Ein Account {} existiert nicht.'.format(self.cleaned_data['email']))
+            self.add_error(None, 'Der Account {} existiert nicht.'.format(self.cleaned_data['email']))
             return False
 
         if not user.is_active:
-            self.add_error(None, 'Dein Account {} ist gesperrt.'.format(self.cleaned_data['email']))
+            self.add_error(None, 'Der Account {} ist gesperrt.'.format(self.cleaned_data['email']))
             return False
 
         if Token.objects.valid_user_tokens_count(user) >= settings.TOKENS_PER_USER:
             self.add_error(
                 None,
-                'Auf deinen Account {} ist die maximale Anzahl Tokens ausgestellt. '
-                'Sobald einer davon abgelaufen ist, kannst du wieder einen Neuen anfordern.'
+                'Du hast bereits die maximale Anzahl an Tokens angefordert. '
+                'Warte zehn Minuten, bevor du es erneut probierst.'
                 .format(self.cleaned_data['email'])
             )
             return False

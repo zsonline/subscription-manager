@@ -6,7 +6,10 @@
 
 {% block left_column %}
     <h2>Registrieren</h2>
-    <p class="description">Erstelle einen Account.</p>
+    <p class="description">
+        Erstelle einen Account.<br>
+        Du hast bereits einen Account? Dann <a href="{% url 'login' %}">melde</a> dich <a href="{% url 'login' %}">an</a>.
+    </p>
 
     {% for message in messages %}
         <p class="alert{% if message.tags %} {{ message.tags }}{% endif %}">{{ message }}</p>
@@ -14,10 +17,7 @@
 
     {% if 'student' in next %}
         <p class="alert info">
-            Bitte gib deine studentische E-Mail-Adresse an. Wir anerkennen folgende Adressen:
-            {% for email_address in allowed_student_email_addresses %}
-                @{{ email_address }}{% if forloop.last %}.{% else %}, {% endif %}
-            {% endfor %}
+            Gib deine studentische E-Mail-Adresse an. Sonst kannst du das studentische Abo nicht abonnieren. Wir anerkennen folgende Adressen: {{ allowed_student_email_addresses }}.
         </p>
     {% endif %}
 
@@ -25,7 +25,8 @@
         <form action="{% url 'signup' %}?next={{next}}" method="post">
     {% else %}
         <form action="{% url 'signup' %}" method="post">
-    {% endif %}        {% csrf_token %}
+    {% endif %}
+        {% csrf_token %}
         {{ form.as_p }}
         <input class="button black" type="submit" value="Registrieren" />
     </form>

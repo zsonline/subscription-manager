@@ -43,7 +43,7 @@ def signup_view(request):
                 return redirect('login')
 
             # If user does not exist, display error
-            form.add_error(None, 'Account konnte nicht erstellt werden.')
+            form.add_error(None, 'Es ist ein Fehler aufgetreten. Dein Account konnte nicht erstellt werden. Versuche es erneut.')
 
     # If it is another request, instantiate empty form
     else:
@@ -80,7 +80,7 @@ def login_view(request):
                 # Create and send token
                 Token.objects.create_and_send(user=user, action='login', next_page=next_page)
                 # Create success message
-                messages.success(request, 'Token an {} gesendet.'.format(user.email))
+                messages.success(request, 'Anmelde-Link an {} gesendet.'.format(user.email))
                 # Redirect to this page
                 return redirect('login')
 
@@ -115,7 +115,7 @@ def token_verification_view(request, email_b64, code):
         # Redirect user to login home otherwise
         return HttpResponseRedirect(settings.LOGIN_REDIRECT_URL)
 
-    messages.error(request, 'Dein Token ist ungültig.')
+    messages.error(request, 'Der Anmelde- oder Bestätigungs-Link ist ungültig. Fordere einen Neuen an.')
     return redirect('login')
 
 
@@ -125,5 +125,5 @@ def logout_view(request):
     Logs a user out and redirects her to the login page.
     """
     logout(request)
-    messages.success(request, 'Du hast dich ausgeloggt.')
+    messages.success(request, 'Du bist ausgeloggt.')
     return redirect('login')

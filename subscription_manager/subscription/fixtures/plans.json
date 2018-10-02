@@ -15,7 +15,7 @@
     "pk": 2,
     "fields": {
       "name": "Studentisches Abonnement",
-      "description": "Für Studierende ist die ZS gratis. Registriere dich mit der E-Mail-Adresse deiner Uni.",
+      "description": "Für ETH-Studierende ist die ZS gratis. Registriere dich mit der E-Mail-Adresse der ETH (@student.ethz.ch).",
       "slug": "student",
       "duration": 12,
       "price": 0

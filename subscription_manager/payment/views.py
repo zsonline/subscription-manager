@@ -1,4 +1,5 @@
 # Django imports
+from django.conf import settings
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
 from django.shortcuts import get_object_or_404, redirect, render, reverse
@@ -7,6 +8,7 @@ from django.utils.decorators import method_decorator
 
 # Project imports
 from subscription_manager.subscription.models import Subscription
+from subscription_manager.utils.language import humanize_list
 
 # Application imports
 from .forms import PaymentForm
@@ -51,19 +53,20 @@ class PaymentCreateView(CreateView):
         if subscription is None:
             # If subscription does not exist, return to list view and display
             # error message
-            messages.error(request, 'Dieses Abonnement existiert nicht.')
+            messages.error(request, 'Das Abonnement existiert nicht.')
             return redirect('subscription_list')
         self.subscription = subscription
 
         # Check student eligibility
         if subscription.plan.slug == 'student' and \
                 (not request.user.is_student() or Subscription.objects.has_student_subscriptions(request.user)):
-            messages.error(request, 'Dieses Abonnement ist nur für Studenten.')
+            messages.error(request, 'Dieses Abonnement ist nur für ETH-Studierende ({}) und kann deshalb nicht verlängert werden.'
+                           .format(humanize_list(['@' + s for s in settings.ALLOWED_STUDENT_EMAIL_ADDRESSES], 'oder')))
             return redirect('subscription_list')
 
         # Check other eligibility
         if not subscription.expires_soon() or subscription.has_open_payments():
-            messages.error(request, 'Dieses Abonnement kann nicht verlängert werden.')
+            messages.error(request, 'Dieses Abonnement kann nicht verlängert werden, weil es noch nicht ausläuft oder Zahlungen offen sind.')
             return redirect('subscription_list')
 
         return super().dispatch(request, *args, **kwargs)
