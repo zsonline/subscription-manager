@@ -5,9 +5,11 @@ name = "pypi"
 
 [packages]
 django = "*"
-python-dateutil = "*"
+django-celery = "*"
+django-celery-email = "*"
 gunicorn = "*"
 psycopg2-binary = "*"
+python-dateutil = "*"
 
 [dev-packages]
 

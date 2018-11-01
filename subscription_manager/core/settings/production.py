@@ -7,7 +7,7 @@ https://docs.djangoproject.com/en/dev/howto/deployment/checklist/
 """
 # General
 DEBUG = False
-ALLOWED_HOSTS = ['abo.zs-online.ch', 'www.abo.zs-online.ch', 'localhost']
+ALLOWED_HOSTS = ['abo.zs-online.ch', 'www.abo.zs-online.ch', 'web']
 BASE_URL = 'https://www.abo.zs-online.ch'
 
 # Security
