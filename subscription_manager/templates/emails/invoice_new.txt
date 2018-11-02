@@ -4,6 +4,9 @@
 
 Um die Bestellung abzuschliessen, zahle den Rechnungsbetrag auf dieses Konto ein:
 
+Betrag:
+{{ payment.amount }} Franken
+
 IBAN:
 CH32 0070 0110 0030 6727 2
 
