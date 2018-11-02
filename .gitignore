@@ -46,3 +46,5 @@ db.sqlite3
 
 # Dependency directories
 node_modules/
+
+data/

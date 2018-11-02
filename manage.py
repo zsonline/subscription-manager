@@ -6,7 +6,7 @@ import sys
 
 if __name__ == '__main__':
     # Load settings
-    os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'subscription_manager.core.settings.production')
+    os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'subscription_manager.settings.development')
     try:
         from django.core.management import execute_from_command_line
     except ImportError as exc:

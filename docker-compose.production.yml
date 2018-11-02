@@ -3,16 +3,19 @@ version: "3"
 services:
 
   postgres:
-    container_name: postgres
     image: postgres
-    restart: always
+    environment:
+      - POSTGRES_DB=$DATABASE_NAME
+      - POSTGRES_USER=$DATABASE_USER
+      - POSTGRES_PASSWORD=$DATABASE_PASSWORD
     volumes:
       - ./data/:/var/lib/postgresql/data/
+    ports:
+      - $DATABASE_PORT:5432
+    restart: always
 
   nginx:
-    container_name: nginx
     image: nginx
-    restart: always
     volumes:
       - ./nginx/conf.d/:/etc/nginx/conf.d/
     ports:
@@ -20,32 +23,38 @@ services:
       - 80:80
     depends_on:
       - django
+    restart: always
 
   django:
-    container_name: django
     build:
       context: .
       dockerfile: subscription_manager/Dockerfile.production
-    image: django
-    restart: always
-    environment:
-      - DJANGO_SETTINGS_MODULE=subscription_manager.core.settings.production
-    env_file:
-      - .env
-    command: gunicorn --bind :8080 subscription_manager.core.wsgi:application
     volumes:
       - .:/srv/subscription-manager/
+    command: gunicorn --bind :8000 subscription_manager.wsgi:application
     depends_on:
       - postgres
+    restart: always
 
   celery:
-    image: django
+    build:
+      context: .
+      dockerfile: subscription_manager/Dockerfile.production
+    environment:
+      - C_FORCE_ROOT=True
+    volumes:
+      - .:/srv/subscription-manager/
+    command: celery -A subscription_manager worker -l info
+    depends_on:
+      - postgres
+      - rabbitmq
+    restart: always
 
   rabbitmq:
-    container_name: rabbitmq
     image: rabbitmq
-    env_file:
-      - .env
+    environment:
+      - RABBITMQ_DEFAULT_USER=$BROKER_USER
+      - RABBITMQ_DEFAULT_PASS=$BROKER_PASSWORD
     ports:
-      - 5672:5672
-      - 15672:15672
+      - $BROKER_PORT:5672
+    restart: always

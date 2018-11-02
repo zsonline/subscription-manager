@@ -4,8 +4,8 @@ verify_ssl = true
 name = "pypi"
 
 [packages]
+celery = "*"
 django = "*"
-django-celery = "*"
 django-celery-email = "*"
 gunicorn = "*"
 psycopg2-binary = "*"
