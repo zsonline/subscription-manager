@@ -53,13 +53,16 @@ class Subscription(models.Model):
         default='Schweiz'
     )
     start_date = models.DateField(
-        null=True
+        null=True,
+        blank=True
     )
     end_date = models.DateField(
-        null=True
+        null=True,
+        blank=True
     )
     canceled_at = models.DateTimeField(
-        null=True
+        null=True,
+        blank=True
     )
     created_at = models.DateTimeField(auto_now_add=True)
 

@@ -35,7 +35,6 @@ class SubscriptionAdmin(admin.ModelAdmin):
         subscriptions = Subscription.objects.all()
         # Write header row
         writer = csv.writer(response)
-        writer.writerow(['last_name', 'first_name', 'title', 'department', 'Adress', 'primary_address_city', 'primary_address_postalcode'])
         # Add each active subscription to file
         for subscription in subscriptions:
             if subscription.is_active():
@@ -44,8 +43,8 @@ class SubscriptionAdmin(admin.ModelAdmin):
                         subscription.user.last_name,
                         subscription.user.first_name,
                         '',
-                        subscription.address_line_1,
                         subscription.address_line_2,
+                        subscription.address_line_1,
                         subscription.city,
                         subscription.postcode
                     ])
@@ -64,6 +63,8 @@ class SubscriptionAdmin(admin.ModelAdmin):
 
 class PlanAdmin(admin.ModelAdmin):
     list_display = ['name', 'duration', 'price']
+    search_fields = ('user', 'plan', 'address_line_1', 'address_line_2', 'postcode', 'city', 'country')
+
 
 admin.site.register(Subscription, SubscriptionAdmin)
 admin.site.register(Plan, PlanAdmin)

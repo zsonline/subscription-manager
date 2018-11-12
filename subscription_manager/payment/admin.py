@@ -7,7 +7,7 @@ from .models import Payment
 
 class PaymentAdmin(admin.ModelAdmin):
     list_display = ['subscription', 'code', 'amount', 'is_paid', 'paid_at']
-    search_fields = ['code']
+    search_fields = ['subscription', 'code', 'amount']
     actions = ['confirm_payments']
 
     def confirm_payments(self, request, queryset):
