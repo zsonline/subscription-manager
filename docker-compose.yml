@@ -1,0 +1,18 @@
+version: '3'
+
+services:
+  django:
+    container_name: django
+    build:
+      context: .
+      dockerfile: subscription_manager/Dockerfile
+    restart: on-failure
+    env_file:
+      - .env
+    environment:
+      - DJANGO_SETTINGS_MODULE=subscription_manager.core.settings.development
+    command: python3 manage.py runserver 0.0.0.0:8000
+    volumes:
+      - .:/srv/subscription-manager/
+    ports:
+      - 8000:8000

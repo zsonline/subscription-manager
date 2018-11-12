@@ -1,0 +1,15 @@
+FROM python:3.7
+ENV PYTHONUNBUFFERED 1
+
+# Install pipenv
+RUN pip install pipenv
+
+# Install dependencies
+COPY Pipfile Pipfile.lock /
+RUN pipenv install --system
+RUN rm Pipfile Pipfile.lock
+
+# Copy project
+RUN mkdir -p /srv/subscription-manager/
+WORKDIR /srv/subscription-manager/
+COPY . /srv/subscription-manager/

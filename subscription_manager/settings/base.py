@@ -13,6 +13,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'djcelery_email',
     'subscription_manager.authentication.apps.AccountConfig',
     'subscription_manager.landing.apps.LandingConfig',
     'subscription_manager.payment.apps.PaymentConfig',
@@ -30,7 +31,7 @@ MIDDLEWARE = [
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
 
-ROOT_URLCONF = 'subscription_manager.core.urls'
+ROOT_URLCONF = 'subscription_manager.urls'
 
 TEMPLATES = [
     {
@@ -107,3 +108,10 @@ ADMINS = [('ZS Informatik', 'informatik@medienverein.ch')]
 EMAIL_SUBJECT_PREFIX = '[ZS] '
 DEFAULT_FROM_EMAIL = 'Zürcher Studierendenzeitung <server@zs-online.ch>'
 SERVER_EMAIL = 'server@zs-online.ch'
+
+# Celery
+CELERY_BROKER_URL = 'amqp://{}:{}@{}'\
+    .format(os.environ['BROKER_USER'], os.environ['BROKER_PASSWORD'], os.environ['BROKER_HOST'])
+CELERY_ACCEPT_CONTENT = ['json']
+CELERY_TASK_SERIALIZER = 'json'
+CELERY_RESULT_SERIALIZER = 'json'

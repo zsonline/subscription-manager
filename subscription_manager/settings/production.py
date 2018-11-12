@@ -7,7 +7,7 @@ https://docs.djangoproject.com/en/dev/howto/deployment/checklist/
 """
 # General
 DEBUG = False
-ALLOWED_HOSTS = ['abo.zs-online.ch', 'www.abo.zs-online.ch', 'localhost']
+ALLOWED_HOSTS = ['abo.zs-online.ch', 'www.abo.zs-online.ch', 'django']
 BASE_URL = 'https://www.abo.zs-online.ch'
 
 # Security
@@ -16,7 +16,7 @@ CSRF_COOKIE_SECURE = True
 SESSION_COOKIE_SECURE = True
 
 # Server
-WSGI_APPLICATION = 'subscription_manager.core.wsgi.application'
+WSGI_APPLICATION = 'subscription_manager.wsgi.application'
 STATIC_ROOT = "/srv/static/"
 
 # Database
@@ -33,7 +33,7 @@ DATABASES = {
 CONN_MAX_AGE = None
 
 # Email
-EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_BACKEND = 'djcelery_email.backends.CeleryEmailBackend'
 EMAIL_USE_SSL = True
 EMAIL_HOST = os.environ['EMAIL_HOST']
 EMAIL_PORT = os.environ['EMAIL_PORT']

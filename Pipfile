@@ -4,10 +4,12 @@ verify_ssl = true
 name = "pypi"
 
 [packages]
+celery = "*"
 django = "*"
-python-dateutil = "*"
+django-celery-email = "*"
 gunicorn = "*"
 psycopg2-binary = "*"
+python-dateutil = "*"
 
 [dev-packages]
 
