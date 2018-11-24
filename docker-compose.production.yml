@@ -8,8 +8,6 @@ services:
       - POSTGRES_DB=$DATABASE_NAME
       - POSTGRES_USER=$DATABASE_USER
       - POSTGRES_PASSWORD=$DATABASE_PASSWORD
-    volumes:
-      - ./data/:/var/lib/postgresql/data/
     ports:
       - $DATABASE_PORT:5432
     restart: always
@@ -18,6 +16,7 @@ services:
     image: nginx
     volumes:
       - ./nginx/conf.d/:/etc/nginx/conf.d/
+      - static_volume:/srv/static/
     ports:
       - 443:443
       - 80:80
@@ -29,9 +28,14 @@ services:
     build:
       context: .
       dockerfile: subscription_manager/Dockerfile.production
+    environment:
+      - DJANGO_SETTINGS_MODULE=subscription_manager.settings.production
     volumes:
       - .:/srv/subscription-manager/
+      - static_volume:/srv/static/
     command: gunicorn --bind :8000 subscription_manager.wsgi:application
+    env_file:
+      - .env
     depends_on:
       - postgres
     restart: always
@@ -41,20 +45,21 @@ services:
       context: .
       dockerfile: subscription_manager/Dockerfile.production
     environment:
+      - DJANGO_SETTINGS_MODULE=subscription_manager.settings.production
       - C_FORCE_ROOT=True
     volumes:
       - .:/srv/subscription-manager/
     command: celery -A subscription_manager worker -l info
+    env_file:
+      - .env
     depends_on:
       - postgres
-      - rabbitmq
+      - redis
     restart: always
 
-  rabbitmq:
-    image: rabbitmq
-    environment:
-      - RABBITMQ_DEFAULT_USER=$BROKER_USER
-      - RABBITMQ_DEFAULT_PASS=$BROKER_PASSWORD
-    ports:
-      - $BROKER_PORT:5672
+  redis:
+    image: redis
     restart: always
+
+volumes:
+  static_volume:

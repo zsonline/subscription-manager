@@ -10,7 +10,7 @@ services:
     env_file:
       - .env
     environment:
-      - DJANGO_SETTINGS_MODULE=subscription_manager.core.settings.development
+      - DJANGO_SETTINGS_MODULE=subscription_manager.settings.development
     command: python3 manage.py runserver 0.0.0.0:8000
     volumes:
       - .:/srv/subscription-manager/
