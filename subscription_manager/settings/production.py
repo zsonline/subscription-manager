@@ -7,8 +7,8 @@ https://docs.djangoproject.com/en/dev/howto/deployment/checklist/
 """
 # General
 DEBUG = False
-ALLOWED_HOSTS = ['abo.zs-online.ch', 'www.abo.zs-online.ch', 'django']
-BASE_URL = 'https://www.abo.zs-online.ch'
+ALLOWED_HOSTS = ['abo.zs-online.ch', 'www.abo.zs-online.ch']
+BASE_URL = 'https://www.abo.zs-online.ch'  # Used for sending email links
 
 # Security
 SECRET_KEY = os.environ['SECRET_KEY']
@@ -64,3 +64,10 @@ LOGGING = {
         }
     }
 }
+
+# Celery
+CELERY_BROKER_URL = 'redis://:{}@{}:{}/{}'\
+    .format(os.environ['REDIS_PASSWORD'], os.environ['REDIS_HOST'], os.environ['REDIS_PORT'], os.environ['REDIS_DATABASE'])
+CELERY_ACCEPT_CONTENT = ['json']
+CELERY_TASK_SERIALIZER = 'json'
+CELERY_RESULT_SERIALIZER = 'json'

@@ -108,9 +108,3 @@ ADMINS = [('ZS Informatik', 'informatik@medienverein.ch')]
 EMAIL_SUBJECT_PREFIX = '[ZS] '
 DEFAULT_FROM_EMAIL = 'Zürcher Studierendenzeitung <server@zs-online.ch>'
 SERVER_EMAIL = 'server@zs-online.ch'
-
-# Celery
-CELERY_BROKER_URL = 'redis://{}:{}'.format(os.environ['REDIS_HOST'], os.environ['REDIS_PORT'])
-CELERY_ACCEPT_CONTENT = ['json']
-CELERY_TASK_SERIALIZER = 'json'
-CELERY_RESULT_SERIALIZER = 'json'
