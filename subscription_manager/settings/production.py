@@ -17,7 +17,6 @@ SESSION_COOKIE_SECURE = True
 
 # Server
 WSGI_APPLICATION = 'subscription_manager.wsgi.application'
-STATIC_ROOT = "/srv/static/"
 
 # Database
 DATABASES = {

@@ -7,6 +7,7 @@ PROJECT_ROOT = os.path.dirname(os.path.abspath(__file__))
 
 # Application definition
 INSTALLED_APPS = [
+    'compressor',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -102,9 +103,24 @@ STATIC_URL = '/static/'
 STATICFILES_DIRS = (
     os.path.join(BASE_DIR, 'static'),
 )
+STATICFILES_FINDERS = (
+    'django.contrib.staticfiles.finders.FileSystemFinder',
+    'django.contrib.staticfiles.finders.AppDirectoriesFinder',
+    'compressor.finders.CompressorFinder'
+)
+STATIC_ROOT = "static_files/"
 
 # Email
 ADMINS = [('ZS Informatik', 'informatik@medienverein.ch')]
 EMAIL_SUBJECT_PREFIX = '[ZS] '
 DEFAULT_FROM_EMAIL = 'Zürcher Studierendenzeitung <server@zs-online.ch>'
 SERVER_EMAIL = 'server@zs-online.ch'
+
+COMPRESS_ENABLED = True
+COMPRESS_PRECOMPILERS = (
+    ('text/x-scss', 'django_libsass.SassCompiler'),
+)
+COMPRESS_ROOT = 'static_files/'
+
+LIBSASS_OUTPUT_STYLE = 'compressed'
+LIBSASS_SOURCEMAPS = True
