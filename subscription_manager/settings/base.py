@@ -14,6 +14,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'django_redis',
     'djcelery_email',
     'subscription_manager.authentication.apps.AccountConfig',
     'subscription_manager.landing.apps.LandingConfig',

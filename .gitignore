@@ -38,9 +38,7 @@ ENV/
 # Editor
 .idea/
 
-# Database
-db.sqlite3
-# [0-9][0-9][0-9][0-9]_*.py  # Migrations
-
 # Project specific
+db.sqlite3
+# [0-9][0-9][0-9][0-9]_*.py
 static_files/

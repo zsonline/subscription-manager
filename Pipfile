@@ -13,6 +13,7 @@ gunicorn = "*"
 psycopg2-binary = "*"
 python-dateutil = "*"
 redis = "*"
+django-redis = "*"
 
 [dev-packages]
 

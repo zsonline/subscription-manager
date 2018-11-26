@@ -13,7 +13,6 @@ BASE_URL = 'https://www.abo.zs-online.ch'  # Used for sending email links
 # Security
 SECRET_KEY = os.environ['SECRET_KEY']
 CSRF_COOKIE_SECURE = True
-SESSION_COOKIE_SECURE = True
 
 # Server
 WSGI_APPLICATION = 'subscription_manager.wsgi.application'
@@ -31,6 +30,21 @@ DATABASES = {
 }
 CONN_MAX_AGE = None
 
+CACHES = {
+    'default': {
+        'BACKEND': 'django_redis.cache.RedisCache',
+        'LOCATION': 'redis://:{}@{}:{}/{}'
+            .format(os.environ['REDIS_PASSWORD'], os.environ['REDIS_HOST'], os.environ['REDIS_PORT'], os.environ['REDIS_DATABASE']),
+        'OPTIONS': {
+            'CLIENT_CLASS': 'django_redis.client.DefaultClient',
+        }
+    }
+}
+
+SESSION_ENGINE = "django.contrib.sessions.backends.cache"
+SESSION_CACHE_ALIAS = "default"
+SESSION_COOKIE_SECURE = True
+
 # Email
 EMAIL_BACKEND = 'djcelery_email.backends.CeleryEmailBackend'
 EMAIL_USE_SSL = True
@@ -38,6 +52,13 @@ EMAIL_HOST = os.environ['EMAIL_HOST']
 EMAIL_PORT = os.environ['EMAIL_PORT']
 EMAIL_HOST_USER = os.environ['EMAIL_HOST_USER']
 EMAIL_HOST_PASSWORD = os.environ['EMAIL_HOST_PASSWORD']
+
+# Celery
+CELERY_BROKER_URL = 'redis://:{}@{}:{}/{}'\
+    .format(os.environ['REDIS_PASSWORD'], os.environ['REDIS_HOST'], os.environ['REDIS_PORT'], os.environ['REDIS_DATABASE'])
+CELERY_ACCEPT_CONTENT = ['json']
+CELERY_TASK_SERIALIZER = 'json'
+CELERY_RESULT_SERIALIZER = 'json'
 
 # Logging
 LOGGING = {
@@ -47,7 +68,7 @@ LOGGING = {
         'file': {
             'level': 'DEBUG',
             'class': 'logging.FileHandler',
-            'filename': '/srv/subscription-manager/django.log'
+            'filename': 'django.log'
         },
         'mail_admins': {
             'level': 'ERROR',
@@ -63,10 +84,3 @@ LOGGING = {
         }
     }
 }
-
-# Celery
-CELERY_BROKER_URL = 'redis://:{}@{}:{}/{}'\
-    .format(os.environ['REDIS_PASSWORD'], os.environ['REDIS_HOST'], os.environ['REDIS_PORT'], os.environ['REDIS_DATABASE'])
-CELERY_ACCEPT_CONTENT = ['json']
-CELERY_TASK_SERIALIZER = 'json'
-CELERY_RESULT_SERIALIZER = 'json'
