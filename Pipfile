@@ -4,6 +4,7 @@ verify_ssl = true
 name = "pypi"
 
 [packages]
+redis = "~=2.10.6"
 celery = "*"
 django = "*"
 django-celery-email = "*"
@@ -12,7 +13,6 @@ django-libsass = "*"
 gunicorn = "*"
 psycopg2-binary = "*"
 python-dateutil = "*"
-redis = "*"
 django-redis = "*"
 
 [dev-packages]
