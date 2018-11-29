@@ -6,8 +6,8 @@ from django.contrib.auth import get_user_model
 from django.shortcuts import reverse
 
 # Application imports
-from .models import LoginToken
-from .backends import EmailBackend
+from subscription_manager.authentication.models import Token
+from subscription_manager.authentication.backends import EmailBackend
 
 
 class TestRoutes(TestCase):
@@ -17,7 +17,7 @@ class TestRoutes(TestCase):
     """
     def setUp(self):
         self.user = get_user_model().objects.create(email='test@zs-online.ch')
-        self.code, self.token = LoginToken.objects.create(user=self.user)
+        self.code, self.token = Token.objects.create(user=self.user)
 
     def tearDown(self):
         self.user.delete()
@@ -87,7 +87,7 @@ class TestSignUpViews(TestCase):
         )
         self.assertEquals(200, response.status_code)
         self.assertEquals(1, get_user_model().objects.count())
-        self.assertEquals(1, LoginToken.objects.count())
+        self.assertEquals(1, Token.objects.count())
 
     def test_invalid_email(self):
         """
@@ -104,7 +104,7 @@ class TestSignUpViews(TestCase):
         )
         self.assertEquals(200, response.status_code)
         self.assertEquals(0, get_user_model().objects.count())
-        self.assertEquals(0, LoginToken.objects.count())
+        self.assertEquals(0, Token.objects.count())
 
 
 class TestLoginView(TestCase):
@@ -123,9 +123,9 @@ class TestLoginView(TestCase):
         Tests that a non existent user cannot create
         a login token.
         """
-        tokens_before = LoginToken.objects.count()
+        tokens_before = Token.objects.count()
         self.client.post(reverse('login'), {'email': 'does_not_exist@zs-online.ch'})
-        self.assertEquals(tokens_before, LoginToken.objects.count())
+        self.assertEquals(tokens_before, Token.objects.count())
 
     def test_inactive_user_token(self):
         """
@@ -134,7 +134,7 @@ class TestLoginView(TestCase):
         """
         inactive_user = get_user_model().objects.create(email='test_inactive@zs-online.ch', is_active=False)
         self.client.post(reverse('login'), {'email': inactive_user.email})
-        self.assertEquals(0, LoginToken.objects.filter(user=inactive_user).count())
+        self.assertEquals(0, Token.objects.filter(user=inactive_user).count())
 
     def test_limit_of_requested_tokens(self):
         """
@@ -142,9 +142,9 @@ class TestLoginView(TestCase):
         """
         for _ in range(settings.TOKENS_PER_USER):
             self.client.post(reverse('login'), {'email': self.user.email})
-        self.assertEquals(settings.TOKENS_PER_USER, LoginToken.objects.filter(user=self.user).count())
+        self.assertEquals(settings.TOKENS_PER_USER, Token.objects.filter(user=self.user).count())
         self.client.post(reverse('login'), {'email': self.user.email})
-        self.assertEquals(settings.TOKENS_PER_USER, LoginToken.objects.filter(user=self.user).count())
+        self.assertEquals(settings.TOKENS_PER_USER, Token.objects.filter(user=self.user).count())
 
 
 class TestBackends(TestCase):
@@ -154,7 +154,7 @@ class TestBackends(TestCase):
     """
     def setUp(self):
         self.user = get_user_model().objects.create(email='test@zs-online.ch')
-        self.code, self.token = LoginToken.objects.create(user=self.user)
+        self.code, self.token = Token.objects.create(user=self.user)
 
     def tearDown(self):
         self.user.delete()
@@ -183,7 +183,7 @@ class TestBackends(TestCase):
         """
         inactive_user = get_user_model().objects.create(email='test_inactive@zs-online.ch', is_active=False)
         # Manually create token for inactive user
-        code, token = LoginToken.objects.create(user=inactive_user)
+        code, token = Token.objects.create(user=inactive_user)
         self.client.login(email=inactive_user.email, code=code)
         self.assertNotIn('_auth_user_id', self.client.session)
         inactive_user.delete()
@@ -194,10 +194,10 @@ class TestBackends(TestCase):
         the email contains the correct login url.
         """
         mail.outbox = []
-        EmailBackend.send(self.token, self.code)
+        EmailBackend.send(self.token, self.code, 'login', None)
         self.assertEqual(1, len(mail.outbox))
         message = mail.outbox[0]
-        self.assertIn(LoginToken.login_url(self.user.email, self.code), message.body)
+        self.assertIn(Token.url(self.user.email, self.code), message.body)
         self.assertEqual([self.user.email], message.to)
 
 
@@ -207,7 +207,7 @@ class TestTokenView(TestCase):
     """
     def setUp(self):
         self.user = get_user_model().objects.create(email='test@zs-online.ch')
-        self.code, self.token = LoginToken.objects.create(user=self.user)
+        self.code, self.token = Token.objects.create(user=self.user)
 
     def tearDown(self):
         self.user.delete()
@@ -219,7 +219,7 @@ class TestTokenView(TestCase):
         response = self.client.get(reverse(
             'token_verification',
             kwargs={
-                'email_b64': LoginToken.b64_encoded(self.user.email),
+                'email_b64': Token.b64_encoded(self.user.email),
                 'code': self.code
             }
         ))
@@ -233,7 +233,7 @@ class TestTokenView(TestCase):
         response = self.client.get(reverse(
             'token_verification',
             kwargs={
-                'email_b64': LoginToken.b64_encoded('invalid_user@zs-online.ch'),
+                'email_b64': Token.b64_encoded('invalid_user@zs-online.ch'),
                 'code': self.code
             }
         ))
@@ -247,7 +247,7 @@ class TestTokenView(TestCase):
         response = self.client.get(reverse(
             'token_verification',
             kwargs={
-                'email_b64': LoginToken.b64_encoded(self.user.email),
+                'email_b64': Token.b64_encoded(self.user.email),
                 'code': 'invalid_code'
             }
         ))

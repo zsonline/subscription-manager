@@ -7,12 +7,14 @@ PROJECT_ROOT = os.path.dirname(os.path.abspath(__file__))
 
 # Application definition
 INSTALLED_APPS = [
+    'compressor',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'django_redis',
     'djcelery_email',
     'subscription_manager.authentication.apps.AccountConfig',
     'subscription_manager.landing.apps.LandingConfig',
@@ -102,6 +104,12 @@ STATIC_URL = '/static/'
 STATICFILES_DIRS = (
     os.path.join(BASE_DIR, 'static'),
 )
+STATICFILES_FINDERS = (
+    'django.contrib.staticfiles.finders.FileSystemFinder',
+    'django.contrib.staticfiles.finders.AppDirectoriesFinder',
+    'compressor.finders.CompressorFinder'
+)
+STATIC_ROOT = "static_files/"
 
 # Email
 ADMINS = [('ZS Informatik', 'informatik@medienverein.ch')]
@@ -109,9 +117,11 @@ EMAIL_SUBJECT_PREFIX = '[ZS] '
 DEFAULT_FROM_EMAIL = 'Zürcher Studierendenzeitung <server@zs-online.ch>'
 SERVER_EMAIL = 'server@zs-online.ch'
 
-# Celery
-CELERY_BROKER_URL = 'amqp://{}:{}@{}'\
-    .format(os.environ['BROKER_USER'], os.environ['BROKER_PASSWORD'], os.environ['BROKER_HOST'])
-CELERY_ACCEPT_CONTENT = ['json']
-CELERY_TASK_SERIALIZER = 'json'
-CELERY_RESULT_SERIALIZER = 'json'
+COMPRESS_ENABLED = True
+COMPRESS_PRECOMPILERS = (
+    ('text/x-scss', 'django_libsass.SassCompiler'),
+)
+COMPRESS_ROOT = 'static_files/'
+
+LIBSASS_OUTPUT_STYLE = 'compressed'
+LIBSASS_SOURCEMAPS = True

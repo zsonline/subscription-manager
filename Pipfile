@@ -7,9 +7,13 @@ name = "pypi"
 celery = "*"
 django = "*"
 django-celery-email = "*"
+django-compressor = "*"
+django-libsass = "*"
 gunicorn = "*"
 psycopg2-binary = "*"
 python-dateutil = "*"
+redis = "*"
+django-redis = "*"
 
 [dev-packages]
 

@@ -20,7 +20,6 @@ coverage.xml
 
 # Django stuff:
 *.log
-local_settings.py
 
 # pyenv
 .python-version
@@ -39,12 +38,7 @@ ENV/
 # Editor
 .idea/
 
-# Database
+# Project specific
 db.sqlite3
-# Migrations
 # [0-9][0-9][0-9][0-9]_*.py
-
-# Dependency directories
-node_modules/
-
-data/
+static_files/

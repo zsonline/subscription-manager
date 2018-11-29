@@ -1,7 +1,7 @@
 import os
 from celery import Celery
 
-os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'subscription_manager.settings.development')
+os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'subscription_manager.settings.production')
 
 app = Celery('subscription_manager')
 app.config_from_object('django.conf:settings', namespace='CELERY')

@@ -12,6 +12,7 @@ from .models import Plan, Subscription
 
 class SubscriptionAdmin(admin.ModelAdmin):
     list_display = ['user', 'is_active', 'plan', 'end_date']
+    search_fields = ['user', 'plan', 'address_line_1', 'address_line_2', 'postcode', 'city', 'country']
     change_list_template = 'subscription/subscription_admin_changelist.html'
 
     def get_urls(self):
@@ -63,7 +64,6 @@ class SubscriptionAdmin(admin.ModelAdmin):
 
 class PlanAdmin(admin.ModelAdmin):
     list_display = ['name', 'duration', 'price']
-    search_fields = ('user', 'plan', 'address_line_1', 'address_line_2', 'postcode', 'city', 'country')
 
 
 admin.site.register(Subscription, SubscriptionAdmin)

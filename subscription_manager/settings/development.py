@@ -1,10 +1,10 @@
 # Import base settings
 from .base import *
 
-BASE_URL = 'http://0.0.0.0:8000'
+BASE_URL = 'http://localhost:8000'
 DEBUG = True
 
-ALLOWED_HOSTS = ['localhost', '127.0.0.1', '0.0.0.0']
+ALLOWED_HOSTS = ['localhost', '127.0.0.1']
 
 # Secret key (default value is set in development
 # settings so that the .env file is not necessary)
