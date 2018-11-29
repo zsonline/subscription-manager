@@ -1,13 +1,9 @@
 # Import base settings
 from .base import *
 
-"""
-Check before deploying:
-https://docs.djangoproject.com/en/dev/howto/deployment/checklist/
-"""
 # General
 DEBUG = False
-ALLOWED_HOSTS = ['abo.zs-online.ch', 'www.abo.zs-online.ch']
+ALLOWED_HOSTS = ['abo.zs-online.ch', 'www.abo.zs-online.ch', '104.248.43.45']
 BASE_URL = 'https://www.abo.zs-online.ch'  # Used for sending email links
 
 # Security
