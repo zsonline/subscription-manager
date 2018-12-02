@@ -1,32 +1,46 @@
 {% load static %}
 
-<footer>
+<footer class="inverted">
 
-    <div class="column">
-        <div>
-            <img src="{% static 'images/zs-signet-small.png' %}">
-            <b>Zürcher Studierendenzeitung</b>
+    <div class="container">
+
+        <div id="footer-zs">
+            <img src="{% static 'images/zs-signet.svg' %}" height="30">
+            <h3>Zürcher Studierendenzeitung</h3>
         </div>
 
-        <div>
+        <nav id="footer-nav">
+            <a href="http://zs-online.ch/">ZS Online</a>
+            <a href="https://www.abo.zs-online.ch/">Abo</a>
+            <a href="https://www.instagram.com/zs_redaktion/" target="_blank">Instagram</a>
+            <a href="https://www.facebook.com/medienvereinZS" target="_blank">Facebook</a>
+            <a href="https://twitter.com/zsonline" target="_blank">Twitter</a>
+        </nav>
+
+        <div id="footer-getinvolved">
+            <h3>Mitmachen</h3>
+            <p>
+                Wir bieten einen Einstieg in den Journalismus – für Redaktorinnen, Fotografen,
+                Verlegerinnen und Programmierer. Du bist interessiert? Dann schreib uns.
+            </p>
+        </div>
+
+        <div id="footer-contact">
+            <h3>Kontakt</h3>
             <address>
                 Medienverein ZS<br>
                 Rämistrasse 62<br>
-                8001 Zürich
+                8001 Zürich<br>
+                <a href="mailto:kontakt@medienverein.ch">kontakt@medienverein.ch</a>
             </address>
-            <a href="mailto:redaktion@medienverein.ch">redaktion@medienverein.ch</a>
         </div>
 
-        <div>
-            Bug gefunden? Schreib uns: <a href="mailto:informatik@medienverein.ch">informatik@medienverein.ch</a>.<br>
-        </div>
-    </div>
-
-    <div id="credits" class="column">
-        <small>
-            Framework: <a href="https://www.djangoproject.com/" target="_blank">Django</a>.<br>
+        <div id="footer-credits">
             Entwickler: <a href="https://robinbisping.com/" target="_blank">Robin Bisping</a>.
-        </small>
+            Framework: <a href="https://www.djangoproject.com/" target="_blank">Django</a>.
+            Code: <a href="https://github.com/studierendenzeitung/subscription-manager" target="_blank">Github</a>.
+        </div>
+
     </div>
 
 </footer>

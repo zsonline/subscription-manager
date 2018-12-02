@@ -1,5 +1,5 @@
 @import url('https://fonts.googleapis.com/css?family=Open+Sans:400,700');
-@import url('https://fonts.googleapis.com/css?family=Lora:400,400i,700,700i');
+@import url('https://fonts.googleapis.com/css?family=Lora:400,700');
 
 body {
   font-family: 'Lora', serif;
@@ -9,6 +9,10 @@ body {
 h1, h2, h3, h4 {
   margin: 0 0 .5em 0;
   white-space: initial;
+}
+
+p {
+  margin: .5em 0;
 }
 
 a {
