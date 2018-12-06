@@ -1,22 +1,25 @@
 {% load static %}
-
-{% if announcement %}
-<div class="announcement {{ announcement_class }}">{{ announcement }}</div>
-{% endif %}
+{% load navigation %}
 
 <header>
 
-    {% if user.is_authenticated %}
-        <a id="logo" href="{% url 'login_index' %}">
-    {% else %}
-        <a id="logo" href="{% url 'index' %}">
-    {% endif %}
+    <div class="container">
 
-        <img src="{% static 'images/zs-signet-small.png' %}">
-        <h1>Zürcher Studierendenzeitung</h1>
+        <a id="header-logo" href="http://zs-online.ch/">
+            <img src="{% static 'images/zs-signet-small.png' %}">
+            <h1>Zürcher Studierendenzeitung</h1>
+        </a>
 
-    </a>
+        <nav id="header-nav">
+            {% if user.is_authenticated %}
+                <a class="{% active 'subscription_list' %}" href="{% url 'subscription_list' %}">Abonnements</a>
+                <a href="{% url 'logout' %}">Logout</a>
+            {% else %}
+                <a class="{% active 'index' %}" href="{% url 'index' %}">Unsere Abos</a>
+                <a class="{% active 'login' %}" href="{% url 'login' %}">Abo verwalten</a>
+            {% endif %}
+        </nav>
 
-    {% include 'includes/navigation.html' %}
+    </div>
 
 </header>

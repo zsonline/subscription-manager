@@ -16,14 +16,30 @@
     <link rel="icon" type="image/png" sizes="32x32" href="{% static 'images/favicon-32x32.png' %}">
     <link rel="icon" type="image/png" sizes="16x16" href="{% static 'images/favicon-16x16.png' %}">
 
-    <title>{% block title %}Aboverwaltung{% endblock %} - Zürcher Studierendenzeitung</title>
+    <title>Abo - Zürcher Studierendenzeitung</title>
 </head>
 <body>
 
 {% include 'includes/header.html' %}
 
-<main class="{% block main_classes %}{% endblock %}">
-    {% block main %}{% endblock %}
+{% if messages %}
+    <section id="messages">
+        {% for message in messages %}
+            <p class="message{% if message.tags %} {{ message.tags }}{% endif %}">{{ message }}</p>
+        {% endfor %}
+    </section>
+{% endif %}
+
+<main>
+    <div class="container">
+        <h2>{% block title %}Aboverwaltung{% endblock %}</h2>
+
+        <p class="description">
+            {% block description %}Aboverwaltung{% endblock %}
+        </p>
+
+        {% block content %}{% endblock %}
+    </div>
 </main>
 
 {% include 'includes/footer.html' %}

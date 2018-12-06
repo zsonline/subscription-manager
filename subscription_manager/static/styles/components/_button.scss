@@ -1,44 +1,37 @@
 @mixin button($colour, $hover-colour: lighten($colour, 10%)) {
-  border-color: $colour;
-  color: $colour;
+  background-color: $colour;
 
   &:focus, &:active, &:hover {
-    color: lighten($hover-colour, 10%);
-    border-color: lighten($hover-colour, 10%);
+    background-color: $hover-colour;
   }
 }
 
 .button {
-  // Reset input styles
+  // Reset input styles for form buttons
   width: auto;
   overflow: visible;
   background: transparent;
-  color: inherit;
   font: inherit;
   outline: none;
+  border: none;
 
-  padding: .5em;
-  text-decoration: none;
   display: inline-block;
-  border: 2px solid;
+  padding: .75em;
+  text-align: center;
+  text-decoration: none;
+  color: $white !important;
 
   &:focus, &:active, &:hover {
     cursor: pointer;
+    color: $white;
   }
 
-  // Primary coloured button
-  &.primary {
-    @include button($primary)
-  }
-
-  // Secondary coloured button
-  &.secondary {
-    @include button($secondary)
-  }
-
-  // Black button (default)
-  &, &.black {
+  &.black {
     @include button($black, $dark-grey)
+  }
+
+  &, &.primary {
+    @include button($primary)
   }
 
   &.info {
@@ -56,5 +49,4 @@
   &.danger {
     @include button($danger)
   }
-
 }

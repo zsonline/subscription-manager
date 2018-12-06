@@ -3,10 +3,6 @@
   padding: .75em;
   border: solid 1px;
 
-  li {
-    list-style: none;
-  }
-
   &, &.info {
     border-color: $info;
     color: $info;

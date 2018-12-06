@@ -1,3 +1,21 @@
+#plans {
+  display: grid;
+  grid-gap: 1rem;
+  margin-top: 1rem;
+
+  .plan {
+    box-sizing: border-box;
+    padding: 1rem;
+    background-color: $white;
+
+    a {
+      display: block;
+    }
+  }
+}
+
+
+
 .price {
   margin-bottom: 1em;
   .amount {
@@ -17,26 +35,19 @@
   }
 }
 
-#plans {
-  padding: 0;
-  margin: 2em 0 0 0;
+@media (min-width: $medium) {
+  #plans {
+    grid-column-start: 1;
+    grid-column-end: 3;
 
-  li {
-    list-style: none;
-  }
+    grid-template-columns: repeat(2, 1fr);
 
-  .plan {
-    padding: 2em 0;
-    border-bottom: solid 1px rgba($black, .25);
-
-    &:first-child {
-      border-top: solid 1px rgba($black, .25);
-    }
+    margin-top: 2rem;
   }
 }
 
-#purchase-form {
-  input[type="submit"] {
-    margin: 1em 0 2em 0;
+@media (min-width: $large) {
+  #plans {
+    grid-template-columns: repeat(4, 1fr);
   }
 }

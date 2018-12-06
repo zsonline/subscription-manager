@@ -1,29 +1,46 @@
-html, body {
-  min-height: 100vh;
-}
-
 body {
   display: flex;
   flex-direction: column;
   background-color: $white;
-  line-height: 1.2;
 }
 
 main {
-  flex: 1;
   box-sizing: border-box;
+  min-height: calc(100vh - 120px);
+  padding: 2rem 1rem 3rem 1rem;
+  background-color: $lighter-grey;
 
-  p.description {
-    margin-top: .2em;
+  .container {
+    display: grid;
+    grid-template-columns: 1fr;
+    align-content: center;
+    height: 100%;
   }
-}
-
-footer {
-  flex-shrink: 0;
 }
 
 @media (min-width: $medium) {
   main {
-    min-height: calc(100vh - #{$header-height});
+    padding: 2rem 2rem 4rem 2rem;
+
+    .container {
+      grid-template-columns: 1fr 1fr;
+      grid-column-gap: 1rem;
+      margin: 0 auto;
+      max-width: $large;
+    }
+
+    h2, .description, form {
+      grid-column-start: 1;
+      grid-column-end: 3;
+    }
+  }
+}
+
+@media (min-width: $large) {
+  main {
+    .description, form {
+      grid-column-start: 1;
+      grid-column-end: 2;
+    }
   }
 }

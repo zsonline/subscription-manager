@@ -1,20 +1,10 @@
-{% extends 'layouts/vertical.html' %}
-
-{% load static %}
+{% extends 'base.html' %}
 
 {% block title %}Anmelden{% endblock %}
 
-{% block left_column %}
-    <h2>Anmelden</h2>
-    <p class="description">
-        Verwalte deine Abonnements.<br>
-        Du hast noch keinen Account? Dann <a href="{% url 'signup' %}">registriere</a> dich.
-    </p>
+{% block description %}Melde dich an und verwalte dein Abo.{% endblock %}
 
-    {% for message in messages %}
-        <p class="alert{% if message.tags %} {{ message.tags }}{% endif %}">{{ message }}</p>
-    {% endfor %}
-
+{% block content %}
     {% if next %}
         <form action="{% url 'login' %}?next={{next}}" method="post">
     {% else %}
@@ -22,13 +12,6 @@
     {% endif %}
         {% csrf_token %}
         {{ form.as_p }}
-        <input class="button black" type="submit" value="Anmelden" />
+        <input class="button primary" type="submit" value="Anmelden" />
     </form>
-{% endblock %}
-
-{% block background_image_url %}{% static 'images/feature2.jpg' %}{% endblock %}
-
-{% block right_column %}
-    <h3>Mehr wissen</h3>
-    <p>Das Studium findet nicht nur im Hörsaal statt. Seit 1923 versorgt die ZS die Studierenden mit den wichtigsten Neuigkeiten rund um den Campus. Abonniere ein Jahr Zusatzwissen für dich und deine WG.</p>
 {% endblock %}

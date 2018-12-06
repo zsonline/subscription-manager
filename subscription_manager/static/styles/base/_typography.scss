@@ -2,6 +2,7 @@
 @import url('https://fonts.googleapis.com/css?family=Lora:400,700');
 
 body {
+  line-height: 1.2;
   font-family: 'Lora', serif;
   color: $black;
 }
@@ -17,4 +18,40 @@ p {
 
 a {
   white-space: nowrap;
+  color: $black;
+
+  &:visited {
+    color: $black;
+  }
+
+  &:hover, &:focus, &:active {
+    color: $grey;
+  }
+}
+
+.inverted {
+  a {
+    color: $white;
+
+    &:visited {
+      color: white;
+    }
+
+    &:hover, &:focus, &:active {
+      color: $grey;
+    }
+  }
+}
+
+@media (min-width: $medium) {
+  h2 {
+    font-size: 2rem;
+    line-height: .5em;
+  }
+
+  p {
+    &.description {
+      font-size: 1.2rem;
+    }
+  }
 }
