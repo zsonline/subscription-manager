@@ -1,0 +1,25 @@
+{% extends "base.html" %}
+
+{% block title %}Abo bestellen{% endblock %}
+
+{% block description %}<b>{{ plan.name }}</b> - {{ plan.description }}{% endblock %}
+
+{% block content %}
+    <form action="{% url 'subscription_create' plan.slug %}" method="post">
+        {{ wizard.form.media }}
+
+        {% csrf_token %}
+
+        {{ wizard.management_form }}
+        {% if wizard.form.forms %}
+            {{ wizard.form.management_form }}
+            {% for form in wizard.form.forms %}
+                {{ form.as_p }}
+            {% endfor %}
+        {% else %}
+            {{ wizard.form.as_p }}
+        {% endif %}
+
+        <input type="submit" class="button primary" value="Weiter">
+    </form>
+{% endblock %}
