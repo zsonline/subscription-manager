@@ -1,9 +1,7 @@
-# Django imports
 from django import forms
 from django.contrib.auth import get_user_model
 from django.conf import settings
 
-# Application imports
 from .models import Token
 
 
@@ -19,9 +17,45 @@ class SignUpForm(forms.ModelForm):
         fields = ('first_name', 'last_name', 'email')
         error_messages = {
             'email': {
-                'unique': 'Ein Account mit dieser E-Mail-Adresse existiert bereits. Versuche dich stattdessen anzumelden.'
+                'unique': 'Ein Account mit dieser E-Mail-Adresse existiert bereits.'
             }
         }
+
+    def __init__(self, *args, **kwargs):
+        """
+        Constructor. Should get the selected plan. The plan is
+        necessary for the validation.
+        """
+        # Read passed parameters
+        self.plan = kwargs.pop('plan', None)
+
+        if self.plan is None:
+            raise forms.ValidationError('Sign up form improperly instantiated. Plan is missing.')
+
+        # Call super constructor
+        super().__init__(*args, **kwargs)
+
+        if self.plan.get_eligible_email_domains():
+            # Add help text
+            self.fields['email'].help_text = \
+                'Die E-Mail-Adresse muss auf {} enden.'.format(self.plan.get_readable_eligible_email_domains('oder'))
+
+    def clean_email(self):
+        """
+        Checks if the given email is allowed to purchase
+        the selected subscription plan.
+        """
+        email = self.cleaned_data['email']
+
+        if self.plan.get_eligible_email_domains():
+            # Extract email domain from email address
+            email_domain = email.split('@')[-1]
+            # Check if extracted domain is in list
+            if email_domain not in self.plan.get_eligible_email_domains():
+                self.add_error('email', 'Deine E-Mail-Adresse muss auf {} enden.'
+                               .format(self.plan.get_readable_eligible_email_domains('oder')))
+
+        return email
 
     def save(self, commit=True):
         """

@@ -2,7 +2,7 @@
 
 {% block title %}Registrieren{% endblock %}
 
-{% block description %}Erstelle dir ein Konto. Danach kannst du das Abo lösen.{% endblock %}
+{% block description %}Erstelle dir ein Konto, um ein Abo zu lösen.{% endblock %}
 
 {% block content %}
     <form action="{% url 'signup' %}{{ '?next='|add:next|default:'' }}" method="post">
@@ -10,4 +10,31 @@
         {{ form.as_p }}
         <input class="button primary" type="submit" value="Registrieren" />
     </form>
+
+    Das Studium findet nicht nur im Hörsaal statt. Die Zürcher Studierendenzeitung versorgt dich mit
+    den wichtigsten Neuigkeiten rund um den Campus. Abonniere ein Jahr Zusatzwissen für dich und deine WG.
+
+        <div id="plans">
+        {% for plan in plans %}
+            <div class="plan">
+
+                <h3>{{ plan.name }}</h3>
+                <p>{{ plan.description }}</p>
+
+                <div class="price">
+                    {% if plan.price == 0 %}
+                        <span class="amount">Gratis</span>
+                    {% else %}
+                        <span class="amount">{{ plan.price }}</span> Franken
+                        /
+                        {% if plan.duration == 1 %}
+                            1 Monat
+                        {% else %}
+                            {{ plan.duration }} Monate
+                        {% endif %}
+                    {% endif %}
+                </div>
+            </div>
+        {% endfor %}
+    </div>
 {% endblock %}

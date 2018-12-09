@@ -43,6 +43,9 @@ class User(AbstractUser):
     def __str__(self):
         return '{} ({})'.format(self.full_name(), self.email)
 
+    def get_email_domain(self):
+        return self.email.split('@')[-1]
+
     def is_student(self):
         """
         Checks whether the user has a student email address.

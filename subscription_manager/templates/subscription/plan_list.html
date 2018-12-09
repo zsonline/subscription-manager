@@ -1,21 +1,16 @@
-{% extends 'layouts/manager.html' %}
+{% extends 'base.html' %}
 
-{% block title %}Neues Abonnement{% endblock %}
+{% block title %}Unsere Abos{% endblock %}
 
-{% block breadcrumbs %}
-    <a href="{% url 'subscription_list' %}">Abonnements</a>
-    <span>Neues Abonnement</span>
+{% block description %}
+    Das Studium findet nicht nur im Hörsaal statt. Die Zürcher Studierendenzeitung versorgt dich mit
+    den wichtigsten Neuigkeiten rund um den Campus. Abonniere ein Jahr Zusatzwissen für dich und deine WG.
 {% endblock %}
 
 {% block content %}
-    <p class="description">
-        Abonnentinnen und Abonnenten bekommen die Zürcher Studierendenzeitung sechsmal jährlich in ihren Briefkasten geliefert.
-    </p>
-
-    <ul id="plans">
+    <div id="plans">
         {% for plan in plans %}
-
-            <li class="plan">
+            <div class="plan">
 
                 <h3>{{ plan.name }}</h3>
                 <p>{{ plan.description }}</p>
@@ -26,17 +21,19 @@
                     {% else %}
                         <span class="amount">{{ plan.price }}</span> Franken
                         /
-                        {% if plan.duration == 1 %}
+                        {% if plan.duration_in_months == 1 %}
                             1 Monat
                         {% else %}
-                            {{ plan.duration }} Monate
+                            {{ plan.duration_in_months }} Monate
                         {% endif %}
                     {% endif %}
                 </div>
 
-                <a href="{% url 'subscription_create' plan.slug %}" class="button black">Abonnieren</a>
-            </li>
+                <a href="{% url 'subscription_create' plan.slug %}" class="button primary">Abonnieren</a>
 
+            </div>
+        {% empty %}
+            <p class="alert info">Leider haben wir gerade kein passendes Abo für dich.</p>
         {% endfor %}
-    </ul>
+    </div>
 {% endblock %}

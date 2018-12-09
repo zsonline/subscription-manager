@@ -1,4 +1,4 @@
-# Django imports
+from django.apps import apps
 from django.conf import settings
 from django.core.mail import send_mail
 from django.db import models
@@ -7,10 +7,51 @@ from django.template.loader import render_to_string
 from django.utils import timezone
 
 
+class PlanManager(models.Manager):
+
+    def filter_eligible(self, user=None):
+        """
+        Returns plans for which a user is eligible.
+        """
+        # Filter active plans
+        plans = self.filter(
+            is_active=True,
+        ).exclude(
+            max_active_subscriptions_per_user=0,
+        )
+
+        # If user is logged in, perform additional checks
+        if user is not None and user.is_authenticated:
+
+            # Exclude plans for which the user has reached the maximum allowed amount
+            subscription_model = apps.get_model('subscription', 'Subscription')
+            now = timezone.now().date()
+            plans = plans.exclude(
+                subscription__in=subscription_model.objects.filter(
+                        user=user,
+                        period__end_date__gt=now,
+                        period__start_date__lte=now,
+                        canceled_at__isnull=True
+                    ).annotate(
+                        num_subs_of_plan=models.Count('plan__id')
+                    ).exclude(
+                        num_subs_of_plan__lt=models.F('plan__max_active_subscriptions_per_user')
+                    )
+            )
+
+            # Exclude plans for which the user's email domain is not eligible
+            email_domain = user.get_email_domain()
+            for plan in plans:
+                eligible_email_domains = plan.get_eligible_email_domains()
+                if eligible_email_domains and email_domain not in eligible_email_domains:
+                    plans = plans.exclude(id=plan.id)
+
+        return plans
+
+
 class SubscriptionManager(models.Manager):
-    """
-    Custom manager for payments.
-    """
+    #TODO:--------------
+
     def notify_to_be_expired_subscribers(self):
         """
         Sends an email to users whose subscriptions

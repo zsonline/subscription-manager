@@ -28,21 +28,20 @@ class PaymentForm(forms.ModelForm):
         validation and for generating the help text.
         """
         # Read passed parameters
-        self.min_price = kwargs.pop('min_price', None)
+        self.plan = kwargs.pop('plan', None)
 
-        if self.min_price is None:
-            raise forms.ValidationError('Payment form improperly instantiated.')
+        if self.plan is None:
+            raise forms.ValidationError('Payment form improperly instantiated. Plan is missing.')
 
         # Call super constructor
         super().__init__(*args, **kwargs)
 
         # Add help text
         self.fields['amount'].help_text = \
-            'Der Preis muss mindestens {} Franken betragen.'.format(self.min_price)
-        if self.min_price == 0:
+            'Der Preis muss mindestens {} Franken betragen.'.format(self.plan.price)
+        if self.plan.price == 0:
             self.fields['amount'].help_text = \
-                'Zahl so viel du willst.'.format(self.min_price)
-
+                'Zahl so viel du willst.'.format(self.plan.price)
 
     def clean_amount(self):
         """
@@ -54,8 +53,8 @@ class PaymentForm(forms.ModelForm):
         amount = self.cleaned_data['amount']
 
         # Check whether price is high enough
-        if amount is None or amount < self.min_price:
-            self.add_error('amount', 'Der Preis muss mindestens {} Franken betragen.'.format(self.min_price))
+        if amount is None or amount < self.plan.price:
+            self.add_error('amount', 'Der Preis muss mindestens {} Franken betragen.'.format(self.plan.price))
 
         return amount
 

@@ -49,7 +49,9 @@ def signup_view(request):
     else:
         form = SignUpForm()
 
-    return render(request, 'authentication/signup.html', {'form': form, 'next': next_page})
+    plans = Plan.objects.all()
+
+    return render(request, 'authentication/signup.html', {'form': form, 'next': next_page, 'plans': plans })
 
 
 @anonymous_required

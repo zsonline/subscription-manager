@@ -8,6 +8,7 @@ PROJECT_ROOT = os.path.dirname(os.path.abspath(__file__))
 # Application definition
 INSTALLED_APPS = [
     'compressor',
+    'debug_toolbar',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -16,8 +17,8 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'django_redis',
     'djcelery_email',
+    'formtools',
     'subscription_manager.authentication.apps.AccountConfig',
-    'subscription_manager.landing.apps.LandingConfig',
     'subscription_manager.payment.apps.PaymentConfig',
     'subscription_manager.subscription.apps.SubscriptionConfig',
     'subscription_manager.user.apps.UserConfig'
@@ -31,6 +32,7 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'debug_toolbar.middleware.DebugToolbarMiddleware',
 ]
 
 ROOT_URLCONF = 'subscription_manager.urls'

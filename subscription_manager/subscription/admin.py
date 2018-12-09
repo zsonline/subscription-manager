@@ -11,7 +11,7 @@ from django.urls import path
 from .models import Plan, Subscription
 
 class SubscriptionAdmin(admin.ModelAdmin):
-    list_display = ['user', 'is_active', 'plan', 'end_date']
+    list_display = ['user', 'is_active', 'plan']
     search_fields = ['user', 'plan', 'address_line_1', 'address_line_2', 'postcode', 'city', 'country']
     change_list_template = 'subscription/subscription_admin_changelist.html'
 
@@ -63,7 +63,7 @@ class SubscriptionAdmin(admin.ModelAdmin):
 
 
 class PlanAdmin(admin.ModelAdmin):
-    list_display = ['name', 'duration', 'price']
+    list_display = ['name', 'duration_in_months', 'price']
 
 
 admin.site.register(Subscription, SubscriptionAdmin)

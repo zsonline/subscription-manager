@@ -9,11 +9,13 @@ celery = "*"
 django = "*"
 django-celery-email = "*"
 django-compressor = "*"
+django-formtools = "*"
 django-libsass = "*"
+django-redis = "*"
 gunicorn = "*"
 psycopg2-binary = "*"
 python-dateutil = "*"
-django-redis = "*"
+django-debug-toolbar = "*"
 
 [dev-packages]
 

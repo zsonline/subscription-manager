@@ -1,12 +1,13 @@
 # Pip imports
 from dateutil.relativedelta import relativedelta
+from formtools.wizard.views import SessionWizardView
 
 # Django imports
 from django.conf import settings
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.core.mail import send_mail
-from django.http import Http404, HttpResponseRedirect
+from django.http import Http404, HttpResponse, HttpResponseRedirect
 from django.shortcuts import get_object_or_404, redirect, render, reverse
 from django.template.loader import render_to_string
 from django.urls import reverse_lazy
@@ -16,6 +17,7 @@ from django.views import View
 from django.views.generic import detail, edit, list
 
 # Project imports
+from subscription_manager.authentication.forms import SignUpForm
 from subscription_manager.authentication.decorators import anonymous_required
 from subscription_manager.payment.forms import PaymentForm
 from subscription_manager.payment.models import Payment
@@ -26,23 +28,87 @@ from .forms import SubscriptionForm
 from .models import Subscription, Plan
 
 
-@method_decorator(login_required, name='dispatch')
+class SubscriptionCreateWizard(SessionWizardView):
+    template_name = 'subscription/subscription_create.html'
+    form_list = [SignUpForm, SubscriptionForm, PaymentForm]
+    plan = None
+
+    def dispatch(self, request, *args, **kwargs):
+        """
+        Check whether a given plan exists.
+        If not, redirect to plan list.
+        """
+        # Check if plan exists
+        self.plan = self.get_plan()
+        if self.plan is None:
+            # Redirect if plan does not exist
+            return redirect('plan_list')
+
+        return super().dispatch(request, *args, **kwargs)
+
+    def get_plan(self):
+        """
+        Read plan slug from URL parameters and return
+        if it exists.
+        """
+        # Get from URL parameters
+        plan_slug = self.kwargs.get('plan_slug')
+
+        # Check if plan exists
+        try:
+            plan = Plan.objects.get(slug=plan_slug)
+        except Plan.DoesNotExist:
+            plan = None
+
+        return plan
+
+    def get_form_initial(self, step):
+        """
+        Add initial form data.
+        """
+        initial = super().get_form_initial(step)
+
+        # Payment form
+        if step == '2':
+            initial['amount'] = self.get_plan().price
+
+        return initial
+
+    def get_form_kwargs(self, step=None):
+        """
+        Add form kwargs.
+        """
+        kwargs = super().get_form_kwargs(step)
+
+        # Add plan
+        kwargs['plan'] = self.get_plan()
+
+        return kwargs
+
+    def get_context_data(self, form, **kwargs):
+        context = super().get_context_data(form, **kwargs)
+
+        context['plan'] = self.plan
+
+        return context
+
+
+    def done(self, form_list, **kwargs):
+        return HttpResponse([form.cleaned_data for form in form_list])
+
+
 class PlanListView(list.ListView):
     """
-    Lists all subscriptions of the current user.
+    Lists all plans for which the user can potentially purchase.
     """
     context_object_name = 'plans'
     template_name = 'subscription/plan_list.html'
 
     def get_queryset(self):
         """
-        Excludes student plan if logged in user
-        is not an eligible student.
+        Returns only plans for which the user is potentially eligible.
         """
-        plans = Plan.objects.all()
-        if not self.request.user.is_student() or Subscription.objects.has_student_subscriptions(self.request.user):
-            plans = plans.exclude(slug='student')
-        return plans
+        return Plan.objects.filter_eligible(self.request.user)
 
 
 @method_decorator(login_required, name='dispatch')
@@ -94,7 +160,7 @@ class SubscriptionDetailView(detail.DetailView):
 @method_decorator(login_required, name='dispatch')
 class SubscriptionCreateView(View):
     form_class = SubscriptionForm
-    template_name = 'subscription/subscription_create.html'
+    template_name = 'subscription/subscription_create1.html'
 
     @classmethod
     def get_plan(cls, **kwargs):
@@ -152,7 +218,7 @@ class SubscriptionCreateView(View):
             }
         )
 
-        return render(request, 'subscription/subscription_create.html', {
+        return render(request, 'subscription/subscription_create1.html', {
             'plan': plan,
             'subscription_form': subscription_form,
             'payment_form': payment_form
@@ -198,7 +264,7 @@ class SubscriptionCreateView(View):
             messages.success(request, 'Vielen Dank! Wir haben dir eine Rechnung per E-Mail geschickt.')
             return redirect('subscription_detail', subscription_id=subscription.id)
 
-        return render(request, 'subscription/subscription_create.html', {
+        return render(request, 'subscription/subscription_create1.html', {
             'plan': plan,
             'subscription_form': subscription_form,
             'payment_form': payment_form
