@@ -1,13 +1,11 @@
 {% extends "base.html" %}
 
-{% block title %}Abo bestellen{% endblock %}
+{% block title %}{{ plan.name }} bestellen{% endblock %}
 
-{% block description %}<b>{{ plan.name }}</b> - {{ plan.description }}{% endblock %}
+{% block description %}Schritt {{ wizard.steps.step1 }} von {{ wizard.steps.count }}{% endblock %}
 
 {% block content %}
     <form action="{% url 'subscription_create' plan.slug %}" method="post">
-        {{ wizard.form.media }}
-
         {% csrf_token %}
 
         {{ wizard.management_form }}

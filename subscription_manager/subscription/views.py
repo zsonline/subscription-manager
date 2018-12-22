@@ -30,7 +30,11 @@ from .models import Subscription, Plan
 
 class SubscriptionCreateWizard(SessionWizardView):
     template_name = 'subscription/subscription_create.html'
-    form_list = [SignUpForm, SubscriptionForm, PaymentForm]
+    form_list = [
+        ('signup', SignUpForm),
+        ('subscription', SubscriptionForm),
+        ('payment', PaymentForm)
+    ]
     plan = None
 
     def dispatch(self, request, *args, **kwargs):
@@ -38,6 +42,12 @@ class SubscriptionCreateWizard(SessionWizardView):
         Check whether a given plan exists.
         If not, redirect to plan list.
         """
+        # Skip signup form if user is authenticated
+        if request.user.is_authenticated:
+            self.condition_dict = {
+                'signup': False
+            }
+
         # Check if plan exists
         self.plan = self.get_plan()
         if self.plan is None:
@@ -69,7 +79,7 @@ class SubscriptionCreateWizard(SessionWizardView):
         initial = super().get_form_initial(step)
 
         # Payment form
-        if step == '2':
+        if step == 'payment':
             initial['amount'] = self.get_plan().price
 
         return initial
@@ -81,7 +91,8 @@ class SubscriptionCreateWizard(SessionWizardView):
         kwargs = super().get_form_kwargs(step)
 
         # Add plan
-        kwargs['plan'] = self.get_plan()
+        if step == 'signup':
+            kwargs['plan'] = self.get_plan()
 
         return kwargs
 
@@ -91,7 +102,6 @@ class SubscriptionCreateWizard(SessionWizardView):
         context['plan'] = self.plan
 
         return context
-
 
     def done(self, form_list, **kwargs):
         return HttpResponse([form.cleaned_data for form in form_list])
