@@ -42,17 +42,23 @@ class SubscriptionCreateWizard(SessionWizardView):
         Check whether a given plan exists.
         If not, redirect to plan list.
         """
-        # Skip signup form if user is authenticated
-        if request.user.is_authenticated:
-            self.condition_dict = {
-                'signup': False
-            }
-
         # Check if plan exists
         self.plan = self.get_plan()
         if self.plan is None:
             # Redirect if plan does not exist
             return redirect('plan_list')
+
+        # Check if the user is allowed to purchase the plan
+        user = request.user
+        if not self.plan.is_eligible(user):
+            messages.error(request, 'Du bist nicht berechtigt ein {} zu bestellen.'.format(self.plan.name))
+            return redirect('plan_list')
+
+        # Skip signup form if user is authenticated
+        if user.is_authenticated:
+            self.condition_dict = {
+                'signup': False
+            }
 
         return super().dispatch(request, *args, **kwargs)
 
