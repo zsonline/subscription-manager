@@ -47,10 +47,24 @@
       grid-column-end: 3;
     }
   }
+
+  #wizard-data {
+    grid-column-start: 1;
+    grid-column-end: 3;
+
+    display: grid;
+    grid-gap: 2rem;
+    grid-template-columns: min-content auto;
+  }
 }
 
 @media (min-width: $large) {
   #plans {
     grid-template-columns: repeat(4, 1fr);
+  }
+
+  #wizard-data {
+    grid-column-start: 1;
+    grid-column-end: 2;
   }
 }

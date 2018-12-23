@@ -5,6 +5,28 @@
 {% block description %}Schritt {{ wizard.steps.step1 }} von {{ wizard.steps.count }}{% endblock %}
 
 {% block content %}
+    <div id="wizard-data">
+        {% if data_signup %}
+            <p>
+                <b>Account</b><br>
+                {{ data_signup.first_name }} {{ data_signup.last_name }}<br>
+                {{ data_signup.email }}
+            </p>
+        {% endif %}
+        {% if data_subscription %}
+            <p>
+                <b>Adresse</b><br>
+                {{ data_signup.first_name }} {{ data_signup.last_name }}<br>
+                {{ data_subscription.address_line_1 }}<br>
+                {% if data_subscription.address_line_2 %}
+                    {{ data_subscription.address_line_2 }}<br>
+                {% endif %}
+                {{ data_subscription.postcode }} {{ data_subscription.city }}<br>
+                {{ data_subscription.country }}
+            </p>
+        {% endif %}
+    </div>
+
     <form action="{% url 'subscription_create' plan.slug %}" method="post">
         {% csrf_token %}
 
@@ -18,6 +40,10 @@
             {{ wizard.form.as_p }}
         {% endif %}
 
-        <input type="submit" class="button primary" value="Weiter">
+        {% if wizard.steps.step1 != wizard.steps.count %}
+            <input type="submit" class="button primary" value="Weiter">
+        {% else %}
+            <input type="submit" class="button primary" value="Bestellen">
+        {% endif %}
     </form>
 {% endblock %}

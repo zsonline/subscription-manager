@@ -1,8 +1,9 @@
 # Pip imports
 from dateutil.relativedelta import relativedelta
-from formtools.wizard.views import SessionWizardView
+from formtools.wizard.views import CookieWizardView
 
 # Django imports
+from django.db import transaction
 from django.conf import settings
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
@@ -15,6 +16,7 @@ from django.utils import timezone
 from django.utils.decorators import method_decorator
 from django.views import View
 from django.views.generic import detail, edit, list
+from django.contrib.auth import get_user_model
 
 # Project imports
 from subscription_manager.authentication.forms import SignUpForm
@@ -25,10 +27,10 @@ from subscription_manager.utils.language import humanize_list
 
 # Application imports
 from .forms import SubscriptionForm
-from .models import Subscription, Plan
+from .models import Subscription, Plan, Period
 
 
-class SubscriptionCreateWizard(SessionWizardView):
+class SubscriptionCreateWizard(CookieWizardView):
     template_name = 'subscription/subscription_create.html'
     form_list = [
         ('signup', SignUpForm),
@@ -39,8 +41,9 @@ class SubscriptionCreateWizard(SessionWizardView):
 
     def dispatch(self, request, *args, **kwargs):
         """
-        Check whether a given plan exists.
-        If not, redirect to plan list.
+        Check whether a given plan exists and that the user is eligible
+        to purchase the plan. If not, redirect to plan list.
+        Remove signup form from wizard if a user is already logged in.
         """
         # Check if plan exists
         self.plan = self.get_plan()
@@ -64,8 +67,7 @@ class SubscriptionCreateWizard(SessionWizardView):
 
     def get_plan(self):
         """
-        Read plan slug from URL parameters and return
-        if it exists.
+        Read plan slug from URL parameters and return if it exists.
         """
         # Get from URL parameters
         plan_slug = self.kwargs.get('plan_slug')
@@ -97,20 +99,82 @@ class SubscriptionCreateWizard(SessionWizardView):
         kwargs = super().get_form_kwargs(step)
 
         # Add plan
-        if step == 'signup':
+        if step == 'signup' or step == 'payment':
             kwargs['plan'] = self.get_plan()
 
         return kwargs
 
     def get_context_data(self, form, **kwargs):
+        """
+        Add context data.
+        """
         context = super().get_context_data(form, **kwargs)
 
         context['plan'] = self.plan
 
+        # Load user data if logged in and add it with previously entered form data
+        user = self.request.user
+        if user.is_authenticated:
+            data_signup = {
+                'first_name': user.first_name,
+                'last_name': user.last_name,
+                'email': user.email
+            }
+        else:
+            data_signup = self.get_cleaned_data_for_step('signup')
+        context['data_signup'] = data_signup
+        context['data_subscription'] = self.get_cleaned_data_for_step('subscription')
+
         return context
 
+    @transaction.atomic
     def done(self, form_list, **kwargs):
-        return HttpResponse([form.cleaned_data for form in form_list])
+        """
+        Save the entered data to the database. If it was successful,
+        return to plan_list page.
+        """
+        # Clean data
+        cleaned_form_list = [form.cleaned_data for form in form_list]
+        # Load user if logged in. Otherwise, create the user from signup form
+        user = self.request.user
+        if user.is_authenticated:
+            subscription_data, payment_data = cleaned_form_list
+        else:
+            signup_data, subscription_data, payment_data = cleaned_form_list
+            user = get_user_model().objects.create(
+                first_name=signup_data['first_name'],
+                last_name=signup_data['last_name'],
+                email=signup_data['email']
+            )
+
+        # Create subscription
+        subscription = Subscription.objects.create(
+            user=user,
+            plan=self.plan,
+            address_line_1=subscription_data['address_line_1'],
+            address_line_2=subscription_data['address_line_2'],
+            postcode=subscription_data['postcode'],
+            city=subscription_data['city'],
+            country=subscription_data['country']
+        )
+        # Create subscription period
+        amount = payment_data['amount']
+        payment_date = None
+        if amount == 0:
+            payment_date = timezone.now()
+        period = Period.objects.create(
+            subscription=subscription,
+            start_date=timezone.now().date(),
+            end_date=timezone.now().date(),
+            amount=payment_data['amount'],
+            paid_at=payment_date
+        )
+
+        # TODO: Send email
+
+        messages.success(self.request, 'Deine Bestellung war erfolgreich. Wir haben dir eine E-Mail geschickt,'
+                                       'um deine E-Mail-Adresse zu verfizieren.')
+        return redirect('plan_list')
 
 
 class PlanListView(list.ListView):
