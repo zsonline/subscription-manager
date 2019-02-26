@@ -1,11 +1,9 @@
-# Python imports
 import os
 from datetime import timedelta
 
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 PROJECT_ROOT = os.path.dirname(os.path.abspath(__file__))
 
-# Application definition
 INSTALLED_APPS = [
     'compressor',
     'debug_toolbar',
@@ -18,6 +16,7 @@ INSTALLED_APPS = [
     'django_redis',
     'djcelery_email',
     'formtools',
+    'import_export',
     'subscription_manager.authentication.apps.AccountConfig',
     'subscription_manager.payment.apps.PaymentConfig',
     'subscription_manager.subscription.apps.SubscriptionConfig',
@@ -57,21 +56,17 @@ TEMPLATES = [
     },
 ]
 
-# Specifies custom user model
 AUTH_USER_MODEL = 'user.User'
-# Authentication backends
 AUTHENTICATION_BACKENDS = [
     'subscription_manager.authentication.backends.EmailBackend',
     'django.contrib.auth.backends.ModelBackend'
 ]
 
-# Login tokens
 TOKENS_PER_USER = 3  # Maximum amount of tokens per user
 TOKEN_EXPIRATION = timedelta(minutes=10)  # Validity duration of a token
 
 ALLOWED_STUDENT_EMAIL_ADDRESSES = ['student.ethz.ch']
 
-# Password validation
 AUTH_PASSWORD_VALIDATORS = [
     {
         'NAME': 'django.contrib.auth.password_validation.UserAttributeSimilarityValidator',
@@ -87,18 +82,15 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
-# Fixed auth urls
 LOGIN_URL = '/auth/login/'
 LOGIN_REDIRECT_URL = '/home/'
 
-# Internationalization
 LANGUAGE_CODE = 'de-ch'
 TIME_ZONE = 'Europe/Zurich'
 USE_I18N = True
 USE_L10N = True
 USE_TZ = True
 
-# Static files
 STATIC_URL = '/static/'
 STATICFILES_DIRS = (
     os.path.join(BASE_DIR, 'static'),
@@ -110,7 +102,6 @@ STATICFILES_FINDERS = (
 )
 STATIC_ROOT = "static_files/"
 
-# Email
 ADMINS = [('ZS Informatik', 'informatik@medienverein.ch')]
 EMAIL_SUBJECT_PREFIX = '[ZS] '
 DEFAULT_FROM_EMAIL = 'Zürcher Studierendenzeitung <server@zs-online.ch>'
