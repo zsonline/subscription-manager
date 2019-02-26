@@ -4,18 +4,18 @@ verify_ssl = true
 name = "pypi"
 
 [packages]
-redis = "~=2.10.6"
 celery = "*"
 django = "*"
 django-celery-email = "*"
 django-compressor = "*"
+django-debug-toolbar = "*"
 django-formtools = "*"
 django-libsass = "*"
 django-redis = "*"
 gunicorn = "*"
 psycopg2-binary = "*"
 python-dateutil = "*"
-django-debug-toolbar = "*"
+redis = "*"
 
 [dev-packages]
 
