@@ -19,5 +19,6 @@ python-dateutil = "*"
 redis = "*"
 
 [dev-packages]
+sphinx = "*"
 
 [requires]
