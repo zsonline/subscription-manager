@@ -14,13 +14,13 @@ class TokenBackend(backends.ModelBackend):
     Custom authentication backend that handles authentication
     by token.
     """
-    def authenticate(self, request, email=None, code=None, **kwargs):
+    def authenticate(self, request, code=None, **kwargs):
         """
         Checks if a given token is valid for a given email
         address. If so, the user is returned, otherwise None.
         """
         # If email or code are None, authentication failed.
-        if email is None or code is None:
+        if code is None:
             return None
 
         # Encode code and find it in database
@@ -28,10 +28,9 @@ class TokenBackend(backends.ModelBackend):
         # If token is valid, delete token and return user
         if token is not None and token.is_valid():
             user = token.user
-            if user.email == email:
-                token.delete()
-                if user.is_active:
-                    return user
+            token.delete()
+            if user.is_active:
+                return user
         return None
 
 

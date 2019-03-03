@@ -8,6 +8,6 @@ from .views import signup_view, login_view, logout_view, token_verification_view
 urlpatterns = [
     path('signup/', signup_view, name='signup'),
     path('login/', login_view, name='login'),
-    path('token/<email_b64>/<code>/', token_verification_view, name='token_verification'),
+    path('token/<code>/', token_verification_view, name='token_verification'),
     path('logout/', logout_view, name='logout')
 ]

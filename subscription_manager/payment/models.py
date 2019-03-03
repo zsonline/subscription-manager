@@ -1,40 +1,52 @@
-# Pip imports
 from dateutil.relativedelta import relativedelta
 
-# Django imports
 from django.conf import settings
 from django.core.mail import send_mail
 from django.db import models
 from django.template.loader import render_to_string
 from django.utils import timezone
 
-# Project imports
 from subscription_manager.subscription.models import Subscription
 
-# Application imports
 from .managers import PaymentManager
 
 
 class Payment(models.Model):
-    subscription = models.ForeignKey(
-        Subscription,
+    period = models.OneToOneField(
+        to='subscription.Period',
         on_delete=models.CASCADE,
-        verbose_name='Abonnement'
+        verbose_name='Abo'
     )
-    amount = models.IntegerField(
-        'Betrag'
+    amount = models.PositiveIntegerField(
+        verbose_name='Betrag'
+    )
+    method = models.CharField(
+        max_length=20,
+        choices=(
+            ('invoice', 'Rechnung'),
+            ('twint', 'Twint')
+        ),
+        verbose_name='Zahlungsmethode'
     )
     code = models.CharField(
-        max_length=30,
+        max_length=12,
         unique=True
     )
-    paid_at = models.DateTimeField(
-        'Bezahlt am',
-        blank=True,
+    paid_amount = models.PositiveIntegerField(
         null=True,
-        default=None
+        blank=True,
+        verbose_name='Bezahlter Betrag'
     )
-    created_at = models.DateTimeField(auto_now_add=True)
+    paid_at = models.DateTimeField(
+        null=True,
+        blank=True,
+        default=None,
+        verbose_name='Bezahlt am'
+    )
+    created_at = models.DateTimeField(
+        default=timezone.now,
+        verbose_name='Erstellt am'
+    )
 
     objects = PaymentManager()
 
@@ -43,7 +55,7 @@ class Payment(models.Model):
         verbose_name_plural = 'Zahlungen'
 
     def __str__(self):
-        return 'Payment({}, {}, {})'.format(self.subscription.user.email, self.amount, self.paid_at)
+        return 'Zahlung für Abo {} von {}'.format(self.period.subscription.id, self.period.subscription.full_name)
 
     def is_paid(self):
         return self.paid_at is not None

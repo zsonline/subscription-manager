@@ -67,36 +67,16 @@ class Token(models.Model):
         return not self.is_valid()
 
     @staticmethod
-    def b64_encoded(email):
-        """
-        Encodes a given input with url safe base64.
-        """
-        return urlsafe_base64_encode(force_bytes(email)).decode()
-
-    @staticmethod
-    def b64_decoded(email_b64):
-        """
-        Decodes a url safe base64 encoded input.
-        """
-        try:
-            return force_text(urlsafe_base64_decode(email_b64))
-        except DjangoUnicodeDecodeError:
-            return None
-        except ValueError:
-            return None
-
-    @staticmethod
-    def url(email, code):
+    def url(code):
         """
         Returns the url for a given email address and code.
-        Example: https://hostname.tld/auth/token/cmVkYWt0aW9uQHpzLW9ubGluZS5jaA/1836af19-67df-4090-8229-16ed13036480/
+        Example: https://hostname.tld/auth/token/1836af19-67df-4090-8229-16ed13036480/
         """
         return '{}{}'.format(
             settings.BASE_URL,
             reverse(
                 'token_verification',
                 kwargs={
-                    'email_b64': Token.b64_encoded(email),
                     'code': code
                 }
             )

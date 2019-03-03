@@ -22,4 +22,4 @@ class SubscriptionForm(forms.ModelForm):
 
     class Meta:
         model = Subscription
-        fields = ('address_line_1', 'address_line_2', 'postcode', 'city', 'country')
+        fields = ('address_line', 'additional_address_line', 'postcode', 'town', 'country')

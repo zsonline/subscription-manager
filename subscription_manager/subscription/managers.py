@@ -13,11 +13,11 @@ class PlanManager(models.Manager):
         """
         Returns plans for which a user is eligible.
         """
-        # Filter active plans
+        # Filter purchasable plans
         plans = self.filter(
-            is_active=True,
+            is_purchasable=True,
         ).exclude(
-            max_active_subscriptions_per_user=0,
+            eligible_active_subscriptions_per_user=0,
         )
 
         # If user is logged in, perform additional checks
@@ -35,7 +35,7 @@ class PlanManager(models.Manager):
                     ).annotate(
                         num_subs_of_plan=models.Count('plan__id')
                     ).exclude(
-                        num_subs_of_plan__lt=models.F('plan__max_active_subscriptions_per_user')
+                        num_subs_of_plan__lt=models.F('plan__eligible_active_subscriptions_per_user')
                     )
             )
 
@@ -50,6 +50,15 @@ class PlanManager(models.Manager):
 
 
 class SubscriptionManager(models.Manager):
+
+    def filter_active_periods(self):
+        """
+        Returns active periods of a subscription
+        (should be zero or one periods).
+        """
+        return self.period_set.filter(is_active=True)
+
+
     #TODO:--------------
 
     def notify_to_be_expired_subscribers(self):

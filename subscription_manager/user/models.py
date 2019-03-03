@@ -9,17 +9,13 @@ from .managers import UserManager
 
 class User(AbstractUser):
     """
-    Custom user model that inherits the AbstractUser
-    model from django's default authentication application.
-
-    It removes the username field and replaces it instead by
-    the email address. In order to handle the modifications,
-    it uses a custom UserManager.
+    Custom user model that inherits the AbstractUser model
+    from django's default authentication application. It
+    removes the username field and replaces it instead by
+    the email address.
     """
-    # Remove username and password field
+    # Remove username field
     username = None
-
-    # Model fields
     first_name = CharField(
         'Vorname',
         max_length=30
@@ -37,25 +33,22 @@ class User(AbstractUser):
     # Substitute username by email address field
     USERNAME_FIELD = 'email'
     REQUIRED_FIELDS = []
-    # Use custom UserManager for user creation
+
     objects = UserManager()
 
     def __str__(self):
         return '{} ({})'.format(self.full_name(), self.email)
 
-    def get_email_domain(self):
+    def _get_email_domain(self):
+        """
+        Returns the user's email domain.
+        """
         return self.email.split('@')[-1]
+    email_domain = property(_get_email_domain)
 
-    def is_student(self):
+    def _get_full_name(self):
         """
-        Checks whether the user has a student email address.
+        Returns the user's full name.
         """
-        # Extract domain from email address
-        email_domain = self.email.split('@')[-1]
-        # Check if extracted domain is in list
-        if email_domain in settings.ALLOWED_STUDENT_EMAIL_ADDRESSES:
-            return True
-        return False
-
-    def full_name(self):
         return '{} {}'.format(self.first_name, self.last_name)
+    full_name = property(_get_full_name)

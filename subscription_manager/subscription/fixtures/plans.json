@@ -6,8 +6,8 @@
       "name": "Regul\u00e4res Abo",
       "description": "Unser ganz normales Abo. Du zahlst, wir liefern.",
       "slug": "regular",
-      "duration": 12,
-      "price": 50
+      "price": 50,
+      "renews_to": 1
     }
   },
   {
@@ -17,8 +17,10 @@
       "name": "Studentisches Abo",
       "description": "Für Studierende ist die ZS gratis. Registriere dich mit der E-Mail-Adresse deiner Uni.",
       "slug": "student",
-      "duration": 12,
-      "price": 0
+      "price": 0,
+      "renews_to": 2,
+      "eligible_active_subscriptions_per_user": 1,
+      "eligible_email_domains": "student.ethz.ch"
     }
   }
 ]

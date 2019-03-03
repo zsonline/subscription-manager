@@ -160,7 +160,7 @@ class SubscriptionCreateWizard(CookieWizardView):
         # Create subscription period
         amount = payment_data['amount']
         payment_date = None
-        if amount == 0:
+        if amount == 0 and not self.plan.eligible_email_domains:
             payment_date = timezone.now()
         period = Period.objects.create(
             subscription=subscription,
@@ -172,7 +172,7 @@ class SubscriptionCreateWizard(CookieWizardView):
 
         # TODO: Send email
 
-        messages.success(self.request, 'Deine Bestellung war erfolgreich. Wir haben dir eine E-Mail geschickt,'
+        messages.success(self.request, 'Deine Bestellung war erfolgreich. Wir haben dir eine E-Mail geschickt, '
                                        'um deine E-Mail-Adresse zu verfizieren.')
         return redirect('plan_list')
 

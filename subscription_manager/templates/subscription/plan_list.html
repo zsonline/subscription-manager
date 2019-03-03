@@ -21,10 +21,10 @@
                     {% else %}
                         <span class="amount">{{ plan.price }}</span> Franken
                         /
-                        {% if plan.duration_in_months == 1 %}
+                        {% if plan.duration == 1 %}
                             1 Monat
                         {% else %}
-                            {{ plan.duration_in_months }} Monate
+                            {{ plan.duration }} Monate
                         {% endif %}
                     {% endif %}
                 </div>
@@ -33,7 +33,7 @@
 
             </div>
         {% empty %}
-            <p class="alert info">Leider haben wir gerade kein passendes Abo für dich.</p>
+            <p class="alert info">Leider haben wir zurzeit kein passendes Abo für dich.</p>
         {% endfor %}
     </div>
 {% endblock %}
