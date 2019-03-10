@@ -1,17 +1,12 @@
 footer {
   box-sizing: border-box;
   padding: 1em;
-  background-color: $darker-grey;
-  color:$white;
+  background-color: $lighter-grey;
+  font-size: 1.1rem;
 
-  div, nav {
-    margin: 1em 0;
-  }
-
-  nav {
-    a {
-      display: block;
-    }
+  div {
+    margin: 3em 0;
+    max-width: $medium;
   }
 
   address {
@@ -22,54 +17,6 @@ footer {
 
 @media all and (min-width: $medium) {
   footer {
-    .container {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      grid-column-gap: 2rem;
-      max-width: $medium;
-      margin: 0 auto;
-    }
-  }
-
-  #footer-zs {
-    grid-column-start: 1;
-    grid-column-end: 3;
-
-    margin-bottom: 0;
-    text-align: center;
-  }
-
-  #footer-nav {
-    grid-column-start: 1;
-    grid-column-end: 3;
-
-    margin-top: 0;
-    text-align: center;
-
-    a {
-      display: inline-block;
-      margin: 0 .5em;
-    }
-  }
-
-  #footer-getinvolved {
-    grid-column-start: 1;
-    grid-column-end: 2;
-
-    text-align: right;
-  }
-
-  #footer-contact {
-    grid-column-start: 2;
-    grid-column-end: 3;
-
-    text-align: left;
-  }
-
-  #footer-credits {
-    grid-column-start: 1;
-    grid-column-end: 3;
-
-    text-align: center;
+      padding: 1em 2em;
   }
 }
