@@ -1,11 +1,10 @@
 footer {
   box-sizing: border-box;
-  padding: 1em;
+  padding: 1rem;
   background-color: $lighter-grey;
-  font-size: 1.1rem;
 
   div {
-    margin: 3em 0;
+    margin: 3rem 0;
     max-width: $medium;
   }
 
@@ -17,6 +16,6 @@ footer {
 
 @media all and (min-width: $medium) {
   footer {
-      padding: 1em 2em;
+      padding: 1rem 2rem;
   }
 }

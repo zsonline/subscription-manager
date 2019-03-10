@@ -3,10 +3,8 @@
 
 <header>
 
-    <div class="container">
-
         <a id="header-logo" href="http://zs-online.ch/">
-            <img src="{% static 'images/zs-signet-small.png' %}">
+            <img src="{% static 'images/zs-logo-black.svg' %}" height="50" alt="ZS">
             <h1>Zürcher Studierendenzeitung</h1>
         </a>
 
@@ -15,11 +13,9 @@
                 <a class="{% active 'subscription_list' %}" href="{% url 'subscription_list' %}">Abonnements</a>
                 <a href="{% url 'logout' %}">Logout</a>
             {% else %}
-                <a class="{% active 'plan_list' %}" href="{% url 'plan_list' %}">Unsere Abos</a>
+                <a class="{% active 'plan_list' %}" href="{% url 'plan_list' %}">Abo bestellen</a>
                 <a class="{% active 'login' %}" href="{% url 'login' %}">Abo verwalten</a>
             {% endif %}
         </nav>
-
-    </div>
 
 </header>
