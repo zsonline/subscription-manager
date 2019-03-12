@@ -69,14 +69,16 @@ class SignUpForm(forms.ModelForm):
         return user
 
 
-class LoginForm(forms.Form):
+class LoginForm(forms.ModelForm):
     """
     Login form. Allows a user to log himself in.
     A token is afterwards sent to her email address.
     """
-    email = forms.EmailField()
-
     required_css_class = 'required'
+
+    class Meta:
+        model = get_user_model()
+        fields = ('email',)
 
     def is_valid(self):
         """
@@ -95,11 +97,11 @@ class LoginForm(forms.Form):
             user = get_user_model().objects.get(email=self.cleaned_data['email'])
         except get_user_model().DoesNotExist:
             # Add error if user does not exist
-            self.add_error(None, 'Der Account {} existiert nicht.'.format(self.cleaned_data['email']))
+            self.add_error(None, 'Ein Account mit E-Mail-Adresse {} existiert nicht.'.format(self.cleaned_data['email']))
             return False
 
         if not user.is_active:
-            self.add_error(None, 'Der Account {} ist gesperrt.'.format(self.cleaned_data['email']))
+            self.add_error(None, 'Der Account mit E-Mail-Adresse {} ist gesperrt.'.format(self.cleaned_data['email']))
             return False
 
         if Token.objects.valid_user_tokens_count(user) >= settings.TOKENS_PER_USER:

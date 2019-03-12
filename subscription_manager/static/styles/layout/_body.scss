@@ -7,8 +7,7 @@ body {
 main {
   box-sizing: border-box;
   min-height: calc(100vh - 120px);
-  padding: 2rem 1rem 3rem 1rem;
-  // background-color: $lighter-grey;
+  padding: 2rem 1rem;
 
   .container {
     display: grid;
@@ -20,7 +19,8 @@ main {
 
 @media (min-width: $medium) {
   main {
-    padding: 2rem 2rem 4rem 2rem;
+    min-height: calc(100vh - 150px);
+    padding: 4rem 2rem;
 
     .container {
       grid-template-columns: 1fr 1fr;

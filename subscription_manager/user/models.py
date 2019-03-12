@@ -17,17 +17,17 @@ class User(AbstractUser):
     # Remove username field
     username = None
     first_name = CharField(
-        'Vorname',
-        max_length=30
+        max_length=30,
+        verbose_name='Vorname'
     )
     last_name = CharField(
-        'Nachname',
-        max_length=150
+        max_length=150,
+        verbose_name='Nachname'
     )
     # Make email address unique
     email = EmailField(
-        'E-Mail-Adresse',
-        unique=True
+        unique=True,
+        verbose_name='E-Mail-Adresse'
     )
 
     # Substitute username by email address field

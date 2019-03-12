@@ -36,12 +36,17 @@ form {
 
   input, select {
     box-sizing: border-box;
-    border: solid 1px $dark-grey;
+    border: solid 1px $grey;
     padding: .75em;
     width: 100%;
+    background-color: $white;
 
     &:focus {
       border-color: $black;
+    }
+
+    &:disabled {
+      background-color: $lighter-grey;
     }
   }
 }

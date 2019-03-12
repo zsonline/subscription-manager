@@ -46,11 +46,11 @@ TEMPLATES = [
                 'django.template.context_processors.debug',
                 'django.template.context_processors.request',
                 'django.contrib.auth.context_processors.auth',
-                'django.contrib.messages.context_processors.messages',
-                'subscription_manager.utils.context_processors.setting_variables'
+                'django.contrib.messages.context_processors.messages'
             ],
             'libraries': {
                 'navigation': 'subscription_manager.utils.templatetags.navigation',
+                'humanize': 'subscription_manager.utils.templatetags.humanize'
             },
         },
     },
@@ -64,8 +64,6 @@ AUTHENTICATION_BACKENDS = [
 
 TOKENS_PER_USER = 3  # Maximum amount of tokens per user
 TOKEN_EXPIRATION = timedelta(minutes=10)  # Validity duration of a token
-
-ALLOWED_STUDENT_EMAIL_ADDRESSES = ['student.ethz.ch']
 
 AUTH_PASSWORD_VALIDATORS = [
     {

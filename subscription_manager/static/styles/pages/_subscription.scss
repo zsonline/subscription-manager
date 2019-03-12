@@ -1,46 +1,25 @@
 #plans {
-  display: grid;
-  grid-gap: 1rem;
-  margin-top: 1rem;
-
   .plan {
-    box-sizing: border-box;
-    padding: 1rem;
-    background-color: $white;
+    margin: 3rem 0;
 
-    a {
-      display: block;
+    p {
+      margin-bottom: 1em;
+    }
+
+    .price {
+      margin-left: 1em;
     }
   }
-}
 
-.price {
-  margin-bottom: 1em;
-  .amount {
-    font-size: 2em;
-  }
-}
-
-.invoice {
-  margin-top: 1rem;
-
-  h4 {
-    margin: .75em 0 0 0;
-  }
-
-  h5 {
-    margin: .5em 0 0 0;
+  .alert {
+    margin-top: 3rem;
   }
 }
 
 @media (min-width: $medium) {
   #plans {
     grid-column-start: 1;
-    grid-column-end: 3;
-
-    grid-template-columns: repeat(2, 1fr);
-
-    margin-top: 2rem;
+    grid-column-end: 2;
 
     .alert {
       grid-column-start: 1;
@@ -59,10 +38,6 @@
 }
 
 @media (min-width: $large) {
-  #plans {
-    grid-template-columns: repeat(4, 1fr);
-  }
-
   #wizard-data {
     grid-column-start: 1;
     grid-column-end: 2;

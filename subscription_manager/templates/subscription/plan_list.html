@@ -1,5 +1,7 @@
 {% extends 'base.html' %}
 
+{% load humanize %}
+
 {% block title %}Unsere Abos{% endblock %}
 
 {% block description %}
@@ -15,21 +17,14 @@
                 <h3>{{ plan.name }}</h3>
                 <p>{{ plan.description }}</p>
 
-                <div class="price">
-                    {% if plan.price == 0 %}
-                        <span class="amount">Gratis</span>
-                    {% else %}
-                        <span class="amount">{{ plan.price }}</span> Franken
-                        /
-                        {% if plan.duration == 1 %}
-                            1 Monat
-                        {% else %}
-                            {{ plan.duration }} Monate
-                        {% endif %}
-                    {% endif %}
-                </div>
-
                 <a href="{% url 'subscription_create' plan.slug %}" class="button primary">Bestellen</a>
+                <span class="price">
+                    {{ plan.price|humanize:'money'|capfirst }}
+                    {% if plan.price != 0 %}
+                        /
+                        {{ plan.duration|humanize:'duration' }}
+                    {% endif %}
+                </span>
 
             </div>
         {% empty %}
