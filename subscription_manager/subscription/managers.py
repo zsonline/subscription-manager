@@ -9,16 +9,26 @@ from django.utils import timezone
 
 class PlanManager(models.Manager):
 
-    def filter_eligible(self, user=None):
+    def filter_eligible(self, user=None, purpose='purchase'):
         """
         Returns plans for which a user is eligible.
         """
-        # Filter purchasable plans
-        plans = self.filter(
-            is_purchasable=True,
-        ).exclude(
-            eligible_active_subscriptions_per_user=0,
-        )
+        if purpose == 'purchase':
+            # Filter purchasable plans
+            plans = self.filter(
+                is_purchasable=True
+            ).exclude(
+                eligible_active_subscriptions_per_user=0
+            )
+        elif purpose == 'renewal':
+            # Filter renewable plans
+            plans = self.filter(
+                is_renewable=True
+            ).exclude(
+                eligible_active_subscriptions_per_user=0
+            )
+        else:
+            return None
 
         # If user is logged in, perform additional checks
         if user is not None and user.is_authenticated:
