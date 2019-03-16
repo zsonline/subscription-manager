@@ -68,6 +68,9 @@ class SubscriptionManager(models.Manager):
         """
         return self.period_set.filter(is_active=True)
 
+    def verify_email(self):
+        pass
+
 
     #TODO:--------------
 

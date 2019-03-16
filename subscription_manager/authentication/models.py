@@ -1,51 +1,46 @@
-# Django imports
-from django.db import models
 from django.conf import settings
-from django.contrib.auth import get_backends, get_user_model
-from django.urls import reverse
-from django.utils.encoding import force_bytes, force_text, DjangoUnicodeDecodeError
-from django.utils.http import urlsafe_base64_encode, urlsafe_base64_decode
+from django.contrib.auth import get_user_model
+from django.core.mail import send_mail
+from django.db import models
+from django.shortcuts import reverse
+from django.template.loader import render_to_string
 from django.utils import timezone
 
-# Application imports
 from .managers import TokenManager
 
 
 class Token(models.Model):
-    """
-    Token model.
-    """
-    # Fields
     user = models.ForeignKey(
-        get_user_model(),
+        to=get_user_model(),
         on_delete=models.CASCADE,
         verbose_name='Abonnentin'
     )
     action = models.CharField(
-        'Typ',
         max_length=20,
         choices=(
-            ('verification', 'Bestätigungs-Token'),
-            ('login', 'Login-Token')
-        )
+            ('signup', 'Bestätigungs-Token'),
+            ('login', 'Login-Token'),
+            ('eligibility', 'Bestätigungs-Token')
+        ),
+        verbose_name='Typ'
     )
     code = models.CharField(
-        'Code',
         max_length=100,
         unique=True,
-        editable=False
+        editable=False,
+        verbose_name='Code'
     )
     valid_until = models.DateTimeField(
-        'gültig bis'
+        default=timezone.now() + settings.TOKEN_EXPIRATION,
+        verbose_name='gültig bis'
     )
     sent_at = models.DateTimeField(
-        'gesendet am',
+        null=True,
         blank=True,
-        null=True
+        verbose_name='gesendet am'
     )
     created_at = models.DateTimeField(auto_now_add=True)
 
-    # Custom model manager
     objects = TokenManager()
 
     class Meta:
@@ -59,12 +54,6 @@ class Token(models.Model):
         True if the token is still valid.
         """
         return timezone.now() <= self.valid_until
-
-    def is_expired(self):
-        """
-        True if the token is expired.
-        """
-        return not self.is_valid()
 
     @staticmethod
     def url(code):
@@ -82,15 +71,32 @@ class Token(models.Model):
             )
         )
 
-    def send(self, code, next_page=None):
+    def send(self, next_page=None):
         """
-        Sends the token code with each backend that has a
-        send method defined and updates sent_at field.
+        Sends an email with the token code and updates
+        sent_at field.
         """
-        # Send token
-        for backend in get_backends():
-            if hasattr(backend, 'send'):
-                backend.send(self, code, self.action, next_page)
+        # Select template
+        template = 'emails/' + self.action + '_token.txt'
+        subject = self.get_action_display()
+
+        # Generate url
+        url = Token.url(self.code)
+        if next_page is not None:
+            url += '?next=' + next_page
+
+        # Send email
+        send_mail(
+            subject=settings.EMAIL_SUBJECT_PREFIX + subject,
+            message=render_to_string(template, {
+                'to_name': self.user.first_name,
+                'url': url,
+            }),
+            from_email=settings.DEFAULT_FROM_EMAIL,
+            recipient_list=[self.user.email],
+            fail_silently=False
+        )
+
         # Update sent_at field
         self.sent_at = timezone.now()
         self.save()

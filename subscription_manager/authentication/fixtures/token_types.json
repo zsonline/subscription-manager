@@ -1,0 +1,32 @@
+[
+  {
+    "model": "authentication.tokentype",
+    "pk": 1,
+    "fields": {
+      "name": "Bestätigungs-Token",
+      "slug": "signup",
+      "expiration_time": "",
+      "max_valid_per_user": 3
+    }
+  },
+  {
+    "model": "authentication.tokentype",
+    "pk": 2,
+    "fields": {
+      "name": "Login-Token",
+      "slug": "login",
+      "expiration_time": "",
+      "max_valid_per_user": 3
+    }
+  },
+  {
+    "model": "authentication.tokentype",
+    "pk": 3,
+    "fields": {
+      "name": "Abo verifizieren",
+      "slug": "eligibility",
+      "expiration_time": "",
+      "max_valid_per_user": 3
+    }
+  }
+]

@@ -130,7 +130,7 @@ class SubscriptionCreateView(View):
 
             # Send email verification email
             if not period.email_confirmed:
-                Token.objects.create_and_send()
+                Token.objects.create_and_send(user=user, action='eligibility')
                 messages.info(request, 'Wir haben dir eine E-Mail geschickt, um deine E-Mail-Adresse zu verifizieren.')
 
             # Handle payment

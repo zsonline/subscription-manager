@@ -62,7 +62,7 @@ AUTHENTICATION_BACKENDS = [
 ]
 
 TOKENS_PER_USER = 3  # Maximum amount of tokens per user
-TOKEN_EXPIRATION = timedelta(minutes=10)  # Validity duration of a token
+TOKEN_EXPIRATION = timedelta(days=3)  # Validity duration of a token
 
 AUTH_PASSWORD_VALIDATORS = [
     {

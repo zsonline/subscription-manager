@@ -1,11 +1,5 @@
-# Django imports
 from django.contrib.auth import backends
-from django.conf import settings
-from django.core.mail import send_mail
-from django.shortcuts import reverse
-from django.template.loader import render_to_string
 
-# Application imports
 from .models import Token
 
 
@@ -19,12 +13,12 @@ class TokenBackend(backends.ModelBackend):
         Checks if a given token is valid for a given email
         address. If so, the user is returned, otherwise None.
         """
-        # If email or code are None, authentication failed.
+        # If code is None, authentication fails
         if code is None:
             return None
 
         # Encode code and find it in database
-        token = Token.objects.get_from_code(code)
+        token = Token.objects.get(code=code)
         # If token is valid, delete token and return user
         if token is not None and token.is_valid():
             user = token.user
@@ -32,39 +26,3 @@ class TokenBackend(backends.ModelBackend):
             if user.is_active:
                 return user
         return None
-
-
-class EmailBackend(TokenBackend):
-    """
-    Inherits LoginTokenBackend class and adds
-    a send method that sends tokens via email.
-    """
-    @staticmethod
-    def send(token, code, action, next_page):
-        """
-        Creates and sends a token email for a
-        given token object and a code.
-        """
-        # Select template
-        template = 'emails/login_token.txt'
-        subject = 'Anmelde-Link'
-        if action == 'signup':
-            template = 'emails/signup_token.txt'
-            subject = 'E-Mail-Adresse bestätigen'
-
-        # Generate url
-        url = Token.url(token.user.email, code)
-        if next_page is not None:
-            url += '?next=' + next_page
-
-        # Send email
-        send_mail(
-            subject=settings.EMAIL_SUBJECT_PREFIX + subject,
-            message=render_to_string(template, {
-                'to_name': token.user.first_name,
-                'url': url,
-            }),
-            from_email=settings.DEFAULT_FROM_EMAIL,
-            recipient_list=[token.user.email],
-            fail_silently=False
-        )

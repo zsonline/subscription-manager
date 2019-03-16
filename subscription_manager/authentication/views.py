@@ -1,14 +1,11 @@
-# Django imports
 from django.shortcuts import render, redirect, reverse, HttpResponse, HttpResponseRedirect
 from django.conf import settings
 from django.contrib.auth import authenticate, login, logout, get_user_model
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
 
-# Project imports
 from subscription_manager.subscription.models import Plan
 
-# Application imports
 from .models import Token
 from .forms import SignUpForm, LoginForm
 from .decorators import anonymous_required
@@ -100,28 +97,31 @@ def token_verification_view(request, code):
     redirected to the login home page. If not, she is being
     redirected to the login page and an error is displayed.
     """
-    token = Token.objects.get_from_code(code)
+    token = Token.objects.get(code=code)
     if token is None:
         messages.error(request, 'Dein Link ist ungültig.')
         return redirect('login')
 
-    # Authenticate
-    user = authenticate(code=code)
-    # If authentication is successful, log user in
-    if user is not None:
-        login(request, user)
-        if token.action == 'signup':
-            messages.success(request, 'Deine E-Mail-Adresse wurde bestätigt.')
-        elif token.action == 'login':
-            messages.success(request, 'Du bist eingeloggt.')
-        # Handle next parameter
-        next_page = request.GET.get('next', None)
-        if next_page is not None:
-            return redirect(next_page)
-        # Redirect user to login home otherwise
-        return redirect(settings.LOGIN_REDIRECT_URL)
+    if token.action == 'signup' or token.action == 'login':
+        # Authenticate
+        user = authenticate(code=code)
+        # If authentication is successful, log user in
+        if user is not None:
+            login(request, user)
+            if token.action == 'signup':
+                messages.success(request, 'Deine E-Mail-Adresse wurde bestätigt.')
+            elif token.action == 'login':
+                messages.success(request, 'Du bist eingeloggt.')
+            # Handle next parameter
+            next_page = request.GET.get('next', None)
+            if next_page is not None:
+                return redirect(next_page)
+            # Redirect user to login home otherwise
+            return redirect(settings.LOGIN_REDIRECT_URL)
+    elif token.action == 'eligibility':
+        pass
 
-    messages.error(request, 'Der Anmelde- oder Bestätigungs-Link ist ungültig. Fordere einen Neuen an.')
+    messages.error(request, 'Dein Link ist ungültig.')
     return redirect('login')
 
 
