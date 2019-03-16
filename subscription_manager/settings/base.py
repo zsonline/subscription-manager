@@ -15,7 +15,6 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'django_redis',
     'djcelery_email',
-    'formtools',
     'import_export',
     'subscription_manager.authentication.apps.AccountConfig',
     'subscription_manager.payment.apps.PaymentConfig',

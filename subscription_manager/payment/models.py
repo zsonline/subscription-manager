@@ -18,7 +18,7 @@ class Payment(models.Model):
         verbose_name='Abo'
     )
     amount = models.PositiveIntegerField(
-        verbose_name='Betrag'
+        verbose_name='Betrag in CHF'
     )
     method = models.CharField(
         max_length=20,
@@ -26,6 +26,7 @@ class Payment(models.Model):
             ('invoice', 'Rechnung'),
             ('twint', 'Twint')
         ),
+        default='invoice',
         verbose_name='Zahlungsmethode'
     )
     code = models.CharField(

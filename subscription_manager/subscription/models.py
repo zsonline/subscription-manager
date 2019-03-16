@@ -32,15 +32,6 @@ class Plan(models.Model):
     price = models.PositiveIntegerField(
         verbose_name='Preis'
     )
-    mode = models.CharField(
-        max_length=6,
-        choices=(
-            ('auto', 'Automatisch'),
-            ('manual', 'Manuell')
-        ),
-        default='auto',
-        verbose_name='Verwaltungsmodus'
-    )
     is_purchasable = models.BooleanField(
         default=True,
         verbose_name='Käuflich'
@@ -144,13 +135,13 @@ class Subscription(models.Model):
     )
     address_line = models.CharField(
         max_length=100,
-        verbose_name='Adresse'
+        verbose_name='Adresszeile'
     )
     additional_address_line = models.CharField(
         null=True,
         blank=True,
         max_length=100,
-        verbose_name='Adresszusatz'
+        verbose_name='Zusätzliche Adresszeile'
     )
     postcode = models.CharField(
         max_length=8,
@@ -281,6 +272,10 @@ class Period(models.Model):
         null=True,
         blank=True,
         verbose_name='Enddatum'
+    )
+    email_confirmed = models.BooleanField(
+        default=True,
+        verbose_name='Zulassung geprüft'
     )
     created_at = models.DateTimeField(
         default=timezone.now,

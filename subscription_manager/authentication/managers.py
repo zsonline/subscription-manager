@@ -26,22 +26,20 @@ class TokenManager(models.Manager):
             try:
                 # Generates a UUID
                 code = uuid.uuid4()
-                # Hash UUID with SHA256
-                encoded_code = hashlib.sha256(str(code).encode('utf-8')).hexdigest()
                 # Try creating token object
-                obj_data['code'] = encoded_code
+                obj_data['code'] = code
                 token = super().create(**obj_data)
             except IntegrityError:
                 continue
             break
-        return str(code), token
+        return token
 
     def create_and_send(self, next_page, **obj_data):
         """
         Creates and sends a token object.
         """
         # Create and send token
-        code, token = self.create(**obj_data)
+        token = self.create(**obj_data)
         token.send(code, next_page)
         return token
 

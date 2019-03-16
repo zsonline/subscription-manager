@@ -1,69 +1,28 @@
-# Pip imports
-from dateutil.relativedelta import relativedelta
-from formtools.wizard.views import CookieWizardView
-
-# Django imports
 from django.db import transaction
 from django.conf import settings
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.core.mail import send_mail
-from django.http import Http404, HttpResponse, HttpResponseRedirect
-from django.shortcuts import get_object_or_404, redirect, render, reverse
-from django.template.loader import render_to_string
+from django.http import Http404, HttpResponseRedirect
+from django.shortcuts import get_object_or_404, redirect, render
 from django.urls import reverse_lazy
 from django.utils import timezone
 from django.utils.decorators import method_decorator
 from django.views import View
 from django.views.generic import detail, edit, list
-from django.contrib.auth import get_user_model
 
-# Project imports
 from subscription_manager.authentication.forms import SignUpForm
-from subscription_manager.authentication.decorators import anonymous_required
+from subscription_manager.authentication.models import Token
 from subscription_manager.payment.forms import PaymentForm
 from subscription_manager.payment.models import Payment
-from subscription_manager.utils.language import humanize_list
 
-# Application imports
 from .forms import SubscriptionForm
 from .models import Subscription, Plan, Period
 
 
-class SubscriptionCreateWizard(CookieWizardView):
-    template_name = 'subscription/subscription_create.html'
-    form_list = [
-        ('signup', SignUpForm),
-        ('subscription', SubscriptionForm),
-        ('payment', PaymentForm)
-    ]
+class SubscriptionCreateView(View):
     plan = None
-
-    def dispatch(self, request, *args, **kwargs):
-        """
-        Check whether a given plan exists and that the user is eligible
-        to purchase the plan. If not, redirect to plan list.
-        Remove signup form from wizard if a user is already logged in.
-        """
-        # Check if plan exists
-        self.plan = self.get_plan()
-        if self.plan is None:
-            # Redirect if plan does not exist
-            return redirect('plan_list')
-
-        # Check if the user is allowed to purchase the plan
-        user = request.user
-        if not self.plan.is_eligible(user):
-            messages.error(request, 'Du bist nicht berechtigt ein {} zu bestellen.'.format(self.plan.name))
-            return redirect('plan_list')
-
-        # Skip signup form if user is authenticated
-        if user.is_authenticated:
-            self.condition_dict = {
-                'signup': False
-            }
-
-        return super().dispatch(request, *args, **kwargs)
+    template_name = 'subscription/subscription_create.html'
 
     def get_plan(self):
         """
@@ -80,101 +39,117 @@ class SubscriptionCreateWizard(CookieWizardView):
 
         return plan
 
-    def get_form_initial(self, step):
+    def dispatch(self, request, *args, **kwargs):
         """
-        Add initial form data.
+        Check whether a given plan exists and that the user is eligible
+        to purchase the plan. If not, redirect to plan list.
+        Remove signup form if a user is already logged in.
         """
-        initial = super().get_form_initial(step)
+        # Check if plan exists
+        self.plan = self.get_plan()
+        if self.plan is None:
+            # Redirect if plan does not exist
+            return redirect('plan_list')
 
-        # Payment form
-        if step == 'payment':
-            initial['amount'] = self.get_plan().price
+        # Check if the user is allowed to purchase the plan
+        user = request.user
+        if not self.plan.is_eligible(user):
+            messages.error(request, 'Du bist nicht berechtigt, dieses Abo zu bestellen.')
+            return redirect('plan_list')
 
-        return initial
+        return super().dispatch(request, *args, **kwargs)
 
-    def get_form_kwargs(self, step=None):
+    def get(self, request, *args, **kwargs):
         """
-        Add form kwargs.
+        Renders empty forms on a get request.
         """
-        kwargs = super().get_form_kwargs(step)
+        signup_form = None
+        if not request.user.is_authenticated:
+            signup_form = SignUpForm(
+                plan=self.plan
+            )
+        subscription_form = SubscriptionForm()
+        payment_form = PaymentForm(
+            plan=self.plan
+        )
 
-        # Add plan
-        if step == 'signup' or step == 'payment':
-            kwargs['plan'] = self.get_plan()
-
-        return kwargs
-
-    def get_context_data(self, form, **kwargs):
-        """
-        Add context data.
-        """
-        context = super().get_context_data(form, **kwargs)
-
-        context['plan'] = self.plan
-
-        # Load user data if logged in and add it with previously entered form data
-        user = self.request.user
-        if user.is_authenticated:
-            data_signup = {
-                'first_name': user.first_name,
-                'last_name': user.last_name,
-                'email': user.email
-            }
-        else:
-            data_signup = self.get_cleaned_data_for_step('signup')
-        context['data_signup'] = data_signup
-        context['data_subscription'] = self.get_cleaned_data_for_step('subscription')
-
-        return context
+        return render(request, 'subscription/subscription_create.html', {
+            'plan': self.plan,
+            'signup_form': signup_form,
+            'subscription_form': subscription_form,
+            'payment_form': payment_form
+        })
 
     @transaction.atomic
-    def done(self, form_list, **kwargs):
+    def post(self, request, *args, **kwargs):
         """
-        Save the entered data to the database. If it was successful,
-        return to plan_list page.
+        Handles post request. Validates form and creates
+        subscription if data is valid.
         """
-        # Clean data
-        cleaned_form_list = [form.cleaned_data for form in form_list]
-        # Load user if logged in. Otherwise, create the user from signup form
-        user = self.request.user
-        if user.is_authenticated:
-            subscription_data, payment_data = cleaned_form_list
-        else:
-            signup_data, subscription_data, payment_data = cleaned_form_list
-            user = get_user_model().objects.create(
-                first_name=signup_data['first_name'],
-                last_name=signup_data['last_name'],
-                email=signup_data['email']
+        has_error = False
+
+        # Get data from forms
+        signup_form = None
+        subscription_form = SubscriptionForm(data=request.POST)
+        payment_form = PaymentForm(
+            data=request.POST,
+            plan=self.plan
+        )
+
+        # Create user if she is not already logged in
+        user = request.user
+        if not user.is_authenticated:
+            signup_form = SignUpForm(
+                data=request.POST,
+                plan=self.plan
             )
 
-        # Create subscription
-        subscription = Subscription.objects.create(
-            user=user,
-            plan=self.plan,
-            address_line_1=subscription_data['address_line_1'],
-            address_line_2=subscription_data['address_line_2'],
-            postcode=subscription_data['postcode'],
-            city=subscription_data['city'],
-            country=subscription_data['country']
-        )
-        # Create subscription period
-        amount = payment_data['amount']
-        payment_date = None
-        if amount == 0 and not self.plan.eligible_email_domains:
-            payment_date = timezone.now()
-        period = Period.objects.create(
-            subscription=subscription,
-            start_date=timezone.now().date(),
-            end_date=timezone.now().date(),
-            amount=payment_data['amount'],
-            paid_at=payment_date
-        )
+            if signup_form.is_valid():
+                user = signup_form.save()
+            else:
+                has_error = True
 
-        # TODO: Send email
+        # Validate other forms
+        if not has_error and subscription_form.is_valid() and payment_form.is_valid():
+            # Save subscription
+            subscription = subscription_form.save(commit=False)
+            subscription.user = user
+            subscription.plan = self.plan
+            subscription.save()
+            # Create period
+            period = Period.objects.create(
+                subscription=subscription,
+                start_date=timezone.now().date(),
+                end_date=timezone.now().date() + self.plan.duration,
+                email_confirmed=self.plan.eligible_email_domains is None
+            )
+            # Save payment
+            payment = payment_form.save(commit=False)
+            payment.period = period
+            payment.save()
 
-        messages.success(self.request, 'Deine Bestellung war erfolgreich. Wir haben dir eine E-Mail geschickt, '
-                                       'um deine E-Mail-Adresse zu verfizieren.')
-        return redirect('plan_list')
+            # Send email verification email
+            if not period.email_confirmed:
+                Token.objects.create_and_send()
+                messages.info(request, 'Wir haben dir eine E-Mail geschickt, um deine E-Mail-Adresse zu verifizieren.')
+
+            # Handle payment
+            if payment.amount == 0:
+                payment.confirm()
+                messages.success(request, 'Vielen Dank! Deine Bestellung war erfolgreich.')
+            else:
+                payment.send_invoice()
+                messages.success(request,
+                                 'Vielen Dank für deine Bestellung! Wir haben dir eine Rechnung per E-Mail geschickt.')
+
+            return redirect('login')
+
+        return render(request, 'subscription/subscription_create.html', {
+            'plan': self.plan,
+            'signup_form': signup_form,
+            'subscription_form': subscription_form,
+            'payment_form': payment_form
+        })
 
 
 class PlanListView(list.ListView):
@@ -235,120 +210,6 @@ class SubscriptionDetailView(detail.DetailView):
         payments = Payment.objects.filter(subscription=self.get_object())
         data['payments'] = payments
         return data
-
-
-@method_decorator(login_required, name='dispatch')
-class SubscriptionCreateView(View):
-    form_class = SubscriptionForm
-    template_name = 'subscription/subscription_create1.html'
-
-    @classmethod
-    def get_plan(cls, **kwargs):
-        """
-        Read plan slug from URL parameters and return
-        if plan exists.
-        """
-        # Get from URL parameters
-        plan_slug = kwargs.get('plan_slug')
-
-        # Check if plan exists
-        try:
-            plan = Plan.objects.get(slug=plan_slug)
-        except Plan.DoesNotExist:
-            plan = None
-
-        return plan
-
-    def dispatch(self, request, *args, **kwargs):
-        """
-        Dispatch method is called before get or post method.
-        Checks if plan exists and whether the user is eligible
-        to buy a subscription of that plan.
-        """
-        # Get plan
-        plan = self.get_plan(**kwargs)
-        if plan is None:
-            # If plan does not exist, return to list view and display
-            # error message
-            messages.error(request, 'Das Abonnement existiert nicht.')
-            return redirect('plan_list')
-
-        # Check eligibility
-        if plan.slug == 'student' and \
-                (not request.user.is_student() or Subscription.objects.has_student_subscriptions(request.user)):
-            messages.error(request, 'Dein gewähltes Abonnement ist nur für ETH-Studierende ({}). Darum kannst du es nicht abonnieren. Wähle stattdessen ein anderes Abo.'
-                           .format(humanize_list(['@' + s for s in settings.ALLOWED_STUDENT_EMAIL_ADDRESSES], 'oder')))
-            return redirect('plan_list')
-
-        return super().dispatch(request, *args, **kwargs)
-
-    def get(self, request, *args, **kwargs):
-        """
-        Handles get request. Renders empty form.
-        """
-        # Get plan (already checked in dispatch method)
-        plan = self.get_plan(**kwargs)
-
-        # Forms
-        subscription_form = SubscriptionForm()
-        payment_form = PaymentForm(
-            min_price=plan.price,
-            initial={
-                'amount': plan.price
-            }
-        )
-
-        return render(request, 'subscription/subscription_create1.html', {
-            'plan': plan,
-            'subscription_form': subscription_form,
-            'payment_form': payment_form
-        })
-
-    def post(self, request, *args, **kwargs):
-        """
-        Handles post request. Validates form and creates
-        subscription if data is valid.
-        """
-        # Get plan (already checked in dispatch method)
-        plan = self.get_plan(**kwargs)
-
-        # Get data from forms
-        subscription_form = SubscriptionForm(request.POST)
-        payment_form = PaymentForm(
-            request.POST,
-            min_price=plan.price,
-            initial={
-                'amount': plan.price
-            })
-
-        # Validate forms
-        if subscription_form.is_valid() and payment_form.is_valid():
-            # Save subscription
-            subscription = subscription_form.save(commit=False)
-            subscription.user = request.user
-            subscription.plan = plan
-            subscription.save()
-            # Save payment
-            payment = payment_form.save(commit=False)
-            payment.subscription = subscription
-            payment.save()
-
-            # Only set start and end date when subscription is free
-            if payment.amount == 0:
-                payment.confirm()
-                messages.success(request, 'Vielen Dank! Ab sofort erhältst du die ZS nach Hause geliefert.')
-                return redirect('subscription_list')
-
-            # Send invoice
-            payment.send_invoice()
-            messages.success(request, 'Vielen Dank! Wir haben dir eine Rechnung per E-Mail geschickt.')
-            return redirect('subscription_detail', subscription_id=subscription.id)
-
-        return render(request, 'subscription/subscription_create1.html', {
-            'plan': plan,
-            'subscription_form': subscription_form,
-            'payment_form': payment_form
-        })
 
 
 @method_decorator(login_required, name='dispatch')

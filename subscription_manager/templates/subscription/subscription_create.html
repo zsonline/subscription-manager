@@ -2,48 +2,39 @@
 
 {% block title %}{{ plan.name }} bestellen{% endblock %}
 
-{% block description %}Schritt {{ wizard.steps.step1 }} von {{ wizard.steps.count }}{% endblock %}
+{% block description %}{{ plan.description }}{% endblock %}
 
 {% block content %}
-    <div id="wizard-data">
-        {% if data_signup %}
-            <p>
-                <b>Account</b><br>
-                {{ data_signup.first_name }} {{ data_signup.last_name }}<br>
-                {{ data_signup.email }}
-            </p>
-        {% endif %}
-        {% if data_subscription %}
-            <p>
-                <b>Adresse</b><br>
-                {{ data_signup.first_name }} {{ data_signup.last_name }}<br>
-                {{ data_subscription.address_line_1 }}<br>
-                {% if data_subscription.address_line_2 %}
-                    {{ data_subscription.address_line_2 }}<br>
-                {% endif %}
-                {{ data_subscription.postcode }} {{ data_subscription.city }}<br>
-                {{ data_subscription.country }}
-            </p>
-        {% endif %}
-    </div>
-
     <form action="{% url 'subscription_create' plan.slug %}" method="post">
         {% csrf_token %}
 
-        {{ wizard.management_form }}
-        {% if wizard.form.forms %}
-            {{ wizard.form.management_form }}
-            {% for form in wizard.form.forms %}
-                {{ form.as_p }}
-            {% endfor %}
-        {% else %}
-            {{ wizard.form.as_p }}
+        {% if signup_form %}
+            <fieldset>
+                <h3>Account</h3>
+                {{ signup_form.as_p }}
+            </fieldset>
         {% endif %}
 
-        {% if wizard.steps.step1 != wizard.steps.count %}
-            <input type="submit" class="button primary" value="Weiter">
-        {% else %}
+        <fieldset>
+            <h3>Adresse</h3>
+            {{ subscription_form.as_p }}
+        </fieldset>
+
+        <fieldset>
+            <h3>Zahlung</h3>
+            <p>
+                Wir freuen uns über jeden Franken, den du mehr bezahlst. So können wir uns mal einen neuen
+                Computer anschaffen oder unser selbstgekochtes Weihnachtsessen aufpeppen.
+            </p>
+            {{ payment_form.as_p }}
+        </fieldset>
+
+        <fieldset>
+            <p class="alert warning">
+                Wir unterstützen zurzeit nur Zahlungen mittels Banküberweisung. Nach dem Kauf deines Abos
+                schicken wir dir eine Rechnung. Sobald die Zahlung bei uns eingetroffen ist, aktivieren wir dein Abo.
+            </p>
             <input type="submit" class="button primary" value="Bestellen">
-        {% endif %}
+        </fieldset>
     </form>
 {% endblock %}

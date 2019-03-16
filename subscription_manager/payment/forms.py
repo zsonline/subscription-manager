@@ -1,11 +1,8 @@
-# Python imports
 from random import randint
 
-# Django imports
 from django import forms
 from django.db import IntegrityError
 
-# Application imports
 from .models import Payment
 
 
@@ -19,7 +16,7 @@ class PaymentForm(forms.ModelForm):
 
     class Meta:
         model = Payment
-        fields = ('amount',)
+        fields = ('amount', 'method')
 
     def __init__(self, *args, **kwargs):
         """
@@ -36,12 +33,13 @@ class PaymentForm(forms.ModelForm):
         # Call super constructor
         super().__init__(*args, **kwargs)
 
+        # Add initial data
+        self.fields['amount'].initial = self.plan.price
+
         # Add help text
-        self.fields['amount'].help_text = \
-            'Der Preis muss mindestens {} Franken betragen.'.format(self.plan.price)
+        self.fields['amount'].help_text = 'Der Preis muss mindestens {} Franken betragen.'.format(self.plan.price)
         if self.plan.price == 0:
-            self.fields['amount'].help_text = \
-                'Zahl so viel du willst.'.format(self.plan.price)
+            self.fields['amount'].help_text = 'Zahle so viel du willst.'
 
     def clean_amount(self):
         """

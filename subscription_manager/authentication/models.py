@@ -23,9 +23,9 @@ class Token(models.Model):
     )
     action = models.CharField(
         'Typ',
-        max_length=6,
+        max_length=20,
         choices=(
-            ('signup', 'Bestätigungs-Token'),
+            ('verification', 'Bestätigungs-Token'),
             ('login', 'Login-Token')
         )
     )
