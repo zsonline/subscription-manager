@@ -1,14 +1,12 @@
-# Django imports
 from django.urls import path
 from django.views.generic.base import RedirectView
 
-# Application imports
 from .views import SubscriptionListView, SubscriptionCreateView, SubscriptionUpdateView, SubscriptionDetailView,\
     SubscriptionCancelView, PlanListView, SubscriptionCreateWizard
 
 # URL patterns
 urlpatterns = [
-    path('', PlanListView.as_view(), name='plan_list'),
+    path('bestellen/', PlanListView.as_view(), name='plan_list'),
     path('bestellen/<plan_slug>/', SubscriptionCreateWizard.as_view(), name='subscription_create'),
     path('home/', RedirectView.as_view(pattern_name='subscription_list', permanent=True), name='login_index'),
     path('abos/', SubscriptionListView.as_view(), name='subscription_list'),
