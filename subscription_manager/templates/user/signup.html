@@ -1,0 +1,13 @@
+{% extends 'base.html' %}
+
+{% block title %}Registrieren{% endblock %}
+
+{% block description %}Erstelle ein Konto.{% endblock %}
+
+{% block content %}
+    <form action="{% url 'signup' %}{{ '?next='|add:next|default:'' }}" method="post">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <input class="button primary" type="submit" value="Registrieren" />
+    </form>
+{% endblock %}

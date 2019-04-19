@@ -16,7 +16,6 @@ INSTALLED_APPS = [
     'django_redis',
     'djcelery_email',
     'import_export',
-    'subscription_manager.authentication.apps.AccountConfig',
     'subscription_manager.payment.apps.PaymentConfig',
     'subscription_manager.subscription.apps.SubscriptionConfig',
     'subscription_manager.user.apps.UserConfig'
@@ -57,11 +56,11 @@ TEMPLATES = [
 
 AUTH_USER_MODEL = 'user.User'
 AUTHENTICATION_BACKENDS = [
-    'subscription_manager.authentication.backends.EmailBackend',
+    'subscription_manager.user.backends.TokenBackend',
     'django.contrib.auth.backends.ModelBackend'
 ]
 
-TOKENS_PER_USER = 3  # Maximum amount of tokens per user
+TOKENS_PER_USER_PER_HOUR = 10  # Maximum amount of valid tokens per user
 TOKEN_EXPIRATION = timedelta(days=3)  # Validity duration of a token
 
 AUTH_PASSWORD_VALIDATORS = [
