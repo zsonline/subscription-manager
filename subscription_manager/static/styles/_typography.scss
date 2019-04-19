@@ -23,6 +23,10 @@ h3 {
 
 p {
   margin: .5em 0;
+
+  &.description {
+    font-size: 1.2rem;
+  }
 }
 
 a {
@@ -48,14 +52,6 @@ a {
 
     &:hover, &:focus, &:active {
       color: $grey;
-    }
-  }
-}
-
-@media (min-width: $medium) {
-  p {
-    &.description {
-      font-size: 1.2rem;
     }
   }
 }

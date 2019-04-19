@@ -3,10 +3,12 @@ from django.conf import settings
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
+from django.views.generic import detail, edit, list
+from django.utils.decorators import method_decorator
 
 from subscription_manager.subscription.models import Plan
 
-from .models import User, Token
+from .models import EmailAddress, Token, User
 from .forms import SignUpForm, LoginForm
 from .decorators import anonymous_required
 
@@ -139,3 +141,18 @@ def logout_view(request):
     logout(request)
     messages.success(request, 'Du wurdest abgemeldet.')
     return redirect('login')
+
+
+@method_decorator(login_required, name='dispatch')
+class EmailAddressListView(list.ListView):
+    """
+    Lists all email addresses of a user.
+    """
+    context_object_name = 'email_addresses'
+    template_name = 'user/email_address_list.html'
+
+    def get_queryset(self):
+        """
+        Returns only email addresses of the authenticated user.
+        """
+        return EmailAddress.objects.filter(user=self.request.user)

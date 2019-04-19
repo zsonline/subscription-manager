@@ -1,0 +1,43 @@
+{% extends 'base.html' %}
+
+{% block title %}E-Mail-Adressen{% endblock %}
+
+{% block description %}
+    Deine primäre E-Mail-Adresse wird für die Anmeldung benötigt. Füge weitere
+    E-Mail-Adressen hinzu, um Abos zu bestellen, die nur für gewisse Adressen
+    erhältlich sind.
+{% endblock %}
+
+{% block content %}
+    <div id="email-addresses">
+        <a class="button success">E-Mail-Adresse hinzufügen</a>
+
+        {% for email_address in email_addresses %}
+            <div class="email-address">
+
+                <h3>{{ email_address.email }}</h3>
+
+                {# Badges #}
+                <p>
+                    {% if email_address.verified_at == None %}
+                        <span class="badge danger">Nicht verifiziert</span>
+                    {% endif %}
+                    {% if email_address.is_primary %}
+                        <span class="badge success">Primär</span>
+                    {% endif %}
+                </p>
+
+                {% if email_address.verified_at %}
+                    <p>Zuletzt verifiziert am {{ email_address.verified_at }}</p>
+                {% endif %}
+
+                {# Actions #}
+                <a href="#">Verifizieren</a>
+                {% if not email_address.is_primary %}
+                    <a href="#">Mach primary</a>
+                    <a href="#">E-Mail-Adresse löschen</a>
+                {% endif %}
+            </div>
+        {% endfor %}
+    </div>
+{% endblock %}

@@ -1,18 +1,17 @@
 // Variables
-@import "base/breakpoints";
-@import "base/colours";
+@import "breakpoints";
+@import "colours";
 
 // Reset
 @import "vendors/normalize";
 
 // Base
-@import "base/typography";
+@import "typography";
 
 // Components
 @import "components/button";
 @import "components/badge";
 @import "components/message";
-@import "components/alert";
 @import "components/form";
 @import "components/table";
 @import "components/breadcrumbs";

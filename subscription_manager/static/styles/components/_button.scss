@@ -1,5 +1,8 @@
+@import "../colours";
+
 @mixin button($colour, $hover-colour: lighten($colour, 10%)) {
   background-color: $colour;
+  color: text-contrast($colour);
 
   &:focus, &:active, &:hover {
     background-color: $hover-colour;
@@ -26,27 +29,23 @@
     color: $white;
   }
 
-  &.black {
-    @include button($black, $dark-grey)
-  }
-
-  &, &.primary {
-    @include button($primary)
+  &, &.black {
+    @include button($black, $dark-grey);
   }
 
   &.info {
-    @include button($info)
+    @include button($info);
   }
 
   &.success {
-    @include button($success)
+    @include button($success);
   }
 
   &.warning {
-    @include button($warning)
+    @include button($warning);
   }
 
   &.danger {
-    @include button($danger)
+    @include button($danger);
   }
 }

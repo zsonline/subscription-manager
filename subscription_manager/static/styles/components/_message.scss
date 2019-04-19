@@ -1,21 +1,31 @@
-.announcement {
-  padding: 1rem;
+@import "../colours";
 
-  &, &.info {
-    background-color: $info;
-    color: $white;
+@mixin message($colour) {
+  background-color: hsl(hue($colour), saturation($colour), 75%);
+  color: $black;
+}
+
+.message {
+  box-sizing: border-box;
+  padding: .75em;
+
+  &, &.black {
+    @include message($black);
+  }
+
+  &.info {
+    @include message($info);
   }
 
   &.success {
-    background-color: $success;
-    color: $white;
+    @include message($success);
   }
 
   &.warning {
-    background-color: $warning;
+    @include message($warning);
   }
 
-  &.danger {
-    background-color: $danger;
+  &.error {
+    @include message($danger);
   }
 }

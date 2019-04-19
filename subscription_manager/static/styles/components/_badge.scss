@@ -1,6 +1,8 @@
-@mixin badge($background-color, $color: $white) {
-  color: $color;
-  background-color: $background-color;
+@import "../colours";
+
+@mixin badge($colour) {
+  color: text-contrast($colour);
+  background-color: $colour;
 }
 
 .badge {
@@ -8,6 +10,10 @@
   padding: .25em .5em;
   display: inline-block;
   text-decoration: none;
+
+  &, &.black {
+    @include badge($black);
+  }
 
   &.info {
     @include badge($info);
@@ -18,11 +24,11 @@
   }
 
   &.warning {
-    @include badge($warning, $black);
+    @include badge($warning);
   }
 
   &.danger {
-    @include badge($danger, $black);
+    @include badge($danger);
   }
 
 }

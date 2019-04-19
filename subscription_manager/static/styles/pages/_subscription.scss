@@ -17,20 +17,6 @@
 }
 
 @media (min-width: $medium) {
-  #plans {
-    grid-column-start: 1;
-    grid-column-end: 2;
-
-    .alert {
-      grid-column-start: 1;
-      grid-column-end: 3;
-    }
-  }
-
-  #subscriptions {
-    grid-column-start: 1;
-    grid-column-end: 2;
-  }
 }
 
 @media (min-width: $large) {
