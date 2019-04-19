@@ -6,10 +6,10 @@
 }
 
 .badge {
-  font-size: .75em;
-  padding: .25em .5em;
   display: inline-block;
-  text-decoration: none;
+  padding: .25em .5em;
+  border-radius: .25em;
+  font-size: .75em;
 
   &, &.black {
     @include badge($black);

@@ -45,10 +45,9 @@ header {
       a {
         display: inline-block;
         margin-right: 2em;
-        font-weight: 700;
 
         &.active {
-          color: $info;
+          font-weight: 700;
         }
       }
     }

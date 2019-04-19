@@ -29,3 +29,9 @@
     @include message($danger);
   }
 }
+
+#messages {
+  .message {
+    margin: 0;
+  }
+}

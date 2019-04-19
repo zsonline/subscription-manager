@@ -17,7 +17,7 @@
                 <h3>{{ plan.name }}</h3>
                 <p>{{ plan.description }}</p>
 
-                <a href="{% url 'subscription_create' plan.slug %}" class="button primary">Bestellen</a>
+                <a href="{% url 'subscription_create' plan.slug %}" class="button success">Bestellen</a>
                 <span class="price">
                     {{ plan.price|humanize:'money'|capfirst }}
                     {% if plan.price != 0 %}
@@ -28,7 +28,7 @@
 
             </div>
         {% empty %}
-            <p class="alert info">Leider haben wir zurzeit kein passendes Abo für dich.</p>
+            <p class="message info">Leider haben wir zurzeit kein passendes Abo für dich.</p>
         {% endfor %}
     </div>
 {% endblock %}
