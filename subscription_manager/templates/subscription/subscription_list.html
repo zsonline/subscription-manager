@@ -2,11 +2,12 @@
 
 {% block title %}Abonnements{% endblock %}
 
-{% block breadcrumbs %}
-    <span>Abonnements</span>
+{% block description %}
+    Verwalte deine Abos.
 {% endblock %}
 
 {% block content %}
+    <div id="subscriptions">
     {% if subscriptions|length > 0 %}
         <p>
             <a class="button primary" href="{% url 'plan_list' %}">Neues Abonnement</a>
@@ -58,7 +59,8 @@
             {% endfor %}
         </div>
     {% else %}
-        <p>Du hast kein Abonnement.</p>
-        <a class="button primary" href="{% url 'plan_list' %}">Neues Abonnement</a>
+        <p class="alert info">Du hast noch kein Abo.</p>
+        <a class="button primary" href="{% url 'plan_list' %}">Abo bestellen</a>
     {% endif %}
+    </div>
 {% endblock %}

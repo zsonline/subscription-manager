@@ -27,19 +27,12 @@
     }
   }
 
-  #wizard-data {
+  #subscriptions {
     grid-column-start: 1;
-    grid-column-end: 3;
-
-    display: grid;
-    grid-gap: 2rem;
-    grid-template-columns: min-content auto;
+    grid-column-end: 2;
   }
 }
 
 @media (min-width: $large) {
-  #wizard-data {
-    grid-column-start: 1;
-    grid-column-end: 2;
-  }
+
 }

@@ -7,9 +7,9 @@ import debug_toolbar
 
 urlpatterns = [
     path('', RedirectView.as_view(pattern_name='plan_list', permanent=True)),
-    path('', include('subscription_manager.user.urls')),
-    path('abo/', include('subscription_manager.subscription.urls')),
     path('', include('subscription_manager.payment.urls')),
+    path('', include('subscription_manager.subscription.urls')),
+    path('', include('subscription_manager.user.urls')),
     path('admin/', admin.site.urls)
 ]
 

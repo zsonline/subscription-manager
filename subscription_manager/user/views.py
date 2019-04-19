@@ -118,7 +118,7 @@ def token_verification_view(request, code):
             if next_page is not None:
                 return redirect(next_page)
             # Redirect user to login home otherwise
-            return redirect(settings.LOGIN_REDIRECT_URL)
+            return redirect('subscription_list')
 
     # Do email verification
     elif token.purpose == 'verification':

@@ -7,7 +7,6 @@ from .views import SubscriptionListView, SubscriptionCreateView, SubscriptionUpd
 urlpatterns = [
     path('bestellen/', PlanListView.as_view(), name='plan_list'),
     path('bestellen/<plan_slug>/', SubscriptionCreateView.as_view(), name='subscription_create'),
-    path('home/', RedirectView.as_view(pattern_name='subscription_list', permanent=True), name='login_index'),
     path('abos/', SubscriptionListView.as_view(), name='subscription_list'),
     path('abo/abonnieren/<plan_slug>/', SubscriptionCreateView.as_view(), name='subscription_create1'),
     path('abo/<int:subscription_id>/', SubscriptionDetailView.as_view(), name='subscription_detail'),
