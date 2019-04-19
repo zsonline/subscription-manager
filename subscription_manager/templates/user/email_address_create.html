@@ -1,0 +1,23 @@
+{% extends 'base.html' %}
+
+{% block title %}E-Mail-Adresse hinzufügen{% endblock %}
+
+{% block description %}
+    Füge eine neue E-Mail-Adresse hinzu.
+{% endblock %}
+
+{% block content %}
+    <div id="email-address">
+        <form method="post">
+            {% csrf_token %}
+
+            <fieldset>
+                {{ form.as_p }}
+            </fieldset>
+
+            <fieldset>
+                <input type="submit" class="button success" value="Hinzufügen">
+            </fieldset>
+        </form>
+    </div>
+{% endblock %}

@@ -4,13 +4,13 @@
 
 {% block description %}
     Deine primäre E-Mail-Adresse wird für die Anmeldung benötigt. Füge weitere
-    E-Mail-Adressen hinzu, um Abos zu bestellen, die nur für gewisse Adressen
-    erhältlich sind.
+    E-Mail-Adressen hinzu, um Abos bestellen zu können, die nur für gewisse
+    Adressen erhältlich sind.
 {% endblock %}
 
 {% block content %}
     <div id="email-addresses">
-        <a class="button success">E-Mail-Adresse hinzufügen</a>
+        <a class="button success" href="{% url 'email_address_create' %}">E-Mail-Adresse hinzufügen</a>
 
         {% for email_address in email_addresses %}
             <div class="email-address">
@@ -28,14 +28,14 @@
                 </p>
 
                 {% if email_address.verified_at %}
-                    <p>Zuletzt verifiziert am {{ email_address.verified_at }}</p>
+                    <p>Zuletzt verifiziert am {{ email_address.verified_at|date:'d. F Y' }}</p>
                 {% endif %}
 
                 {# Actions #}
                 <a href="#">Verifizieren</a>
                 {% if not email_address.is_primary %}
                     <a href="#">Mach primary</a>
-                    <a href="#">E-Mail-Adresse löschen</a>
+                    <a href="{% url 'email_address_delete' email_address.pk %}">Löschen</a>
                 {% endif %}
             </div>
         {% endfor %}

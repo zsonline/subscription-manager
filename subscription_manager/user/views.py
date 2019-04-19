@@ -1,10 +1,12 @@
-from django.shortcuts import render, redirect, reverse, HttpResponse, HttpResponseRedirect
+from django.shortcuts import render, redirect, reverse, HttpResponse, HttpResponseRedirect, get_object_or_404
 from django.conf import settings
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
 from django.views.generic import detail, edit, list
+from django.urls import reverse_lazy
 from django.utils.decorators import method_decorator
+from django.http import Http404
 
 from subscription_manager.subscription.models import Plan
 
@@ -126,8 +128,9 @@ def token_verification_view(request, code):
     elif token.purpose == 'verification':
         token.email_address.verify()
         token.delete()
-        messages.success(request, 'Deine E-Mail-Adresse wurde bestätigt.')
-        return redirect('login')
+        messages.success(request, 'Die E-Mail-Adresse wurde bestätigt.')
+        # Redirect to email address list
+        return redirect('email_address_list')
 
     messages.error(request, 'Der Link ist ungültig.')
     return redirect('login')
@@ -156,3 +159,50 @@ class EmailAddressListView(list.ListView):
         Returns only email addresses of the authenticated user.
         """
         return EmailAddress.objects.filter(user=self.request.user)
+
+
+@method_decorator(login_required, name='dispatch')
+class EmailAddressCreateView(edit.CreateView):
+    model = EmailAddress
+    fields = ['email']
+    success_url = reverse_lazy('email_address_list')
+    template_name = 'user/email_address_create.html'
+
+    def form_valid(self, form):
+        """
+        Adds logged in user to object.
+        """
+        form.instance.user = self.request.user
+        return super().form_valid(form)
+
+    def get_success_url(self):
+        """
+        Creates and sends a verification token.
+        Redirects to success url.
+        """
+        email_address = self.object
+        Token.objects.create_and_send(email_address=email_address, purpose='verification')
+        return super().get_success_url()
+
+
+@method_decorator(login_required, name='dispatch')
+class EmailAddressDeleteView(edit.DeleteView):
+    model = EmailAddress
+    context_object_name = 'email_address'
+    success_url = reverse_lazy('email_address_list')
+    template_name = 'user/email_address_delete.html'
+
+    def get_object(self, queryset=None):
+        """
+        Returns email address object if it is not the primary
+        email address, owned by the current user and does exist.
+        Otherwise a 404 exception is raised.
+        """
+        email_address_id = self.kwargs['email_address_id']
+        user = self.request.user
+        # Get object or raise 404
+        email_address = get_object_or_404(EmailAddress, id=email_address_id, user=user)
+        # Check if email address is primary
+        if email_address.is_primary:
+            raise Http404('Email address is primary')
+        return email_address

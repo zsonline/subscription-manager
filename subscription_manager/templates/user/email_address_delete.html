@@ -1,0 +1,19 @@
+{% extends 'base.html' %}
+
+{% block title %}E-Mail-Adresse löschen{% endblock %}
+
+{% block description %}
+    Bist du sicher, dass du die E-Mail-Adresse {{ email_address.email }} löschen willst?
+{% endblock %}
+
+{% block content %}
+    <div id="email-address">
+        <form method="post">
+            {% csrf_token %}
+
+            <fieldset>
+                <input class="button danger" type="submit" value="Löschen">
+            </fieldset>
+        </form>
+    </div>
+{% endblock %}

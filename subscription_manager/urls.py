@@ -10,6 +10,7 @@ urlpatterns = [
     path('', include('subscription_manager.payment.urls')),
     path('', include('subscription_manager.subscription.urls')),
     path('', include('subscription_manager.user.urls')),
+    path('home/', RedirectView.as_view(pattern_name='subscription_list', permanent=True)),
     path('admin/', admin.site.urls)
 ]
 

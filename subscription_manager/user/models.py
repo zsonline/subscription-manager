@@ -86,7 +86,10 @@ class EmailAddress(models.Model):
     email = models.EmailField(
         max_length=100,
         unique=True,
-        verbose_name='E-Mail-Adresse'
+        verbose_name='E-Mail-Adresse',
+        error_messages={
+            'unique': 'Diese E-Mail-Adresse existiert bereits.'
+        }
     )
     is_primary = models.BooleanField(
         default=False,
