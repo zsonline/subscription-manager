@@ -7,6 +7,7 @@ from django.views.generic import detail, edit, list
 from django.urls import reverse_lazy
 from django.utils.decorators import method_decorator
 from django.http import Http404
+from django.utils import timezone
 
 from subscription_manager.subscription.models import Plan
 
@@ -226,9 +227,15 @@ class EmailAddressDeleteView(edit.DeleteView):
 def email_send_verification_view(request, email_address_id):
     """
     Sends a verification email to the email address
-    if it is owned by the user.
+    if it is owned by the user and has not been verified today.
     """
     email_address = get_object_or_404(EmailAddress, pk=email_address_id, user=request.user)
+
+    # Disallow multiple verifications on same day
+    if email_address.recently_verified():
+        messages.error(request, 'Die E-Mail-Adresse wurde in den letzten 24 Stunden bereits verifiziert.')
+        return redirect('email_address_list')
+
     success = email_address.send_verification()
     if success:
         messages.success(request, 'Wir haben eine Nachricht an {} geschickt, um die E-Mail-Adresse zu verifizieren.'.format(email_address.email))
@@ -245,5 +252,5 @@ def email_set_primary_view(request, email_address_id):
     """
     email_address = get_object_or_404(EmailAddress, pk=email_address_id, user=request.user, is_primary=False, verified_at__isnull=False)
     email_address.set_primary()
-    messages.success(request, '{} ist jetzt deine primäre E-Mail-Adresse.'.format(email_address.email))
+    messages.success(request, 'Die E-Mail-Adresse {} ist jetzt deine primäre E-Mail-Adresse.'.format(email_address.email))
     return redirect('email_address_list')

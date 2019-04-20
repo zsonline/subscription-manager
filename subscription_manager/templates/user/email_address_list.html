@@ -9,43 +9,45 @@
 {% endblock %}
 
 {% block content %}
-    <div id="email-addresses">
-        <a class="button success" href="{% url 'email_address_create' %}">Neue E-Mail-Adresse</a>
+    <div class="action-bar">
+        <a class="button success" href="{% url 'email_address_create' %}">E-Mail-Adresse hinzufügen</a>
+    </div>
 
+    <ul class="list">
         {% for email_address in email_addresses %}
-            <div class="email-address">
+            <li>
 
                 <h3>{{ email_address.email }}</h3>
 
                 {# Badges #}
-                <p>
-                    {% if email_address.verified_at == None %}
+                <div>
+                    {% if not email_address.verified_at %}
                         <span class="badge danger">Nicht verifiziert</span>
                     {% endif %}
                     {% if email_address.is_primary %}
                         <span class="badge success">Primäre E-Mail-Adresse</span>
                     {% endif %}
-                </p>
-
-                {% if email_address.verified_at %}
-                    <p>Zuletzt verifiziert am {{ email_address.verified_at|date:'d. F Y' }}</p>
-                {% endif %}
+                    {% if email_address.verified_at %}
+                        <span class="badge info">Verifiziert am {{ email_address.verified_at|date:'d. F Y' }}</span>
+                    {% endif %}
+                </div>
 
                 {# Actions #}
-                {% if email_address.verified_at != None %}
-                    <a href="{% url 'email_address_send_verification' email_address.pk %}">Erneut verifizieren</a>
-                {% else %}
-                    <a href="{% url 'email_address_send_verification' email_address.pk %}">Verifizieren</a>
-                {% endif %}
+                <ul class="actions">
+                    {% if not email_address.recently_verified %}
+                        <li><a href="{% url 'email_address_send_verification' email_address.pk %}">Verifizieren</a></li>
+                    {% endif %}
 
-                {% if not email_address.is_primary and email_address.verified_at != None %}
-                    <a href="{% url 'email_address_set_primary' email_address.pk %}">Zur primären E-Mail-Adresse machen</a>
-                {% endif %}
+                    {% if not email_address.is_primary %}
+                        <li><a href="{% url 'email_address_delete' email_address.pk %}">Löschen</a></li>
+                    {% endif %}
 
-                {% if not email_address.is_primary %}
-                    <a href="{% url 'email_address_delete' email_address.pk %}">Löschen</a>
-                {% endif %}
-            </div>
+                    {% if not email_address.is_primary and email_address.verified_at != None %}
+                        <li><a href="{% url 'email_address_set_primary' email_address.pk %}">Als primäre E-Mail-Adresse wählen</a></li>
+                    {% endif %}
+
+                </ul>
+            </li>
         {% endfor %}
-    </div>
+    </ul>
 {% endblock %}

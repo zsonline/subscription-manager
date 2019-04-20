@@ -9,12 +9,14 @@
 @import "typography";
 
 // Components
+@import "components/action";
 @import "components/button";
 @import "components/badge";
-@import "components/message";
-@import "components/form";
-@import "components/table";
 @import "components/breadcrumbs";
+@import "components/form";
+@import "components/list";
+@import "components/message";
+@import "components/table";
 
 // Layout
 @import "layout/header";

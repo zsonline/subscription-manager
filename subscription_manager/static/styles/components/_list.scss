@@ -1,0 +1,24 @@
+.list {
+  margin: 0;
+  padding: 0;
+
+  li {
+    margin: 2rem 0;
+    list-style: none;
+
+    div, p, ul {
+      &:not(:last-child) {
+        margin-bottom: 1em;
+      }
+    }
+  }
+}
+
+
+@media all and (min-width: $medium) {
+  .list {
+    li {
+      margin: 3rem 0;
+    }
+  }
+}

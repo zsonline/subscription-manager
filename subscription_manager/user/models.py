@@ -128,8 +128,19 @@ class EmailAddress(models.Model):
 
     def is_verified(self):
         """
+        Returns true if a verified at attribute is set.
         """
         return self.verified_at is not None
+
+    def recently_verified(self, timedelta=timezone.timedelta(days=1)):
+        """
+        Returns true if the email address has already been
+        verified in given timedelta. Default: one day.
+        """
+        if self.verified_at is None:
+            return False
+        return self.verified_at.date() > timezone.now() - timedelta
+    recently_verified.boolean = True
 
     @transaction.atomic
     def set_primary(self):
