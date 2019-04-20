@@ -182,6 +182,7 @@ class EmailAddressCreateView(edit.CreateView):
         """
         email_address = self.object
         Token.objects.create_and_send(email_address=email_address, purpose='verification')
+        messages.success(self.request, 'Wir haben eine Nachricht an {} geschickt, um die E-Mail-Adresse zu verifizieren.'.format(email_address.email))
         return super().get_success_url()
 
 
@@ -206,3 +207,7 @@ class EmailAddressDeleteView(edit.DeleteView):
         if email_address.is_primary:
             raise Http404('Email address is primary')
         return email_address
+
+    def delete(self, request, *args, **kwargs):
+        messages.success(request, 'Die E-Mail-Adresse {} wurde entfernt.'.format(self.get_object().email))
+        return super().delete(request, *args, **kwargs)
