@@ -50,10 +50,10 @@ class PlanManager(models.Manager):
             )
 
             # Exclude plans for which the user's email domain is not eligible
-            email_domain = user.email_domain
+            verified_email_domains = user.verified_email_domains
             for plan in plans:
                 eligible_email_domains = plan.get_eligible_email_domains()
-                if eligible_email_domains and email_domain not in eligible_email_domains:
+                if eligible_email_domains and not any(email in verified_email_domains for email in eligible_email_domains):
                     plans = plans.exclude(id=plan.id)
 
         return plans

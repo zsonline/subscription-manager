@@ -1,5 +1,6 @@
 import uuid
 
+from django.conf import settings
 from django.contrib.auth.models import BaseUserManager
 from django.db import models, IntegrityError
 from django.utils import timezone
@@ -63,11 +64,16 @@ class TokenManager(models.Manager):
     """
     Custom manager for tokens.
     """
-
     def create(self, **obj_data):
         """
-        Overrides the default create method. It generates a random code.
+        Overrides the default create method. It generates a random code
+        and limits the number of tokens that can be created.
         """
+        # Limit token creation
+        user = obj_data['email_address'].user
+        if self.count_created_in_last_hour(user) >= settings.TOKENS_PER_USER_PER_HOUR:
+            return None
+
         # Try creating LoginToken object
         while True:
             try:
@@ -87,7 +93,8 @@ class TokenManager(models.Manager):
         """
         # Create and send token
         token = self.create(**obj_data)
-        token.send(next_page)
+        if token is not None:
+            token.send(next_page)
         return token
 
     def filter_valid(self, user, purpose=None):

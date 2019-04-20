@@ -157,12 +157,16 @@ class EmailAddressListView(list.ListView):
     def get_queryset(self):
         """
         Returns only email addresses of the authenticated user.
+        Orders it by primary address, verified date and email address.
         """
-        return EmailAddress.objects.filter(user=self.request.user)
+        return EmailAddress.objects.filter(user=self.request.user).order_by('-is_primary', '-verified_at__date', 'email')
 
 
 @method_decorator(login_required, name='dispatch')
 class EmailAddressCreateView(edit.CreateView):
+    """
+    Creates a new email address for a user.
+    """
     model = EmailAddress
     fields = ['email']
     success_url = reverse_lazy('email_address_list')
@@ -181,13 +185,19 @@ class EmailAddressCreateView(edit.CreateView):
         Redirects to success url.
         """
         email_address = self.object
-        Token.objects.create_and_send(email_address=email_address, purpose='verification')
-        messages.success(self.request, 'Wir haben eine Nachricht an {} geschickt, um die E-Mail-Adresse zu verifizieren.'.format(email_address.email))
+        success = Token.objects.create_and_send(email_address=email_address, purpose='verification')
+        if success:
+            messages.success(self.request, 'Wir haben eine Nachricht an {} geschickt, um die E-Mail-Adresse zu verifizieren.'.format(email_address.email))
+        else:
+            messages.error(self.request, 'Du hast die maximale Anzahl an E-Mail-Tokens erreicht. Warte eine Stunde, bevor du eine neue Verifikationsanfrage sendest.')
         return super().get_success_url()
 
 
 @method_decorator(login_required, name='dispatch')
 class EmailAddressDeleteView(edit.DeleteView):
+    """
+    Deletes an email address for a user.
+    """
     model = EmailAddress
     context_object_name = 'email_address'
     success_url = reverse_lazy('email_address_list')
@@ -211,3 +221,29 @@ class EmailAddressDeleteView(edit.DeleteView):
     def delete(self, request, *args, **kwargs):
         messages.success(request, 'Die E-Mail-Adresse {} wurde entfernt.'.format(self.get_object().email))
         return super().delete(request, *args, **kwargs)
+
+
+def email_send_verification_view(request, email_address_id):
+    """
+    Sends a verification email to the email address
+    if it is owned by the user.
+    """
+    email_address = get_object_or_404(EmailAddress, pk=email_address_id, user=request.user)
+    success = email_address.send_verification()
+    if success:
+        messages.success(request, 'Wir haben eine Nachricht an {} geschickt, um die E-Mail-Adresse zu verifizieren.'.format(email_address.email))
+    else:
+        messages.error(request, 'Du hast die maximale Anzahl an E-Mail-Tokens erreicht. Warte eine Stunde, bevor du es erneut probierst.')
+    return redirect('email_address_list')
+
+
+def email_set_primary_view(request, email_address_id):
+    """
+    Sets an email address as the primary address if
+    it is owned by the user, not the primary address
+    already and has been verified.
+    """
+    email_address = get_object_or_404(EmailAddress, pk=email_address_id, user=request.user, is_primary=False, verified_at__isnull=False)
+    email_address.set_primary()
+    messages.success(request, '{} ist jetzt deine primäre E-Mail-Adresse.'.format(email_address.email))
+    return redirect('email_address_list')

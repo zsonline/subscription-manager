@@ -10,7 +10,7 @@
 
 {% block content %}
     <div id="email-addresses">
-        <a class="button success" href="{% url 'email_address_create' %}">E-Mail-Adresse hinzufügen</a>
+        <a class="button success" href="{% url 'email_address_create' %}">Neue E-Mail-Adresse</a>
 
         {% for email_address in email_addresses %}
             <div class="email-address">
@@ -23,7 +23,7 @@
                         <span class="badge danger">Nicht verifiziert</span>
                     {% endif %}
                     {% if email_address.is_primary %}
-                        <span class="badge success">Primär</span>
+                        <span class="badge success">Primäre E-Mail-Adresse</span>
                     {% endif %}
                 </p>
 
@@ -32,9 +32,17 @@
                 {% endif %}
 
                 {# Actions #}
-                <a href="#">Verifizieren</a>
+                {% if email_address.verified_at != None %}
+                    <a href="{% url 'email_address_send_verification' email_address.pk %}">Erneut verifizieren</a>
+                {% else %}
+                    <a href="{% url 'email_address_send_verification' email_address.pk %}">Verifizieren</a>
+                {% endif %}
+
+                {% if not email_address.is_primary and email_address.verified_at != None %}
+                    <a href="{% url 'email_address_set_primary' email_address.pk %}">Zur primären E-Mail-Adresse machen</a>
+                {% endif %}
+
                 {% if not email_address.is_primary %}
-                    <a href="#">Mach primary</a>
                     <a href="{% url 'email_address_delete' email_address.pk %}">Löschen</a>
                 {% endif %}
             </div>

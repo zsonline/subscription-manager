@@ -1,7 +1,7 @@
 from django.conf import settings
 from django.contrib.auth.models import AbstractUser
 from django.core.mail import send_mail
-from django.db import models
+from django.db import models, transaction
 from django.shortcuts import reverse
 from django.template.loader import render_to_string
 from django.utils import timezone
@@ -48,6 +48,15 @@ class User(AbstractUser):
         return self.email.split('@')[-1]
     email_domain = property(_get_email_domain)
 
+    def _get_verified_email_domains(self):
+        """
+        Returns a list of all verified email domain.
+        """
+        email_addresses = self.emailaddress_set.filter(verified_at__isnull=False).values('email')
+        email_addresses = map(lambda email: email['email'].split('@')[-1], email_addresses)
+        return list(email_addresses)
+    verified_email_domains = property(_get_verified_email_domains)
+
     def _get_full_name(self):
         """
         Returns the user's full name.
@@ -76,7 +85,11 @@ class User(AbstractUser):
 
 class EmailAddress(models.Model):
     """
-
+    A user can have multiple email addresses. Those can
+    be verified and used to order subscriptions which are
+    restricted for certain email address domains. The primary
+    email address is used for authentication and also stored
+    in the user model as email/username.
     """
     user = models.ForeignKey(
         to=User,
@@ -118,6 +131,7 @@ class EmailAddress(models.Model):
         """
         return self.verified_at is not None
 
+    @transaction.atomic
     def set_primary(self):
         """
         Make this email address the primary address by setting
@@ -149,15 +163,15 @@ class EmailAddress(models.Model):
 
     def send_verification(self):
         """
-
-        :return:
+        Creates a token for verification and sends it
+        to this email address. Returns true if it was successful.
         """
-        Token.objects.create_and_send(email_address=self, purpose='verification')
+        token = Token.objects.create_and_send(email_address=self, purpose='verification')
+        return token is not None
 
     def verify(self):
         """
-
-        :return:
+        Sets the verified at attribute to the current datetime.
         """
         self.verified_at = timezone.now()
         self.save()
@@ -165,7 +179,8 @@ class EmailAddress(models.Model):
 
 class Token(models.Model):
     """
-
+    Tokens are used for login or email verification. It is
+    associated with an email address and can be sent to it.
     """
     email_address = models.ForeignKey(
         to=EmailAddress,
