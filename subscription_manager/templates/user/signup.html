@@ -7,7 +7,12 @@
 {% block content %}
     <form action="{% url 'signup' %}{{ '?next='|add:next|default:'' }}" method="post">
         {% csrf_token %}
-        {{ form.as_p }}
-        <input class="button success" type="submit" value="Registrieren" />
+
+        <fieldset>
+            {{ form.as_p }}
+        </fieldset>
+        <fieldset>
+            <input class="button success" type="submit" value="Registrieren">
+        </fieldset>
     </form>
 {% endblock %}

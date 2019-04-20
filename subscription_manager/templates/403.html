@@ -1,6 +1,7 @@
-{% extends 'base_error.html' %}
+{% extends 'base.html' %}
 
-{% block content %}
-    <h2>{% block title %}Zugriff verboten{% endblock %}</h2>
-    <p>Du bist nicht befugt, diese Seite zu sehen.</p>
+{% block title %}Zugriff verboten{% endblock %}
+
+{% block description %}
+    Du bist nicht befugt, auf diese Seite zuzugreifen.
 {% endblock %}

@@ -10,8 +10,14 @@
     {% else %}
         <form action="{% url 'login' %}" method="post">
     {% endif %}
-        {% csrf_token %}
-        {{ form.as_p }}
-        <input class="button info" type="submit" value="Anmelden" />
-    </form>
+            {% csrf_token %}
+
+            <fieldset>
+                {{ form.as_p }}
+            </fieldset>
+
+            <fieldset>
+                <input class="button info" type="submit" value="Anmelden">
+            </fieldset>
+        </form>
 {% endblock %}

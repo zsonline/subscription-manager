@@ -10,9 +10,9 @@
 {% endblock %}
 
 {% block content %}
-    <div id="plans">
+    <ul class="list">
         {% for plan in plans %}
-            <div class="plan">
+            <li class="plan">
 
                 <h3>{{ plan.name }}</h3>
                 <p>{{ plan.description }}</p>
@@ -26,9 +26,9 @@
                     {% endif %}
                 </span>
 
-            </div>
+            </li>
         {% empty %}
             <p class="message info">Leider haben wir zurzeit kein passendes Abo für dich.</p>
         {% endfor %}
-    </div>
+    </ul>
 {% endblock %}

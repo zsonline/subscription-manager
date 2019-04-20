@@ -1,19 +1,5 @@
-#plans {
-  .plan {
-    margin: 3rem 0;
-
-    p {
-      margin-bottom: 1em;
-    }
-
-    .price {
-      margin-left: 1em;
-    }
-  }
-
-  .alert {
-    margin-top: 3rem;
-  }
+.price {
+  margin-left: 1em;
 }
 
 @media (min-width: $medium) {

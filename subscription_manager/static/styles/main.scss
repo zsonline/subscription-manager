@@ -1,11 +1,9 @@
-// Variables
-@import "breakpoints";
-@import "colours";
-
 // Reset
 @import "vendors/normalize";
 
 // Base
+@import "breakpoints";
+@import "colours";
 @import "typography";
 
 // Components
@@ -19,12 +17,9 @@
 @import "components/table";
 
 // Layout
-@import "layout/header";
 @import "layout/body";
 @import "layout/footer";
-@import "layout/manager";
-@import "layout/error";
+@import "layout/header";
 
 // Pages
-@import "pages/authentication";
 @import "pages/subscription";
