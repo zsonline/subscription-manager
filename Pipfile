@@ -8,6 +8,7 @@ celery = "*"
 django = "*"
 django-celery-email = "*"
 django-compressor = "*"
+django-constance = {extras = ["database"],version = "*"}
 django-debug-toolbar = "*"
 django-import-export = "*"
 django-libsass = "*"
@@ -21,3 +22,4 @@ redis = "*"
 sphinx = "*"
 
 [requires]
+python_version = "3.7"

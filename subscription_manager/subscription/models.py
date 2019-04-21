@@ -209,9 +209,7 @@ class Subscription(models.Model):
         Renews the subscription by the duration of the plan.
         """
         # TODO:
-        self.end_date += relativedelta(months=self.plan.duration)
-        self.save()
-        return self
+        return
 
     def has_open_payments(self):
         """

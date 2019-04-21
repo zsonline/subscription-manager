@@ -1,11 +1,13 @@
 import os
-from datetime import timedelta
+from django.utils import timezone
 
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 PROJECT_ROOT = os.path.dirname(os.path.abspath(__file__))
 
 INSTALLED_APPS = [
     'compressor',
+    'constance',
+    'constance.backends.database',
     'debug_toolbar',
     'django.contrib.admin',
     'django.contrib.auth',
@@ -60,9 +62,6 @@ AUTHENTICATION_BACKENDS = [
     'django.contrib.auth.backends.ModelBackend'
 ]
 
-TOKENS_PER_USER_PER_HOUR = 10  # Maximum amount of valid tokens per user
-TOKEN_EXPIRATION = timedelta(days=3)  # Validity duration of a token
-
 AUTH_PASSWORD_VALIDATORS = [
     {
         'NAME': 'django.contrib.auth.password_validation.UserAttributeSimilarityValidator',
@@ -111,3 +110,11 @@ COMPRESS_ROOT = 'static_files/'
 
 LIBSASS_OUTPUT_STYLE = 'compressed'
 LIBSASS_SOURCEMAPS = True
+
+CONSTANCE_BACKEND = 'constance.backends.database.DatabaseBackend'
+CONSTANCE_CONFIG = {
+    'TOKENS_PER_USER_PER_HOUR': (10, 'Maximale Anzahl gültiger Tokens pro Nutzerin', int),
+    'TOKEN_EXPIRATION': (timezone.timedelta(days=3), 'Gültigkeitsdauer eines Tokens', timezone.timedelta),
+    'EMAIL_ACCOUNTING': ('verlag@medienverein.ch', 'Rechnungen werden als Kopie an diese E-Mail-Adressen geschickt. E-Mail-Adressen müssen mit einem Semikolon getrennt sein.', str),
+    'PERIOD_OF_PAYMENT': (timezone.timedelta(days=30), 'Rechnungen sind zahlbar innert', timezone.timedelta),
+}

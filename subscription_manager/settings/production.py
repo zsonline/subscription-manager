@@ -36,6 +36,7 @@ CACHES = {
         }
     }
 }
+CONSTANCE_DATABASE_CACHE_BACKEND = 'default'
 
 SESSION_ENGINE = "django.contrib.sessions.backends.cache"
 SESSION_CACHE_ALIAS = "default"

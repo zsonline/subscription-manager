@@ -1,4 +1,5 @@
 from random import randint
+from constance import config
 
 from django.conf import settings
 from django.core.mail import send_mail
@@ -83,8 +84,7 @@ class Payment(models.Model):
         # If object is newly created
         if not self.pk:
             # Set due on date
-            # TODO: Read time delta from settings
-            self.due_on = timezone.now().date() + timezone.timedelta(days=30)
+            self.due_on = timezone.now().date() + config.PERIOD_OF_PAYMENT
 
             # Generate code
             while True:
@@ -101,7 +101,6 @@ class Payment(models.Model):
         # If object existed already
         else:
             super().save(force_insert, force_update, using, update_fields)
-
 
     def handle(self):
         """
@@ -134,6 +133,10 @@ class Payment(models.Model):
             # Renewal subscription
             template = 'emails/payment_invoice_renewal.txt'
 
+        # Add accounting emails to recipient list
+        recipient_list = [self.period.subscription.user.email]
+        recipient_list += config.EMAIL_ACCOUNTING.split(';')
+
         send_mail(
             subject=settings.EMAIL_SUBJECT_PREFIX + 'Rechnung',
             message=render_to_string(template, {
@@ -141,7 +144,7 @@ class Payment(models.Model):
                 'payment': self
             }),
             from_email=settings.DEFAULT_FROM_EMAIL,
-            recipient_list=[self.period.subscription.user.email],
+            recipient_list=recipient_list,
             fail_silently=False
         )
 
