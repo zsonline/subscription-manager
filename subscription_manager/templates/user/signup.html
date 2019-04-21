@@ -2,7 +2,9 @@
 
 {% block title %}Registrieren{% endblock %}
 
-{% block description %}Erstelle ein Konto.{% endblock %}
+{% block description %}
+    Bevor du ein Abo bestellen kannst, musst du ein Konto anlegen.
+{% endblock %}
 
 {% block content %}
     <form action="{% url 'signup' %}{{ '?next='|add:next|default:'' }}" method="post">
@@ -10,6 +12,10 @@
 
         <fieldset>
             {{ form.as_p }}
+            <p class="message info">
+                Wir schicken dir einen Link per E-Mail, mit dem du dich verifizieren und anmelden kannst.
+                Du brauchst kein Passwort.
+            </p>
         </fieldset>
         <fieldset>
             <input class="button success" type="submit" value="Registrieren">

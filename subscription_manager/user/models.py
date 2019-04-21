@@ -133,6 +133,7 @@ class EmailAddress(models.Model):
         Returns true if a verified at attribute is set.
         """
         return self.verified_at is not None
+    is_verified.boolean = True
 
     def recently_verified(self, timedelta=timezone.timedelta(days=1)):
         """

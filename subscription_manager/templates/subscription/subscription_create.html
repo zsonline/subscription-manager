@@ -8,13 +8,6 @@
     <form action="{% url 'subscription_create' plan.slug %}" method="post">
         {% csrf_token %}
 
-        {% if signup_form %}
-            <fieldset>
-                <h3>Account</h3>
-                {{ signup_form.as_p }}
-            </fieldset>
-        {% endif %}
-
         <fieldset>
             <h3>Adresse</h3>
             {{ subscription_form.as_p }}

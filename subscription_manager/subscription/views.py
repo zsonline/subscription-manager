@@ -20,6 +20,7 @@ from .forms import SubscriptionForm
 from .models import Subscription, Plan, Period
 
 
+@method_decorator(login_required, name='dispatch')
 class SubscriptionCreateView(View):
     plan = None
     template_name = 'subscription/subscription_create.html'
@@ -63,11 +64,6 @@ class SubscriptionCreateView(View):
         """
         Renders empty forms on a get request.
         """
-        signup_form = None
-        if not request.user.is_authenticated:
-            signup_form = SignUpForm(
-                plan=self.plan
-            )
         subscription_form = SubscriptionForm()
         payment_form = PaymentForm(
             plan=self.plan
@@ -75,7 +71,6 @@ class SubscriptionCreateView(View):
 
         return render(request, 'subscription/subscription_create.html', {
             'plan': self.plan,
-            'signup_form': signup_form,
             'subscription_form': subscription_form,
             'payment_form': payment_form
         })
@@ -86,34 +81,18 @@ class SubscriptionCreateView(View):
         Handles post request. Validates form and creates
         subscription if data is valid.
         """
-        has_error = False
-
         # Get data from forms
-        signup_form = None
         subscription_form = SubscriptionForm(data=request.POST)
         payment_form = PaymentForm(
             data=request.POST,
             plan=self.plan
         )
 
-        # Create user if she is not already logged in
-        user = request.user
-        if not user.is_authenticated:
-            signup_form = SignUpForm(
-                data=request.POST,
-                plan=self.plan
-            )
-
-            if signup_form.is_valid():
-                user = signup_form.save()
-            else:
-                has_error = True
-
         # Validate other forms
-        if not has_error and subscription_form.is_valid() and payment_form.is_valid():
+        if subscription_form.is_valid() and payment_form.is_valid():
             # Save subscription
             subscription = subscription_form.save(commit=False)
-            subscription.user = user
+            subscription.user = request.user
             subscription.plan = self.plan
             subscription.save()
             # Create period
@@ -130,7 +109,7 @@ class SubscriptionCreateView(View):
 
             # Send email verification email
             if not period.email_confirmed:
-                Token.objects.create_and_send(email_address=user.primary_email, purpose='verification')
+                Token.objects.create_and_send(email_address=request.user.primary_email, purpose='verification')
                 messages.info(request, 'Wir haben dir eine E-Mail geschickt, um deine E-Mail-Adresse zu verifizieren.')
 
             # Handle payment
@@ -145,7 +124,6 @@ class SubscriptionCreateView(View):
 
         return render(request, 'subscription/subscription_create.html', {
             'plan': self.plan,
-            'signup_form': signup_form,
             'subscription_form': subscription_form,
             'payment_form': payment_form
         })
