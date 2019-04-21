@@ -1,7 +1,4 @@
-from random import randint
-
 from django import forms
-from django.db import IntegrityError
 
 from .models import Payment
 
@@ -55,23 +52,3 @@ class PaymentForm(forms.ModelForm):
             self.add_error('amount', 'Der Preis muss mindestens {} Franken betragen.'.format(self.plan.price))
 
         return amount
-
-    def save(self, commit=True):
-        """
-        Overrides the default save method. It generates
-        and saves a unique payment code.
-        """
-        # Default method
-        payment = super().save(commit=False)
-        # Try creating unique code object
-        while True:
-            try:
-                # Generate a code
-                code = 'ZS1-' + str(randint(1000, 9999)) + '-' + str(randint(1000, 9999))
-                payment.code = code
-                if commit:
-                    payment.save()
-            except IntegrityError:
-                continue
-            break
-        return payment

@@ -61,16 +61,6 @@ class PlanManager(models.Manager):
 
 class SubscriptionManager(models.Manager):
 
-    def filter_active_periods(self):
-        """
-        Returns active periods of a subscription
-        (should be zero or one periods).
-        """
-        return self.period_set.filter(is_active=True)
-
-    def verify_email(self):
-        pass
-
 
     #TODO:--------------
 
@@ -124,3 +114,24 @@ class SubscriptionManager(models.Manager):
             recipient_list=[subscription.user.email],
             fail_silently=False
         )
+
+
+class PeriodManager(models.Manager):
+
+    def get_active(self, subscription=None):
+        """
+        Filters active periods. If a subscription is given it also
+        filters by that subscription.
+        """
+        # Select periods which are related to subscription if given
+        if subscription is not None:
+            periods = self.filter(subscription=subscription)
+        else:
+            periods = self.all()
+
+        # Filter active periods
+        periods = periods.filter(start_date__isnull=False, start_date__lte=timezone.now().date(),
+                       end_date__isnull=False, end_date__gt=timezone.now().date(),
+                       payment__paid_at__isnull=False)
+
+        return periods

@@ -1,7 +1,9 @@
+import uuid
+
 from django.conf import settings
 from django.contrib.auth.models import AbstractUser
 from django.core.mail import send_mail
-from django.db import models, transaction
+from django.db import models, transaction, IntegrityError
 from django.shortcuts import reverse
 from django.template.loader import render_to_string
 from django.utils import timezone
@@ -238,6 +240,37 @@ class Token(models.Model):
         True if the token is valid.
         """
         return timezone.now() <= self.valid_until
+    is_valid.boolean = True
+
+    def save(self, force_insert=False, force_update=False, using=None, update_fields=None):
+        """
+        Overrides the default save method. It checks whether a token can be created
+        by a user and generates a uuid code.
+        """
+        # If object is newly created
+        if not self.pk:
+            # Limit token creation
+            user = self.email_address.user
+            if user is None:
+                raise ValueError
+            if Token.objects.count_created_in_last_hour(user) >= settings.TOKENS_PER_USER_PER_HOUR:
+                raise self.TokenQuotaExceededError
+
+            # Try creating a token object
+            while True:
+                try:
+                    # Generates a UUID
+                    code = uuid.uuid4()
+                    self.code = code
+                    # Try creating token object
+                    super().save(force_insert, force_update, using, update_fields)
+                except IntegrityError:
+                    continue
+                break
+
+        # If object existed already
+        else:
+            super().save(force_insert, force_update, using, update_fields)
 
     @staticmethod
     def url(code):
@@ -284,3 +317,10 @@ class Token(models.Model):
         # Update sent_at field
         self.sent_at = timezone.now()
         self.save()
+
+    class TokenQuotaExceededError(Exception):
+        """
+        Raised when the token quota has been exceeded by a user.
+        """
+        pass
+

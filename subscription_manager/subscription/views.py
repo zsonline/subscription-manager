@@ -130,17 +130,16 @@ class SubscriptionCreateView(View):
 
             # Send email verification email
             if not period.email_confirmed:
-                Token.objects.create_and_send(user=user, action='eligibility')
+                Token.objects.create_and_send(email_address=user.primary_email, purpose='verification')
                 messages.info(request, 'Wir haben dir eine E-Mail geschickt, um deine E-Mail-Adresse zu verifizieren.')
 
             # Handle payment
-            if payment.amount == 0:
-                payment.confirm()
-                messages.success(request, 'Vielen Dank! Deine Bestellung war erfolgreich.')
-            else:
-                payment.send_invoice()
-                messages.success(request,
-                                 'Vielen Dank für deine Bestellung! Wir haben dir eine Rechnung per E-Mail geschickt.')
+            success = payment.handle()
+            if success:
+                if payment.amount == 0:
+                    messages.success(request, 'Vielen Dank! Deine Bestellung war erfolgreich.')
+                else:
+                    messages.success(request, 'Vielen Dank für deine Bestellung! Wir haben dir eine Rechnung per E-Mail geschickt.')
 
             return redirect('login')
 

@@ -129,7 +129,7 @@ def token_verification_view(request, code):
     elif token.purpose == 'verification':
         token.email_address.verify()
         token.delete()
-        messages.success(request, 'Die E-Mail-Adresse wurde bestätigt.')
+        messages.success(request, 'Die E-Mail-Adresse {} wurde verifiziert.'.format(token.email_address.email))
         # Redirect to email address list
         return redirect('email_address_list')
 
@@ -188,7 +188,7 @@ class EmailAddressCreateView(edit.CreateView):
         email_address = self.object
         success = Token.objects.create_and_send(email_address=email_address, purpose='verification')
         if success:
-            messages.success(self.request, 'Wir haben eine Nachricht an {} geschickt, um die E-Mail-Adresse zu verifizieren.'.format(email_address.email))
+            messages.success(self.request, 'Wir haben dir eine Nachricht an {} geschickt, um die E-Mail-Adresse zu verifizieren.'.format(email_address.email))
         else:
             messages.error(self.request, 'Du hast die maximale Anzahl an E-Mail-Tokens erreicht. Warte eine Stunde, bevor du eine neue Verifikationsanfrage sendest.')
         return super().get_success_url()
@@ -238,7 +238,7 @@ def email_send_verification_view(request, email_address_id):
 
     success = email_address.send_verification()
     if success:
-        messages.success(request, 'Wir haben eine Nachricht an {} geschickt, um die E-Mail-Adresse zu verifizieren.'.format(email_address.email))
+        messages.success(request, 'Wir haben dir eine Nachricht an {} geschickt, um die E-Mail-Adresse zu verifizieren.'.format(email_address.email))
     else:
         messages.error(request, 'Du hast die maximale Anzahl an E-Mail-Tokens erreicht. Warte eine Stunde, bevor du es erneut probierst.')
     return redirect('email_address_list')

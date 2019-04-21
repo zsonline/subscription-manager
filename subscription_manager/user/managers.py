@@ -64,29 +64,6 @@ class TokenManager(models.Manager):
     """
     Custom manager for tokens.
     """
-    def create(self, **obj_data):
-        """
-        Overrides the default create method. It generates a random code
-        and limits the number of tokens that can be created.
-        """
-        # Limit token creation
-        user = obj_data['email_address'].user
-        if self.count_created_in_last_hour(user) >= settings.TOKENS_PER_USER_PER_HOUR:
-            return None
-
-        # Try creating LoginToken object
-        while True:
-            try:
-                # Generates a UUID
-                code = uuid.uuid4()
-                # Try creating token object
-                obj_data['code'] = code
-                token = super().create(**obj_data)
-            except IntegrityError:
-                continue
-            break
-        return token
-
     def create_and_send(self, next_page=None, **obj_data):
         """
         Creates and sends a token object.

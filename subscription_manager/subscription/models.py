@@ -5,7 +5,7 @@ from django.core.exceptions import ObjectDoesNotExist
 from django.db import models
 from django.utils import timezone
 
-from .managers import PlanManager, SubscriptionManager
+from .managers import PlanManager, SubscriptionManager, PeriodManager
 
 
 class Plan(models.Model):
@@ -194,8 +194,15 @@ class Subscription(models.Model):
         Returns true if the subscription has not been
         canceled and one active period exists.
         """
-        return not self.is_canceled() and self.objects.filter_active_periods().count() == 1
+        return not self.is_canceled() and self.get_active_periods().count() == 1
     is_active.boolean = True
+
+    def get_active_periods(self):
+        """
+        Returns active periods of the subscription
+        (should be zero or one periods).
+        """
+        return Period.objects.get_active(subscription=self)
 
     def renew(self):
         """
@@ -212,13 +219,7 @@ class Subscription(models.Model):
         this subscription is open. Otherwise false.
         """
         # TODO:
-        payments = self.payment_set.all()
-        if payments is None:
-            return False
-        for payment in payments:
-            if not payment.is_paid():
-                return True
-        return False
+        return
 
     def last_payment_amount(self):
         """
@@ -226,11 +227,7 @@ class Subscription(models.Model):
         payment exists, None is returned.
         """
         # TODO:
-        try:
-            last_payment = self.payment_set.latest('created_at')
-        except ObjectDoesNotExist:
-            return None
-        return last_payment.amount
+        return
 
     def expires_in_lt(self, days):
         """
@@ -239,16 +236,14 @@ class Subscription(models.Model):
         """
         # TODO:
         # Check if end_date is instance of date
-        if self.end_date >= timezone.now().date():
-            return self.end_date - timezone.now().date() <= timezone.timedelta(days=days)
-        return False
+        return
 
     def expires_soon(self):
         """#TODO:
         Returns true if subscription expires in less than
         30 days.
         """
-        return self.expires_in_lt(30)
+        return
 
 
 # TODO: Enforce non-overlapping periods with constraints (Django 2.2)
@@ -281,6 +276,8 @@ class Period(models.Model):
         default=timezone.now,
         verbose_name='Erstellt am'
     )
+
+    objects = PeriodManager()
 
     class Meta:
         verbose_name = 'Periode'
