@@ -18,7 +18,7 @@
                 <p>{{ plan.description }}</p>
 
                 <a href="{% url 'subscription_create' plan.slug %}" class="button success">Bestellen</a>
-                <span class="price">
+                <span class="button transparent no-pointer">
                     {{ plan.price|humanize:'money'|capfirst }}
                     {% if plan.price != 0 %}
                         /

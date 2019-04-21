@@ -6,6 +6,7 @@
 
   &:focus, &:active, &:hover {
     background-color: $hover-colour;
+    color: text-contrast($hover-colour);
   }
 }
 
@@ -22,12 +23,7 @@
   padding: .75em;
   text-align: center;
   text-decoration: none;
-  color: $white !important;
-
-  &:focus, &:active, &:hover {
-    cursor: pointer;
-    color: $white;
-  }
+  cursor: pointer;
 
   &, &.black {
     @include button($black, $dark-grey);
@@ -47,5 +43,13 @@
 
   &.danger {
     @include button($danger);
+  }
+
+  &.transparent {
+    @include button(rgba(255, 255, 255, 0))
+  }
+
+  &.no-pointer {
+    cursor: text;
   }
 }
