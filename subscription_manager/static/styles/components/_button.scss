@@ -25,8 +25,8 @@
   text-decoration: none;
   cursor: pointer;
 
-  &, &.black {
-    @include button($black, $dark-grey);
+  &, &.grey {
+    @include button($light-grey);
   }
 
   &.info {

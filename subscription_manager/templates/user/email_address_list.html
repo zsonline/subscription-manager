@@ -43,7 +43,7 @@
                     {% endif %}
 
                     {% if not email_address.is_primary and email_address.verified_at != None %}
-                        <li><a href="{% url 'email_address_set_primary' email_address.pk %}">Als primäre E-Mail-Adresse wählen</a></li>
+                        <li><a href="{% url 'email_address_set_primary' email_address.pk %}">Als primäre E-Mail-Adresse verwenden</a></li>
                     {% endif %}
 
                 </ul>

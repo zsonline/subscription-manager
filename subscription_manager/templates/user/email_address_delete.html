@@ -7,13 +7,12 @@
 {% endblock %}
 
 {% block content %}
-    <div id="email-address">
-        <form method="post">
-            {% csrf_token %}
+    <form method="post">
+        {% csrf_token %}
 
-            <fieldset>
-                <input class="button danger" type="submit" value="Löschen">
-            </fieldset>
-        </form>
-    </div>
+        <fieldset>
+            <input class="button danger" type="submit" value="Löschen">
+            <a class="button grey" href="{% url 'email_address_list' %}">Abbrechen</a>
+        </fieldset>
+    </form>
 {% endblock %}
