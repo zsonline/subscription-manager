@@ -99,18 +99,12 @@ class SubscriptionCreateView(View):
             period = Period.objects.create(
                 subscription=subscription,
                 start_date=timezone.now().date(),
-                end_date=timezone.now().date() + self.plan.duration,
-                email_confirmed=self.plan.eligible_email_domains is None
+                end_date=timezone.now().date() + self.plan.duration
             )
             # Save payment
             payment = payment_form.save(commit=False)
             payment.period = period
             payment.save()
-
-            # Send email verification email
-            if not period.email_confirmed:
-                Token.objects.create_and_send(email_address=request.user.primary_email, purpose='verification')
-                messages.info(request, 'Wir haben dir eine E-Mail geschickt, um deine E-Mail-Adresse zu verifizieren.')
 
             # Handle payment
             success = payment.handle()

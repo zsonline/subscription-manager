@@ -11,8 +11,8 @@
   border-radius: .25em;
   font-size: .75em;
 
-  &, &.black {
-    @include badge($black);
+  &, &.grey {
+    @include badge($light-grey);
   }
 
   &.info {

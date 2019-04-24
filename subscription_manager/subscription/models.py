@@ -175,12 +175,10 @@ class Subscription(models.Model):
     def __str__(self):
         return '{} #{} von {}'.format(self.plan, self.id, self.user.full_name)
 
-    def _get_full_name(self):
-        """
-        Returns the subscriber's full name.
-        """
-        return '{} {}'.format(self.first_name, self.last_name)
-    full_name = property(_get_full_name)
+    def _get_end_date(self):
+        last_paid_period = self.period_set.filter(payment__paid_at__isnull=True).order_by('-end_date').first()
+        return last_paid_period.end_date
+    end_date = property(_get_end_date)
 
     def is_canceled(self):
         """
@@ -204,17 +202,18 @@ class Subscription(models.Model):
         """
         return Period.objects.get_active(subscription=self)
 
+    def is_paid(self):
+        """
+        Return true if for all associated periods a payment
+        has been received. False otherwise.
+        """
+        unpaid_periods = self.period_set.filter(payment__paid_at__isnull=True)
+        return unpaid_periods.count() == 0
+    is_paid.boolean = True
+
     def renew(self):
         """
         Renews the subscription by the duration of the plan.
-        """
-        # TODO:
-        return
-
-    def has_open_payments(self):
-        """
-        Returns true if at least one payment associated with
-        this subscription is open. Otherwise false.
         """
         # TODO:
         return
@@ -265,10 +264,6 @@ class Period(models.Model):
         null=True,
         blank=True,
         verbose_name='Enddatum'
-    )
-    email_confirmed = models.BooleanField(
-        default=True,
-        verbose_name='Zulassung geprüft'
     )
     created_at = models.DateTimeField(
         default=timezone.now,

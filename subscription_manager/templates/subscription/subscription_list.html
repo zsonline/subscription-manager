@@ -7,12 +7,11 @@
 {% endblock %}
 
 {% block content %}
+    <div class="action-bar">
+        <a class="button success" href="{% url 'plan_list' %}">Abo bestellen</a>
+    </div>
+
     {% if subscriptions|length > 0 %}
-
-        <div class="action-bar">
-            <a class="button success" href="{% url 'plan_list' %}">Abo bestellen</a>
-        </div>
-
         <ul class="list">
             {% for subscription in subscriptions %}
                 <li>
@@ -24,8 +23,18 @@
                         {% if subscription.is_active %}
                             <span class="badge success">Aktiv</span>
                         {% else %}
-                            <span class="badge danger">Inaktiv</span>
+                            {% if not subscription.is_canceled %}
+                                <span class="badge danger">Inaktiv</span>
+                            {% else %}
+                                <span class="badge grey">Gekündigt</span>
+                            {% endif %}
                         {% endif %}
+                        {% if subscription.is_paid %}
+                            <span class="badge success">Bezahlt</span>
+                        {% else %}
+                            <span class="badge danger">Nicht bezahlt</span>
+                        {% endif %}
+
                     </div>
 
                     <p>
@@ -35,6 +44,12 @@
                         {% endif %}
                         {{ subscription.postcode }} {{ subscription.town }}
                     </p>
+
+                    {% if subscription.is_active %}
+                        <p>
+                            Gültig bis {{ subscription.end_date }}
+                        </p>
+                    {% endif %}
 
                     {# Actions #}
                     {% if subscription.is_active %}
@@ -55,7 +70,6 @@
     {% else %}
 
         <p class="message info">Du hast noch kein Abo.</p>
-        <a class="button success" href="{% url 'plan_list' %}">Abo bestellen</a>
 
     {% endif %}
 {% endblock %}

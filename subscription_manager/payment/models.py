@@ -60,7 +60,7 @@ class Payment(models.Model):
         verbose_name_plural = 'Zahlungen'
 
     def __str__(self):
-        return 'Zahlung für Abo {} von {}'.format(self.period.subscription.id, self.period.subscription.full_name)
+        return 'Zahlung für Abo {} von {}'.format(self.period.subscription.id, self.period.subscription.user.full_name)
 
     def is_paid(self):
         """
@@ -73,7 +73,7 @@ class Payment(models.Model):
         """
         Returns true if the payment is for a renewal.
         """
-        return self.period.start_date is not None
+        return self.period.subscription.period_set.count() > 1
     is_renewal.boolean = True
 
     def save(self, force_insert=False, force_update=False, using=None, update_fields=None):
@@ -89,7 +89,7 @@ class Payment(models.Model):
             # Generate code
             while True:
                 try:
-                    code = 'ZS1-' + str(randint(1000, 9999)) + '-' + str(randint(1000, 9999))
+                    code = 'ZS-' + str(randint(1000, 9999)) + '-' + str(randint(1000, 9999))
                     self.code = code
                     # Try creating the payment object
                     with transaction.atomic():

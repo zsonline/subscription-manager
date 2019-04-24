@@ -61,8 +61,7 @@ class PlanManager(models.Manager):
 
 class SubscriptionManager(models.Manager):
 
-
-    #TODO:--------------
+    # TODO:
 
     def notify_to_be_expired_subscribers(self):
         """
@@ -80,21 +79,6 @@ class SubscriptionManager(models.Manager):
         """
         subscriptions = self.filter(end_date=timezone.now().date()+timezone.timedelta(days=days)).filter(canceled_at__isnull=True)
         return subscriptions
-
-    def has_student_subscriptions(self, user):
-        """
-        Returns true if given user has no student
-        subscription.
-        """
-        # Get all subscriptions of a user
-        subscriptions = self.filter(user=user)
-        # Exclude inactive or non-student subscriptions
-        count = 0
-        for subscription in subscriptions:
-            if subscription.plan.slug == 'student' and subscription.is_active():
-                count += 1
-        # Return true if count is 0
-        return count > 0
 
     @staticmethod
     def send_expiration_email(subscription):
