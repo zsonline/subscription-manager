@@ -1,0 +1,3 @@
+{% extends 'base_email.txt' %}
+
+{% block content %}das ist dein Registrierungs-Link: {{ url }}.{% endblock %}

@@ -38,7 +38,7 @@ def signup_view(request):
             # If successful
             if user is not None:
                 # Create and send verification token
-                Token.objects.create_and_send(email_address=user.primary_email, purpose='login', next_page=next_page)
+                Token.objects.create_and_send(email_address=user.primary_email, purpose='signup', next_page=next_page)
                 # Create success message
                 messages.success(request, 'Wir haben dir eine E-Mail geschickt, um deine E-Mail-Adresse zu verfizieren.')
                 # Redirect to this page
@@ -121,6 +121,24 @@ def token_verification_view(request, code):
         if user is not None:
             login(request, user)
             messages.success(request, 'Du bist angemeldet.')
+            # Handle next parameter
+            next_page = request.GET.get('next', None)
+            if next_page is not None:
+                return redirect(next_page)
+            # Redirect user to login home otherwise
+            return redirect('subscription_list')
+
+    # Do login but add different success message
+    if token.purpose == 'signup':
+        # Verify email if it has not been verified already
+        if not token.email_address.is_verified and not token.email_address.recently_verified:
+            token.email_address.verify()
+        # Get user
+        user = authenticate(code=code)
+        # If authentication is successful, log user in
+        if user is not None:
+            login(request, user)
+            messages.success(request, 'Du bist angemeldet und deine E-Mail-Adresse {} wurde verifiziert. Bestelle jetzt ein Abo.'.format(user.email))
             # Handle next parameter
             next_page = request.GET.get('next', None)
             if next_page is not None:
