@@ -39,16 +39,8 @@ a {
   }
 }
 
-.inverted {
-  a {
-    color: $white;
-
-    &:visited {
-      color: white;
-    }
-
-    &:hover, &:focus, &:active {
-      color: $grey;
-    }
-  }
+em {
+  font-style: normal;
+  color: $danger;
+  font-weight: 700;
 }

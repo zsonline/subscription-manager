@@ -1,41 +1,81 @@
-{% extends 'layouts/manager.html' %}
+{% extends 'base.html' %}
 
-{% block title %}Zahlungsdetails{% endblock %}
+{% block title %}Zahlungsübersicht{% endblock %}
 
-{% block breadcrumbs %}
-    <a href="{% url 'subscription_list' %}">Abonnements</a>
-    <span>Zahlungsdetails</span>
+{% block description %}
+    Behalte die Übersicht über dein Abo.
+    Hier siehst du die offenen Rechnungen und den Zahlungsverlauf des Abos.
 {% endblock %}
 
 {% block content %}
-    {% include 'includes/subscription.html' %}
+    <h4>{{ subscription.plan }}</h4>
+    <p>
+        {{ subscription.full_name }}<br>
+        {{ subscription.address_line }}<br>
+        {% if subscription.additional_address_line %}
+            {{ subscription.additional_address_line }}<br>
+        {% endif %}
+        {{ subscription.postcode }} {{ subscription.town }}
+    </p>
 
-    {% for payment in payments %}
-        <div class="invoice">
-            <h3>Rechnung</h3>
+    <ul class="list">
+        {% for period in periods %}
+            <li>
 
-            <h4>Betrag</h4>
-            {{ payment.amount }}
+                <h3>{{ period.start_date|date:'F Y' }} bis {{ period.end_date|date:'F Y' }}</h3>
 
-            <h4>Mitteilungsfeld</h4>
-            {{ payment.code }}<br>
-            <small>Das Mitteilungsfeld brauchen wir, um die Zahlung deiner Bestellung zuzuordnen.</small>
+                {# Badges #}
+                <div>
+                    {% if period.is_paid %}
+                        <span class="badge success">Bezahlt</span>
+                    {% else %}
+                        <span class="badge danger">Nicht bezahlt</span>
+                    {% endif %}
+                    <span class="badge info">{{ period.payment.get_method_display }}</span>
+                </div>
 
-            <h4>Bankverbindung</h4>
-            <h5>IBAN</h5>
-            CH32 0070 0110 0030 6727 2
+                <p>{{ period.start_date }} bis {{ period.end_date }}</p>
 
-            <h5>Bankkonto-Nummer</h5>
-            1100-3067.272
+                {# Invoice #}
+                {% if not period.payment.is_paid and period.payment.method == 'invoice' %}
+                    <p class="message info">
+                        Bitte begleiche folgende Rechnung bis spätestens am {{ period.payment.due_on }}.
+                        Sobald die Zahlung bei uns eingetroffen ist, aktivieren wir dein Abo.
+                    </p>
 
-            <h5>Kontoinhaber</h5>
-            Medienverein ZS<br>
-            8001 Zürich
+                    <div class="invoice">
+                        <h4>Betrag</h4>
+                        <p>
+                            {{ period.payment.amount }} Franken
+                        </p>
 
-            <h5>Finanzinstitut</h5>
-            Zürcher Kantonalbank<br>
-            Postfach<br>
-            8010 Zürich
-        </div>
-    {% endfor %}
+                        <h4>Mitteilungsfeld</h4>
+                        <p>
+                            <em>{{ period.payment.code }}</em>
+                        </p>
+
+                        <h4>IBAN</h4>
+                        <p>
+                            CH32 0070 0110 0030 6727 2
+                        </p>
+
+                        <h4>Kontoinhaber</h4>
+                        <p>
+                            medienverein ZS<br>
+                            Rämistrasse 62<br>
+                            8001 Zürich
+                        </p>
+
+                        <h4>Finanzinstitut</h4>
+                        <p>
+                            Zürcher Kantonalbank<br>
+                            Postfach<br>
+                            8010 Zürich
+                        </p>
+                    </div>
+                {% endif %}
+
+            </li>
+        {% endfor %}
+    </ul>
 {% endblock %}

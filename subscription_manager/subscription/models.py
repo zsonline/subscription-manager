@@ -173,7 +173,10 @@ class Subscription(models.Model):
         verbose_name_plural = 'Abos'
 
     def __str__(self):
-        return '{} #{} von {}'.format(self.plan, self.id, self.user.full_name())
+        return '{} von {}'.format(self.plan, self.user.full_name())
+
+    def full_name(self):
+        return '{} {}'.format(self.first_name, self.last_name)
 
     def end_date(self):
         last_paid_period = self.period_set.filter(payment__paid_at__isnull=True).order_by('-end_date').first()

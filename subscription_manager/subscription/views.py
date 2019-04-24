@@ -178,8 +178,8 @@ class SubscriptionDetailView(detail.DetailView):
         Adds all associated payments to the context.
         """
         data = super().get_context_data(**kwargs)
-        payments = Payment.objects.filter(subscription=self.get_object())
-        data['payments'] = payments
+        periods = Period.objects.filter(subscription=self.get_object())
+        data['periods'] = periods
         return data
 
 

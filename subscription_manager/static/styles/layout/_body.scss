@@ -12,6 +12,10 @@ main {
   padding: 2rem 1rem;
   grid-template-columns: 1fr;
   align-content: center;
+
+  .content {
+    margin: 2rem 0;
+  }
 }
 
 @media (min-width: $medium) {

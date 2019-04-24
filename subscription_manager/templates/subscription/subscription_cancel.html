@@ -13,6 +13,7 @@
         <fieldset>
             <h3>{{ subscription.plan.name }}</h3>
             <p>
+                {{ subscription.full_name }}<br>
                 {{ subscription.address_line }}<br>
                 {% if subscription.additional_address_line %}
                     {{ subscription.additional_address_line }}<br>
