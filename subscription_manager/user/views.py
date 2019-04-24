@@ -129,7 +129,7 @@ def token_verification_view(request, code):
             return redirect('subscription_list')
 
     # Do login but add different success message
-    if token.purpose == 'signup':
+    elif token.purpose == 'signup':
         # Verify email if it has not been verified already
         if not token.email_address.is_verified and not token.email_address.recently_verified:
             token.email_address.verify()
