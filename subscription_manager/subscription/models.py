@@ -173,12 +173,11 @@ class Subscription(models.Model):
         verbose_name_plural = 'Abos'
 
     def __str__(self):
-        return '{} #{} von {}'.format(self.plan, self.id, self.user.full_name)
+        return '{} #{} von {}'.format(self.plan, self.id, self.user.full_name())
 
-    def _get_end_date(self):
+    def end_date(self):
         last_paid_period = self.period_set.filter(payment__paid_at__isnull=True).order_by('-end_date').first()
         return last_paid_period.end_date
-    end_date = property(_get_end_date)
 
     def is_canceled(self):
         """

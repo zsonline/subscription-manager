@@ -38,7 +38,7 @@ def signup_view(request):
             # If successful
             if user is not None:
                 # Create and send verification token
-                Token.objects.create_and_send(email_address=user.primary_email, purpose='signup', next_page=next_page)
+                Token.objects.create_and_send(email_address=user.primary_email(), purpose='signup', next_page=next_page)
                 # Create success message
                 messages.success(request, 'Wir haben dir eine E-Mail geschickt, um deine E-Mail-Adresse zu verfizieren.')
                 # Redirect to this page
@@ -82,7 +82,7 @@ def login_view(request):
             # If user exists
             if user is not None:
                 # Create and send token
-                Token.objects.create_and_send(email_address=user.primary_email, purpose='login', next_page=next_page)
+                Token.objects.create_and_send(email_address=user.primary_email(), purpose='login', next_page=next_page)
                 # Create success message
                 messages.success(request, 'Wir haben dir einen Anmeldelink per E-Mail geschickt.'.format(user.email))
                 # Redirect to this page
@@ -113,7 +113,7 @@ def token_verification_view(request, code):
     # Do login
     if token.purpose == 'login':
         # Verify email if it has not been verified already
-        if not token.email_address.is_verified and not token.email_address.recently_verified:
+        if not token.email_address.is_verified() and not token.email_address.recently_verified():
             token.email_address.verify()
         # Get user
         user = authenticate(code=code)
@@ -131,7 +131,7 @@ def token_verification_view(request, code):
     # Do login but add different success message
     elif token.purpose == 'signup':
         # Verify email if it has not been verified already
-        if not token.email_address.is_verified and not token.email_address.recently_verified:
+        if not token.email_address.is_verified() and not token.email_address.recently_verified():
             token.email_address.verify()
         # Get user
         user = authenticate(code=code)
@@ -148,7 +148,7 @@ def token_verification_view(request, code):
 
     # Do email verification
     elif token.purpose == 'verification':
-        if not token.email_address.recently_verified:
+        if not token.email_address.recently_verified():
             token.email_address.verify()
         token.delete()
         messages.success(request, 'Die E-Mail-Adresse {} wurde verifiziert.'.format(token.email_address.email))

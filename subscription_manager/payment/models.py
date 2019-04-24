@@ -60,7 +60,7 @@ class Payment(models.Model):
         verbose_name_plural = 'Zahlungen'
 
     def __str__(self):
-        return 'Zahlung für Abo {} von {}'.format(self.period.subscription.id, self.period.subscription.user.full_name)
+        return 'Zahlung für Abo {} von {}'.format(self.period.subscription.id, self.period.subscription.user.full_name())
 
     def is_paid(self):
         """
@@ -126,7 +126,7 @@ class Payment(models.Model):
         Sends an email that contains the payment details
         for this payment.
         """
-        if not self.is_renewal:
+        if not self.is_renewal():
             # New subscription
             template = 'emails/payment_invoice_new.txt'
         else:
@@ -162,7 +162,7 @@ class Payment(models.Model):
         self.period.end_date = (timezone.now() + self.period.subscription.plan.duration).date()
         self.period.save()
 
-        if not self.is_renewal:
+        if not self.is_renewal():
             # New subscription
             subject = 'Abo aktiviert'
             template = 'emails/payment_confirmation_new.txt'

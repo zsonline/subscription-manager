@@ -45,35 +45,31 @@ class User(AbstractUser):
     def __str__(self):
         return '{} ({})'.format(self.full_name, self.email)
 
-    def _get_email_domain(self):
+    def email_domain(self):
         """
         Returns the user's email domain.
         """
         return self.email.split('@')[-1]
-    email_domain = property(_get_email_domain)
 
-    def _get_verified_email_domains(self):
+    def verified_email_domains(self):
         """
         Returns a list of all verified email domain.
         """
         email_addresses = self.emailaddress_set.filter(verified_at__isnull=False).values('email')
         email_addresses = map(lambda email: email['email'].split('@')[-1], email_addresses)
         return list(email_addresses)
-    verified_email_domains = property(_get_verified_email_domains)
 
-    def _get_full_name(self):
+    def full_name(self):
         """
         Returns the user's full name.
         """
         return '{} {}'.format(self.first_name, self.last_name)
-    full_name = property(_get_full_name)
 
-    def _get_primary_email(self):
+    def primary_email(self):
         """
         Return the primary email address object.
         """
         return EmailAddress.objects.get(user=self, is_primary=True)
-    primary_email = property(_get_primary_email)
 
     def save(self, *args, **kwargs):
         is_created = self.id is None
