@@ -206,9 +206,9 @@ class Token(models.Model):
     purpose = models.CharField(
         max_length=20,
         choices=(
-            ('verification', 'Verifizierung'),
+            ('verification', 'E-Mail-Adresse verifizieren'),
             ('login', 'Login'),
-            ('signup', 'Registrierung')
+            ('signup', 'Registrierung abschliessen')
         ),
         verbose_name='Zweck'
     )
@@ -260,7 +260,7 @@ class Token(models.Model):
                 raise self.TokenQuotaExceededError
 
             # Set valid until
-            self.valid_until = timezone.now() + config.TOKEN_EXPIRATION,
+            self.valid_until = timezone.now() + config.TOKEN_EXPIRATION
 
             # Try creating a token object
             while True:
