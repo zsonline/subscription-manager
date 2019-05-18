@@ -235,3 +235,112 @@ class SubscriptionCancelView(edit.DeleteView):
         subscription.canceled_at = timezone.now()
         subscription.save()
         return HttpResponseRedirect(self.success_url)
+
+
+@method_decorator(login_required, name='dispatch')
+class PeriodCreateView(View):
+    subscription = None
+    last_period = None
+
+    @classmethod
+    def get_subscription(cls, user, **kwargs):
+        """
+        Read subscription id from URL parameters and return
+        if subscription exists.
+        """
+        # Get from URL parameters
+        subscription_id = kwargs.get('subscription_id')
+
+        # Check if plan exists
+        try:
+            subscription = Subscription.objects.get(id=subscription_id)
+        except Subscription.DoesNotExist:
+            subscription = None
+
+        # Check if it is the right user
+        if user != subscription.user:
+            subscription = None
+
+        return subscription
+
+    def dispatch(self, request, *args, **kwargs):
+        """
+        Dispatch method is called before get or post method.
+        Checks if subscription exists and whether the user is eligible
+        to renew it.
+        """
+        # Get subscription
+        subscription = self.get_subscription(request.user, **kwargs)
+        if subscription is None:
+            # If subscription does not exist raise 404
+            raise Http404('Subscription does not exist.')
+        self.subscription = subscription
+
+        # Get last period
+        self.last_period = self.subscription.period_set.order_by('-end_date').first()
+
+        # Check eligibility
+        if not subscription.plan.is_eligible(request.user):
+            messages.error(request, 'Du bist nicht berechtigt, diese Abo zu verlängern. Verifiziere deine E-Mail-Adressen und stelle sicher, dass du die maximale Anzahl an Abos nicht erreicht hast.')
+            return redirect('subscription_detail', subscription_id=self.subscription.pk)
+
+        return super().dispatch(request, *args, **kwargs)
+
+    def get(self, request, *args, **kwargs):
+        """
+        Renders empty form on a get request.
+        """
+        # Initialise payment form
+        initial_amount = self.subscription.plan.price
+        if self.last_period is not None:
+            initial_amount = self.last_period.payment.amount
+        payment_form = PaymentForm(
+            plan=self.subscription.plan,
+            initial={
+                'amount': initial_amount
+            }
+        )
+
+        # Render template
+        return render(request, 'subscription/period_create.html', {
+            'subscription': self.subscription,
+            'payment_form': payment_form
+        })
+
+    @transaction.atomic
+    def post(self, request, *args, **kwargs):
+        """
+        Sends confirmation email and redirects to
+        appropriate page.
+        """
+        # Get data from form
+        payment_form = PaymentForm(
+            data=request.POST,
+            plan=self.subscription.plan
+        )
+
+        # Validate other forms
+        if payment_form.is_valid():
+            # Renew subscription
+            period = self.subscription.renew()
+            # Save payment
+            payment = payment_form.save(commit=False)
+            payment.period = period
+            payment.subscription = self.subscription
+            payment.save()
+
+            # Handle payment
+            success = payment.handle()
+            if success:
+                if payment.amount == 0:
+                    messages.success(request, 'Vielen Dank! Deine Bestellung war erfolgreich.')
+                else:
+                    messages.success(request,
+                                     'Vielen Dank für deine Bestellung! Wir haben dir eine Rechnung per E-Mail geschickt.')
+
+            return redirect('subscription_detail', subscription_id=self.subscription.pk)
+
+        return render(request, 'subscription/period_create.html', {
+            'subscription': self.subscription,
+            'payment_form': payment_form
+        })

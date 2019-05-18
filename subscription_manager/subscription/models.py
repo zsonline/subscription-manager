@@ -97,7 +97,7 @@ class Plan(models.Model):
         else:
             return ', '.join(eligible_email_domains[:-1]) + ' ' + conjunction + ' ' + eligible_email_domains[-1]
 
-    def is_eligible(self, user=None):
+    def is_eligible(self, user):
         """
         Checks whether a given user is eligible
         to purchase the subscription.
@@ -206,6 +206,12 @@ class Subscription(models.Model):
         """
         return Period.objects.get_active(subscription=self)
 
+    def get_last_period(self):
+        """
+        Returns the last period of the subscription.
+        """
+        return self.period_set.order_by('-end_date').first()
+
     def is_paid(self):
         """
         Return true if for all associated periods a payment
@@ -219,32 +225,31 @@ class Subscription(models.Model):
         """
         Renews the subscription by the duration of the plan.
         """
-        # TODO:
-        return
+        # Get last period
+        last_period = self.get_last_period()
+        if last_period is None:
+            return None
 
-    def last_payment_amount(self):
-        """
-        Returns the last payment's amount. If no
-        payment exists, None is returned.
-        """
-        # TODO:
-        return
+        # Create new period object
+        return Period.objects.create(
+            subscription=self,
+            start_date=last_period.end_date + timezone.timedelta(days=1),
+            end_date=last_period.end_date + timezone.timedelta(days=1) + self.plan.duration
+        )
 
     def expires_in_lt(self, days):
         """
         Returns true if subscription expires in less than
         the given amount of days.
         """
-        # TODO:
         # Check if end_date is instance of date
-        return
+        return self.end_date() < timezone.now().date() + timezone.timedelta(days=days)
 
     def expires_soon(self):
-        """#TODO:
-        Returns true if subscription expires in less than
-        30 days.
         """
-        return
+        Returns true if subscription expires in less than 30 days.
+        """
+        return self.expires_in_lt(30)
 
 
 class Period(models.Model):
