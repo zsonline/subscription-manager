@@ -24,7 +24,7 @@ class Payment(models.Model):
     method = models.CharField(
         max_length=20,
         choices=(
-            ('invoice', 'Rechnung'),
+            ('invoice', 'Banküberweisung'),
             ('twint', 'Twint')
         ),
         default='invoice',

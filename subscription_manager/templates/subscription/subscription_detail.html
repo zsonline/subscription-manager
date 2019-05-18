@@ -39,8 +39,8 @@
                 {# Invoice #}
                 {% if not period.payment.is_paid and period.payment.method == 'invoice' %}
                     <p class="message info">
-                        Bitte begleiche folgende Rechnung bis spätestens am {{ period.payment.due_on }}.
-                        Sobald die Zahlung bei uns eingetroffen ist, aktivieren wir dein Abo.
+                        Bitte begleiche folgende Rechnung bis am {{ period.payment.due_on }}.
+                        Sobald wir die Zahlung erhalten haben, aktivieren wir dein Abo.
                     </p>
 
                     <div class="invoice">

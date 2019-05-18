@@ -43,4 +43,9 @@ em {
   font-style: normal;
   color: $danger;
   font-weight: 700;
+
+  a {
+    color: $danger !important;
+    text-decoration-color: $danger;
+  }
 }

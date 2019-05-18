@@ -245,7 +245,6 @@ class Subscription(models.Model):
         return
 
 
-# TODO: Enforce non-overlapping periods with constraints (Django 2.2)
 class Period(models.Model):
     """
     Model that holds the data of a period. A period is one cycle of a user's

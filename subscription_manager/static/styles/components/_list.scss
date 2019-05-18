@@ -1,9 +1,14 @@
 .list {
-  margin: 0;
+  margin: 2rem 0 0 0;
   padding: 0;
 
   li {
-    margin: 2rem 0;
+    &:not(:first-child) {
+      margin-top: 2rem
+    }
+    &:not(:last-child) {
+      margin-bottom: 2rem
+    }
     list-style: none;
 
     div, p, ul {
@@ -17,8 +22,15 @@
 
 @media all and (min-width: $medium) {
   .list {
+    margin-top: 3rem;
+
     li {
-      margin: 3rem 0;
+      &:not(:first-child) {
+        margin-top: 3rem
+      }
+      &:not(:last-child) {
+        margin-bottom: 3rem
+      }
     }
   }
 }
