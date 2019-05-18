@@ -42,11 +42,6 @@ class Payment(models.Model):
     due_on = models.DateField(
         verbose_name='Zahlbar bis'
     )
-    paid_amount = models.PositiveIntegerField(
-        null=True,
-        blank=True,
-        verbose_name='Bezahlter Betrag'
-    )
     paid_at = models.DateTimeField(
         null=True,
         blank=True,

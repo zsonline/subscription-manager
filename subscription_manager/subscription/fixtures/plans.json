@@ -20,7 +20,7 @@
       "price": 0,
       "renews_to": 2,
       "eligible_active_subscriptions_per_user": 1,
-      "eligible_email_domains": "student.ethz.ch"
+      "eligible_email_domains": "student.ethz.ch;student.uzh.ch"
     }
   }
 ]

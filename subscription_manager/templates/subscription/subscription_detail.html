@@ -26,7 +26,7 @@
 
                 {# Badges #}
                 <div>
-                    {% if period.is_paid %}
+                    {% if period.payment.is_paid %}
                         <span class="badge success">Bezahlt</span>
                     {% else %}
                         <span class="badge danger">Nicht bezahlt</span>

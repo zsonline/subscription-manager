@@ -7,20 +7,18 @@
 {% endblock %}
 
 {% block content %}
+    <h4>{{ subscription.plan.name }}</h4>
+    <p>
+        {{ subscription.full_name }}<br>
+        {{ subscription.address_line }}<br>
+        {% if subscription.additional_address_line %}
+            {{ subscription.additional_address_line }}<br>
+        {% endif %}
+        {{ subscription.postcode }} {{ subscription.town }}
+    </p>
+
     <form method="post">
         {% csrf_token %}
-
-        <fieldset>
-            <h3>{{ subscription.plan.name }}</h3>
-            <p>
-                {{ subscription.full_name }}<br>
-                {{ subscription.address_line }}<br>
-                {% if subscription.additional_address_line %}
-                    {{ subscription.additional_address_line }}<br>
-                {% endif %}
-                {{ subscription.postcode }} {{ subscription.town }}
-            </p>
-        </fieldset>
 
         <fieldset>
             <input class="button danger" type="submit" value="Kündigen">

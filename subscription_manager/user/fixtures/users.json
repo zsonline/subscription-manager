@@ -4,14 +4,14 @@
     "pk": 1,
     "fields": {
       "password": "pbkdf2_sha256$100000$zoOJMvn685jA$5g++YGvim6x1EefVBE+5d7dxzChyn7+ux6JgBHoc/rk=",
-      "last_login": "2018-05-15T17:59:07Z",
+      "last_login": null,
       "is_superuser": true,
       "is_staff": true,
       "is_active": true,
       "date_joined": "2018-05-15T17:57:38Z",
-      "first_name": "Superuser",
-      "last_name": "Superuserer",
-      "email": "superuser@zs.local",
+      "first_name": "Admin",
+      "last_name": "Admin",
+      "email": "admin@zs.local",
       "groups": [],
       "user_permissions": []
     }
@@ -26,9 +26,9 @@
       "is_staff": true,
       "is_active": true,
       "date_joined": "2018-05-15T17:58:43Z",
-      "first_name": "Staff",
-      "last_name": "Staffer",
-      "email": "staff@zs.local",
+      "first_name": "Editor",
+      "last_name": "Editor",
+      "email": "editor@zs.local",
       "groups": [],
       "user_permissions": []
     }
@@ -43,9 +43,9 @@
       "is_staff": false,
       "is_active": true,
       "date_joined": "2018-05-15T17:58:50Z",
-      "first_name": "User",
-      "last_name": "Userer",
-      "email": "user@zs.local",
+      "first_name": "Subscriber",
+      "last_name": "Subscriber",
+      "email": "subscriber@zs.local",
       "groups": [],
       "user_permissions": []
     }

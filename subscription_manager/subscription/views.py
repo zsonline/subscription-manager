@@ -222,7 +222,7 @@ class SubscriptionCancelView(edit.DeleteView):
         # Get object or raise 404
         subscription = get_object_or_404(Subscription, id=subscription_id, user=user)
         # Check if subscription is active
-        if not subscription.is_active() or subscription.has_open_payments():
+        if not subscription.is_active():
             raise Http404('Subscription is inactive')
         return subscription
 

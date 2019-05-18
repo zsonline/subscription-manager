@@ -179,7 +179,9 @@ class Subscription(models.Model):
         return '{} {}'.format(self.first_name, self.last_name)
 
     def end_date(self):
-        last_paid_period = self.period_set.filter(payment__paid_at__isnull=True).order_by('-end_date').first()
+        last_paid_period = self.period_set.filter(payment__paid_at__isnull=False).order_by('-end_date').first()
+        if last_paid_period is None:
+            return None
         return last_paid_period.end_date
 
     def is_canceled(self):

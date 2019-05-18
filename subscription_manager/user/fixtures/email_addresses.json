@@ -1,0 +1,35 @@
+[
+  {
+    "model": "user.emailaddress",
+    "pk": 1,
+    "fields": {
+      "user": 1,
+      "email": "admin@zs.local",
+      "verified_at": "2018-05-15T17:57:38Z",
+      "created_at": "2018-05-15T17:57:38Z",
+      "is_active": true
+    }
+  },
+  {
+    "model": "user.emailaddress",
+    "pk": 2,
+    "fields": {
+      "user": 2,
+      "email": "editor@zs.local",
+      "verified_at": "2018-05-15T17:57:38Z",
+      "created_at": "2018-05-15T17:57:38Z",
+      "is_active": true
+    }
+  },
+  {
+    "model": "user.emailaddress",
+    "pk": 3,
+    "fields": {
+      "user": 3,
+      "email": "subscriber@zs.local",
+      "verified_at": "2018-05-15T17:57:38Z",
+      "created_at": "2018-05-15T17:57:38Z",
+      "is_active": true
+    }
+  }
+]
