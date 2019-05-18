@@ -173,7 +173,7 @@ class Subscription(models.Model):
         verbose_name_plural = 'Abos'
 
     def __str__(self):
-        return '{} von {}'.format(self.plan, self.user.full_name())
+        return 'Abo #{} ({} {}, {})'.format(self.pk, self.first_name, self.last_name, self.town)
 
     def full_name(self):
         return '{} {}'.format(self.first_name, self.last_name)
@@ -278,7 +278,7 @@ class Period(models.Model):
         verbose_name_plural = 'Perioden'
 
     def __str__(self):
-        return 'Periode vom {} bis {} für {}'.format(self.start_date, self.end_date, self.subscription)
+        return 'Periode {} für {}'.format(self.start_date, self.subscription)
 
     def has_started(self):
         """

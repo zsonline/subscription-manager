@@ -11,10 +11,7 @@ from django.utils.decorators import method_decorator
 from django.views import View
 from django.views.generic import detail, edit, list
 
-from subscription_manager.user.forms import SignUpForm
-from subscription_manager.user.models import Token
 from subscription_manager.payment.forms import PaymentForm
-from subscription_manager.payment.models import Payment
 
 from .forms import SubscriptionForm
 from .models import Subscription, Plan, Period
@@ -104,6 +101,7 @@ class SubscriptionCreateView(View):
             # Save payment
             payment = payment_form.save(commit=False)
             payment.period = period
+            payment.subscription = subscription
             payment.save()
 
             # Handle payment

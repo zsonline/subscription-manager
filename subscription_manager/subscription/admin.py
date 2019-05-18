@@ -1,70 +1,89 @@
-# Python imports
-import csv
-
-# Django imports
 from django.contrib import admin
-from django.contrib.admin.views.decorators import staff_member_required
-from django.http import HttpResponse
-from django.urls import path
+from django.shortcuts import reverse
+from django.utils.safestring import mark_safe
 
-# Application imports
-from .models import Plan, Subscription
+from import_export import resources
+from import_export.admin import ExportMixin
+
+from .models import Period, Plan, Subscription
 
 
-class SubscriptionAdmin(admin.ModelAdmin):
-    list_display = ['user', 'is_active', 'plan']
-    search_fields = ['user', 'plan', 'address_line', 'additional_address_line', 'postcode', 'town', 'country']
-    change_list_template = 'subscription/subscription_admin_changelist.html'
+class SubscriptionResource(resources.ModelResource):
+    """
+    Defines the data resource which can be exported.
+    """
+    class Meta:
+        model = Subscription
+        fields = ('first_name', 'last_name', 'address_line', 'additional_address_line', 'postcode', 'town')
 
-    def get_urls(self):
-        urls = super().get_urls()
-        new_urls = [
-            path('export/', self.export_active_as_csv),
-        ]
-        return new_urls + urls
 
-    @staticmethod
-    @staff_member_required
-    def export_active_as_csv(request):
+class IsActiveListFilter(admin.SimpleListFilter):
+    """
+    Custom list filter which filters subscription by
+    their status
+    """
+    title = 'Aktiv'
+    parameter_name = 'is_active'
+
+    def lookups(self, request, model_admin):
         """
-        Exports all active subscriptions as
-        CSV document.
+        Filter options
         """
-        # Initialise CSV file
-        response = HttpResponse(content_type='text/csv')
-        response['Content-Disposition'] = 'attachment; filename="zs_subscriptions.csv"'
-        # Fetch all subscriptions
-        subscriptions = Subscription.objects.all()
-        # Write header row
-        writer = csv.writer(response)
-        # Add each active subscription to file
-        for subscription in subscriptions:
-            if subscription.is_active():
-                if subscription.address_line_2 is not None:
-                    writer.writerow([
-                        subscription.user.last_name,
-                        subscription.user.first_name,
-                        '',
-                        subscription.address_line_2,
-                        subscription.address_line_1,
-                        subscription.city,
-                        subscription.postcode
-                    ])
-                else:
-                    writer.writerow([
-                        subscription.user.last_name,
-                        subscription.user.first_name,
-                        '',
-                        '',
-                        subscription.address_line_1,
-                        subscription.city,
-                        subscription.postcode
-                    ])
-        return response
+        return (
+            ('active', 'Aktiv'),
+            ('inactive', 'Inaktiv'),
+        )
+
+    def queryset(self, request, queryset):
+        """
+        Filter queryset based on set filter value.
+        """
+        exclude_pks = []
+
+        # Loop through queryset
+        for subscription in queryset:
+            # Collect primary keys of instances which do not fit the filter criteria
+            if self.value() == 'active' and not subscription.is_active() or \
+                    self.value() == 'inactive' and subscription.is_active():
+                exclude_pks.append(subscription.pk)
+
+        # Remove collected primary keys
+        return queryset.exclude(pk__in=exclude_pks)
+
+
+class PeriodInline(admin.StackedInline):
+    model = Period
+    extra = 0
+    readonly_fields = ['payment_link']
+
+    def payment_link(self, period):
+        """
+        Returns a payment link if a payment exists.
+        """
+        if period.payment:
+            url = reverse('admin:payment_payment_change', args=[period.payment.pk])
+            return mark_safe('<a href="{}">{}</a>'.format(url, period.payment))
+
+        return ''
+
+
+
+class SubscriptionAdmin(ExportMixin, admin.ModelAdmin):
+    """
+    Subscription model admin
+    """
+    list_display = ['user', 'plan', 'is_active', 'end_date']
+    list_filter = [IsActiveListFilter, 'plan']
+    search_fields = ['user__email', 'user__first_name', 'user__last_name', 'first_name', 'last_name', 'address_line', 'additional_address_line', 'postcode', 'town', 'country']
+    resource_class = SubscriptionResource
+    inlines = [PeriodInline]
 
 
 class PlanAdmin(admin.ModelAdmin):
-    list_display = ['name', 'duration', 'price']
+    """
+    Plan model admin
+    """
+    list_display = ['name', 'price']
 
 
 admin.site.register(Subscription, SubscriptionAdmin)

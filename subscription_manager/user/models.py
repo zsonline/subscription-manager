@@ -43,7 +43,7 @@ class User(AbstractUser):
     objects = UserManager()
 
     def __str__(self):
-        return '{} ({})'.format(self.full_name, self.email)
+        return '{} ({})'.format(self.full_name(), self.email)
 
     def email_domain(self):
         """

@@ -7,14 +7,19 @@ from django.db import models, IntegrityError, transaction
 from django.template.loader import render_to_string
 from django.utils import timezone
 
-from subscription_manager.subscription.models import Subscription
+from subscription_manager.subscription.models import Period, Subscription
 
 from .managers import PaymentManager
 
 
 class Payment(models.Model):
     period = models.OneToOneField(
-        to='subscription.Period',
+        to=Period,
+        on_delete=models.CASCADE,
+        verbose_name='Periode'
+    )
+    subscription = models.ForeignKey(
+        to=Subscription,
         on_delete=models.CASCADE,
         verbose_name='Abo'
     )
