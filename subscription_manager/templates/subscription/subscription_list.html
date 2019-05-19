@@ -54,7 +54,7 @@
                     {# Actions #}
                     <ul class="actions">
                         {% if not subscription.is_paid %}
-                            <li><em><a href="{% url 'subscription_detail' subscription.id %}">Offene Rechnung</a></em></li>
+                            <li><a href="{% url 'subscription_detail' subscription.id %}"><em>Offene Rechnung</em></a></li>
                         {% else %}
                             <li><a href="{% url 'subscription_detail' subscription.id %}">Zahlungsübersicht</a></li>
                         {% endif %}

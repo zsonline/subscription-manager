@@ -43,9 +43,12 @@ em {
   font-style: normal;
   color: $danger;
   font-weight: 700;
+}
+a em {
+  color: $danger;
+  text-decoration: underline;
 
-  a {
-    color: $danger !important;
-    text-decoration-color: $danger;
+  &:hover, &:focus, &:active {
+    color: lighten($danger, 15%);
   }
 }

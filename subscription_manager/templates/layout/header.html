@@ -8,6 +8,10 @@
         <h1>Zürcher Studierendenzeitung</h1>
     </a>
 
+    <div id="header-nav-toggle">
+        <a href="#">Navigation anzeigen</a>
+    </div>
+
     <nav id="header-nav">
 
         <div class="left">
@@ -26,10 +30,27 @@
         <div class="right">
             {% if user.is_authenticated %}
                 <span>Du bist angemeldet als {{ user.full_name }}.</span>
-                <a href="{% url 'logout' %}">Abmelden</a>
+                <a href="{% url 'logout' %}"><em>Abmelden</em></a>
             {% endif %}
         </div>
 
     </nav>
 
 </header>
+
+<script type="text/javascript">
+    // Add event listener to navigation toggle
+    document.getElementById("header-nav-toggle").children[0].addEventListener("click", function(event) {
+        const navigationToggle = event.target,
+            navigation = document.getElementById("header-nav");
+
+        // Add class to navigation and change toggle text depending on the navigation's state
+        if(navigation.classList.contains("toggled")) {
+            navigation.classList.remove("toggled");
+            navigationToggle.innerText = "Navigation anzeigen";
+        } else {
+            navigation.classList.add("toggled");
+            navigationToggle.innerText = "Navigation verbergen";
+        }
+    });
+</script>

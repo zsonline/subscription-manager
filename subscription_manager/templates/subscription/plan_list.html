@@ -45,9 +45,9 @@
                     <span class="badge danger">Nicht erhältlich</span>
                     Du brauchst eine kürzlich verifizierte E-Mail-Adresse, die auf {{ plan.get_readable_eligible_email_domains }} endet.
                     {% if plan.eligible_active_subscriptions_per_user <= 1 %}
-                        Du darfst maximal {{ plan.eligible_active_subscriptions_per_user|humanize:'number' }} aktives Abo «{{ plan.name }}» haben.
+                        Du darfst maximal {{ plan.eligible_active_subscriptions_per_user|humanize:'number' }} solches aktives Abo haben.
                     {% else %}
-                        Du darfst maximal {{ plan.eligible_active_subscriptions_per_user|humanize:'number' }} aktive Abos «{{ plan.name }}» haben.
+                        Du darfst maximal {{ plan.eligible_active_subscriptions_per_user|humanize:'number' }} solche aktive Abos haben.
                     {% endif %}
                 </p>
 
