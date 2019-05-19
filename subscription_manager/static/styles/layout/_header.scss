@@ -27,12 +27,17 @@ header {
     grid-template-areas:
             "top"
             "bottom";
-    grid-row-gap: 2rem;
 
     margin-top: 1rem;
 
     &.toggled {
       display: grid;
+    }
+
+    .left, .right {
+      &:not(:last-child) {
+        margin-bottom: 2rem;
+      }
     }
 
     .left {
@@ -106,6 +111,7 @@ header {
       .left, .right {
         display: flex;
         align-items: center;
+        margin: 0 !important;
       }
 
       .left {
