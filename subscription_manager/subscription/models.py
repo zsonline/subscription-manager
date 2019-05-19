@@ -82,7 +82,7 @@ class Plan(models.Model):
         eligible_email_domains_list = self.eligible_email_domains.split(';')
         return list(filter(None, eligible_email_domains_list))
 
-    def get_readable_eligible_email_domains(self, conjunction='und'):
+    def get_readable_eligible_email_domains(self, conjunction='oder'):
         """
         Returns a readable string of the eligible email domains.
         """

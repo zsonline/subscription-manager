@@ -55,8 +55,16 @@ class User(AbstractUser):
         """
         Returns a list of all verified email domain.
         """
-        email_addresses = self.emailaddress_set.filter(verified_at__isnull=False).values('email')
-        email_addresses = map(lambda email: email['email'].split('@')[-1], email_addresses)
+        email_addresses = self.emailaddress_set.filter(verified_at__isnull=False)
+
+        # Exclude email addresses which have not been verified in the last 30 days.
+        exclude_pks = []
+        for email_address in email_addresses:
+            if email_address.recently_verified(timezone.timedelta(days=30)):
+                exclude_pks.append(email_address.pk)
+        email_addresses = email_addresses.exclude(pk__in=exclude_pks)
+
+        email_addresses = map(lambda email: email['email'].split('@')[-1], email_addresses.values('email'))
         return list(email_addresses)
 
     def full_name(self):
@@ -133,14 +141,14 @@ class EmailAddress(models.Model):
         return self.verified_at is not None
     is_verified.boolean = True
 
-    def recently_verified(self, timedelta=timezone.timedelta(days=1)):
+    def recently_verified(self, timedelta=timezone.timedelta(days=30)):
         """
         Returns true if the email address has already been
         verified in given timedelta. Default: one day.
         """
         if self.verified_at is None:
             return False
-        return self.verified_at.date() > timezone.now() - timedelta
+        return self.verified_at.date() > timezone.now().date() - timedelta
     recently_verified.boolean = True
 
     @transaction.atomic

@@ -18,11 +18,6 @@ class Payment(models.Model):
         on_delete=models.CASCADE,
         verbose_name='Periode'
     )
-    subscription = models.ForeignKey(
-        to=Subscription,
-        on_delete=models.CASCADE,
-        verbose_name='Abo'
-    )
     amount = models.PositiveIntegerField(
         verbose_name='Betrag in CHF'
     )

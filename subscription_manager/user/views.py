@@ -113,7 +113,7 @@ def token_verification_view(request, code):
     # Do login
     if token.purpose == 'login':
         # Verify email if it has not been verified already
-        if not token.email_address.is_verified() and not token.email_address.recently_verified():
+        if not token.email_address.is_verified() and not token.email_address.recently_verified(timezone.timedelta(days=1)):
             token.email_address.verify()
         # Get user
         user = authenticate(code=code)
@@ -131,7 +131,7 @@ def token_verification_view(request, code):
     # Do login but add different success message
     elif token.purpose == 'signup':
         # Verify email if it has not been verified already
-        if not token.email_address.is_verified() and not token.email_address.recently_verified():
+        if not token.email_address.is_verified() and not token.email_address.recently_verified(timezone.timedelta(days=1)):
             token.email_address.verify()
         # Get user
         user = authenticate(code=code)
@@ -148,7 +148,7 @@ def token_verification_view(request, code):
 
     # Do email verification
     elif token.purpose == 'verification':
-        if not token.email_address.recently_verified():
+        if not token.email_address.recently_verified(timezone.timedelta(days=1)):
             token.email_address.verify()
         token.delete()
         messages.success(request, 'Die E-Mail-Adresse {} wurde verifiziert.'.format(token.email_address.email))
@@ -254,7 +254,7 @@ def email_send_verification_view(request, email_address_id):
     email_address = get_object_or_404(EmailAddress, pk=email_address_id, user=request.user)
 
     # Disallow multiple verifications on same day
-    if email_address.recently_verified():
+    if email_address.recently_verified(timezone.timedelta(days=1)):
         messages.error(request, 'Die E-Mail-Adresse wurde in den letzten 24 Stunden bereits verifiziert.')
         return redirect('email_address_list')
 

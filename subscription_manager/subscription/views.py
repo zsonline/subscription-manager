@@ -134,6 +134,12 @@ class PlanListView(list.ListView):
         """
         return Plan.objects.filter_eligible(self.request.user)
 
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        eligible_plans_pk = Plan.objects.filter_eligible(self.request.user).values('pk')
+        context['not_eligible_plans'] = Plan.objects.filter(is_purchasable=True).exclude(pk__in=eligible_plans_pk)
+        return context
+
 
 @method_decorator(login_required, name='dispatch')
 class SubscriptionListView(list.ListView):

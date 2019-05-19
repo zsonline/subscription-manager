@@ -15,6 +15,9 @@
             {% if user.is_authenticated %}
                 <a class="{% active 'subscription_list' %}" href="{% url 'subscription_list' %}">Abonnements</a>
                 <a class="{% active 'email_address_list' %}" href="{% url 'email_address_list' %}">E-Mail-Adressen</a>
+                {% if user.is_staff %}
+                    <a href="{% url 'admin:index' %}">Verwaltung</a>
+                {% endif %}
             {% else %}
                 <a class="{% active 'login' %}" href="{% url 'login' %}">Abo verwalten</a>
             {% endif %}

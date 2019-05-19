@@ -34,5 +34,31 @@
         {% empty %}
             <p class="message info">Leider haben wir zurzeit kein passendes Abo für dich.</p>
         {% endfor %}
+
+        {% for plan in not_eligible_plans %}
+            <li class="plan disabled">
+
+                <h3>{{ plan.name }}</h3>
+                <p>{{ plan.description }}</p>
+
+                <p>
+                    {{ plan.price|humanize:'money'|capfirst }}
+                    {% if plan.price != 0 %}
+                        /
+                        {{ plan.duration|humanize:'duration' }}
+                    {% endif %}
+                </p>
+
+                <p class="message grey">
+                    Du brauchst eine kürzlich verifizierte E-Mail-Adresse, die auf {{ plan.get_readable_eligible_email_domains }} endet.
+                    {% if plan.eligible_active_subscriptions_per_user <= 1 %}
+                        Du darfst maximal {{ plan.eligible_active_subscriptions_per_user|humanize:'number' }} aktives Abo «{{ plan.name }}» haben.
+                    {% else %}
+                        Du darfst maximal {{ plan.eligible_active_subscriptions_per_user|humanize:'number' }} aktive Abos «{{ plan.name }}» haben.
+                    {% endif %}
+                </p>
+
+            </li>
+        {% endfor %}
     </ul>
 {% endblock %}

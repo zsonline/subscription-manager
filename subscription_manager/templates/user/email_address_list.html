@@ -35,7 +35,11 @@
                 {# Actions #}
                 <ul class="actions">
                     {% if not email_address.recently_verified %}
-                        <li><a href="{% url 'email_address_send_verification' email_address.pk %}">Verifizieren</a></li>
+                        {% if not email_address.verified_at %}
+                            <li><a href="{% url 'email_address_send_verification' email_address.pk %}">Verifizieren</a></li>
+                        {% else %}
+                            <li><a href="{% url 'email_address_send_verification' email_address.pk %}">Erneut verifizieren</a></li>
+                        {% endif %}
                     {% endif %}
 
                     {% if not email_address.is_primary %}

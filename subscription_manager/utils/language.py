@@ -55,3 +55,35 @@ def humanize_francs(amount):
         return 'gratis'
     else:
         return '{} Franken'.format(amount)
+
+
+def humanize_number(number):
+    if number == 0:
+        return 'kein'
+    elif number == 1:
+        return 'ein'
+    elif number == 2:
+        return 'zwei'
+    elif number == 3:
+        return 'drei'
+    elif number == 4:
+        return 'vier'
+    elif number == 5:
+        return 'fünf'
+    elif number == 6:
+        return 'sechs'
+    elif number == 7:
+        return 'sieben'
+    elif number == 8:
+        return 'acht'
+    elif number == 9:
+        return 'neun'
+    elif number == 10:
+        return 'zehn'
+    elif number == 11:
+        return 'elf'
+    elif number == 12:
+        return 'zwölf'
+    else:
+        return number
+

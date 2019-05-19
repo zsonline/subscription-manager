@@ -1,6 +1,6 @@
 from django import template
 
-from ..language import humanize_francs, humanize_timedelta
+from ..language import humanize_francs, humanize_timedelta, humanize_number
 
 register = template.Library()
 
@@ -11,4 +11,6 @@ def humanize(value, type):
         return humanize_timedelta(value)
     elif type == 'money':
         return humanize_francs(value)
+    elif type == 'number':
+        return humanize_number(value)
     return ''
