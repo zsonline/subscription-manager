@@ -1,19 +1,13 @@
-@import "../colours";
-
 @mixin message($colour) {
   background-color: hsl(hue($colour), saturation($colour), 75%);
-  color: $black;
+  color: text-contrast(hsl(hue($colour), saturation($colour), 75%));
 }
 
 .message {
   box-sizing: border-box;
   padding: .75em;
 
-  &, &.black {
-    @include message($black);
-  }
-
-  &.info {
+  &, &.info {
     @include message($info);
   }
 
@@ -25,7 +19,7 @@
     @include message($warning);
   }
 
-  &.error {
+  &.danger {
     @include message($danger);
   }
 }

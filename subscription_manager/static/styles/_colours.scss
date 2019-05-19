@@ -2,7 +2,6 @@
   @return hsl(0, 0, 100 - $percentage)
 }
 
-// Natural colours
 $white: black(0);
 $lighter-grey: black(3);
 $light-grey: black(25);
@@ -15,7 +14,7 @@ $black: black(99);
   $colour-brightness: round((red($colour) * 299) + (green($colour) * 587) + (blue($colour) * 114) / 1000);
   $light-colour: round((red($white) * 299) + (green($white) * 587) + (blue($white) * 114) / 1000);
 
-  @if abs($colour-brightness) < ($light-colour/2){
+  @if abs($colour-brightness) < ($light-colour/2) {
     @return $white;
   }
 
@@ -24,8 +23,7 @@ $black: black(99);
   }
 }
 
-// Action colours
-$info: #375e97;
-$success: #3f681c;
-$warning: #ffbb00;
-$danger: #fb6542;
+$info: hsl(215, 50%, 50%);
+$success: hsl(95, 45%, 50%);
+$warning: hsl(45, 90%, 50%);
+$danger: hsl(10, 80%, 50%);

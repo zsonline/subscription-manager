@@ -1,5 +1,3 @@
-@import "../colours";
-
 @mixin badge($colour) {
   color: text-contrast($colour);
   background-color: $colour;

@@ -1,12 +1,10 @@
-@import "../colours";
-
-@mixin button($colour, $hover-colour: lighten($colour, 10%)) {
+@mixin button($colour) {
   background-color: $colour;
   color: text-contrast($colour);
 
   &:focus, &:active, &:hover {
-    background-color: $hover-colour;
-    color: text-contrast($hover-colour);
+    background-color: lighten($colour, 10%);
+    color: text-contrast(lighten($colour, 10%));
   }
 }
 
