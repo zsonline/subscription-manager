@@ -40,11 +40,6 @@ class Plan(models.Model):
         default=True,
         verbose_name='Erneuerbar'
     )
-    renews_to = models.ForeignKey(
-        to='self',
-        on_delete=models.PROTECT,
-        verbose_name='Erneuert als'
-    )
     eligible_active_subscriptions_per_user = models.PositiveIntegerField(
         null=True,
         blank=True,
@@ -220,6 +215,14 @@ class Subscription(models.Model):
         unpaid_periods = self.period_set.filter(payment__paid_at__isnull=True)
         return unpaid_periods.count() == 0
     is_paid.boolean = True
+
+    def can_be_renewed_by(self, user):
+        """
+        Returns true if the given user can renew the subscription.
+        """
+        if user == self.user and self.plan.is_eligible(user) and self.plan.is_renewable and self.expires_soon():
+            return True
+        return False
 
     def renew(self):
         """

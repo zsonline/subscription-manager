@@ -248,47 +248,30 @@ class PeriodCreateView(View):
     subscription = None
     last_period = None
 
-    @classmethod
-    def get_subscription(cls, user, **kwargs):
-        """
-        Read subscription id from URL parameters and return
-        if subscription exists.
-        """
-        # Get from URL parameters
-        subscription_id = kwargs.get('subscription_id')
-
-        # Check if plan exists
-        try:
-            subscription = Subscription.objects.get(id=subscription_id)
-        except Subscription.DoesNotExist:
-            subscription = None
-
-        # Check if it is the right user
-        if user != subscription.user:
-            subscription = None
-
-        return subscription
-
     def dispatch(self, request, *args, **kwargs):
         """
         Dispatch method is called before get or post method.
         Checks if subscription exists and whether the user is eligible
         to renew it.
         """
-        # Get subscription
-        subscription = self.get_subscription(request.user, **kwargs)
-        if subscription is None:
-            # If subscription does not exist raise 404
+        # Get from URL parameter
+        subscription_id = kwargs.get('subscription_id')
+
+        # Check if subscription exists
+        try:
+            subscription = Subscription.objects.get(id=subscription_id)
+        except Subscription.DoesNotExist:
             raise Http404('Subscription does not exist.')
+
+        # Check if it is the right user, she is eligible and the plan is renewable
+        if not subscription.can_be_renewed_by(request.user):
+            # If it is not the case, raise 404
+            raise Http404('Subscription does not exist.')
+
         self.subscription = subscription
 
         # Get last period
         self.last_period = self.subscription.period_set.order_by('-end_date').first()
-
-        # Check eligibility
-        if not subscription.plan.is_eligible(request.user):
-            messages.error(request, 'Du bist nicht berechtigt, diese Abo zu verlängern. Verifiziere deine E-Mail-Adressen und stelle sicher, dass du die maximale Anzahl an Abos nicht erreicht hast.')
-            return redirect('subscription_detail', subscription_id=self.subscription.pk)
 
         return super().dispatch(request, *args, **kwargs)
 

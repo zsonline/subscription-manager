@@ -1,5 +1,7 @@
 {% extends 'base.html' %}
 
+{% load renewal %}
+
 {% block title %}Abonnements{% endblock %}
 
 {% block description %}
@@ -60,9 +62,7 @@
                         {% endif %}
                         {% if subscription.is_active %}
                             <li><a href="{% url 'subscription_update' subscription.id %}">Adresse ändern</a></li>
-                            {% if subscription.expires_soon %}
-                                <li><a href="{% url 'period_create' subscription.id %}">Verlängern</a></li>
-                            {% endif %}
+                            {% renewal_link subscription user %}
                             {% if not subscription.has_open_payments %}
                                 <li><a href="{% url 'subscription_cancel' subscription.id %}">Kündigen</a></li>
                             {% endif %}
