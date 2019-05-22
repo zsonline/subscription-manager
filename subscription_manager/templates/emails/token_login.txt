@@ -1,3 +1,7 @@
-{% extends 'base_email.txt' %}
+{{ to_name }}, hier ist dein Anmelde-Link.
 
-{% block content %}das ist dein Anmelde-Link: {{ url }}.{% endblock %}
+{{ token.url }}
+
+Der Link ist gültig bis am {{ token.valid_until }}.
+
+Die Zürcher Studierendenzeitung

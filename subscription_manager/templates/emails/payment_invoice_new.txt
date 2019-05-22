@@ -1,20 +1,19 @@
-{% extends 'base_email.txt' %}
+{{ to_name }}, vielen Dank für deine Bestellung.
 
-{% block content %}wir freuen uns, dich zu unserer Leserschaft zählen zu dürfen.
-
-Um die Bestellung abzuschliessen, zahle den Rechnungsbetrag auf dieses Konto ein:
+Bitte begleiche folgende Rechnung bis spätestens am {{ payment.due_on }}. Sobald wir die Zahlung erhalten haben, aktivieren wir dein Abo.
 
 Betrag:
 {{ payment.amount }} Franken
 
+Mitteilungsfeld:
+{{ payment.code }}
+
 IBAN:
 CH32 0070 0110 0030 6727 2
 
-Bankkonto-Nummer:
-1100-3067.272
-
 Kontoinhaber:
 Medienverein ZS
+Rämistrasse 62
 8001 Zürich
 
 Finanzinstitut:
@@ -22,4 +21,6 @@ Zürcher Kantonalbank
 Postfach
 8010 Zürich
 
-Wir danken und wünschen dir eine anregende Lektüre.{% endblock %}
+Wir freuen uns, dich bald zu unseren Leserinnen und Lesern zählen zu dürfen.
+
+Die Zürcher Studierendenzeitung

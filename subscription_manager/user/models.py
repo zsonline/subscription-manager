@@ -282,8 +282,7 @@ class Token(models.Model):
         else:
             super().save(force_insert, force_update, using, update_fields)
 
-    @staticmethod
-    def url(code):
+    def url(self):
         """
         Returns the url for a given code.
         Example: https://www.hostname.tld/auth/token/1836af19-67df-4090-8229-16ed13036480/
@@ -293,7 +292,7 @@ class Token(models.Model):
             reverse(
                 'token_verification',
                 kwargs={
-                    'code': code
+                    'code': self.code
                 }
             )
         )
@@ -308,7 +307,7 @@ class Token(models.Model):
         subject = self.get_purpose_display()
 
         # Generate url
-        url = Token.url(self.code)
+        url = self.url()
         if next_page is not None:
             url += '?next=' + next_page
 
@@ -317,7 +316,7 @@ class Token(models.Model):
             subject=settings.EMAIL_SUBJECT_PREFIX + subject,
             message=render_to_string(template, {
                 'to_name': self.email_address.user.first_name,
-                'url': url,
+                'token': self
             }),
             from_email=settings.DEFAULT_FROM_EMAIL,
             recipient_list=[self.email_address.email],

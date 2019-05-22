@@ -1,10 +1,15 @@
-{% extends 'base_email.txt' %}
+{{ to_name }}, wir haben deine Zahlung erhalten. Vielen Dank!
 
-{% block content %}dein Abonnement wurde aktiviert und ist gültig bis am {{ payment.subscription.end_date }}. Die ZS schicken wir dir ab jetzt an folgende Adresse:
-{{ payment.subscription.address_line_1 }}{% if payment.subscription.address_line_2 %}
-{{ payment.subscription.address_line_2 }}{% endif %}
-{{ payment.subscription.postcode }} {{ payment.subscription.city }}
+Wir haben dein Abo aktiviert. Es ist gültig bis am {{ payment.period.end_date }}.
 
-Du kannst deine Adresse jederzeit unter https://www.abo.zs-online.ch anpassen.
+Du erhältst die ZS ab jetzt an untenstehende Adresse geliefert.
+{{ payment.period.subscription.full_name }}
+{{ payment.period.subscription.address_line }}{% if payment.period.subscription.additional_address_line %}
+{{ payment.period.subscription.additional_address_line }}{% endif %}
+{{ payment.period.subscription.postcode }} {{ payment.period.subscription.town }}
 
-Wir wünschen dir viel Spass beim Lesen.{% endblock %}
+Du kannst deine Adresse unter https://www.abo.zs-online.ch ändern.
+
+Wir wünschen dir eine interessante Lektüre.
+
+Die Zürcher Studierendenzeitung
