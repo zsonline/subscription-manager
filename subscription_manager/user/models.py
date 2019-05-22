@@ -60,7 +60,7 @@ class User(AbstractUser):
         # Exclude email addresses which have not been verified in the last 30 days.
         exclude_pks = []
         for email_address in email_addresses:
-            if email_address.recently_verified(timezone.timedelta(days=30)):
+            if not email_address.recently_verified(timezone.timedelta(days=30)):
                 exclude_pks.append(email_address.pk)
         email_addresses = email_addresses.exclude(pk__in=exclude_pks)
 

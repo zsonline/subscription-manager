@@ -92,12 +92,12 @@ class Plan(models.Model):
         else:
             return ', '.join(eligible_email_domains[:-1]) + ' ' + conjunction + ' ' + eligible_email_domains[-1]
 
-    def is_eligible(self, user):
+    def is_eligible(self, user, purpose='purchase'):
         """
         Checks whether a given user is eligible
         to purchase the subscription.
         """
-        if user is None or self in Plan.objects.filter_eligible(user):
+        if user is None or self in Plan.objects.filter_eligible(user, purpose):
             return True
         return False
     is_eligible.boolean = True
@@ -220,7 +220,7 @@ class Subscription(models.Model):
         """
         Returns true if the given user can renew the subscription.
         """
-        if user == self.user and self.plan.is_eligible(user) and self.plan.is_renewable and self.expires_soon():
+        if user == self.user and self.plan.is_eligible(user, 'renewal') and self.expires_soon():
             return True
         return False
 

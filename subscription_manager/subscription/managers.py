@@ -1,6 +1,6 @@
 from django.apps import apps
 from django.conf import settings
-from django.core.mail import send_mail
+from django.core.mail import send_mass_mail
 from django.db import models
 from django.shortcuts import reverse
 from django.template.loader import render_to_string
@@ -61,43 +61,48 @@ class PlanManager(models.Manager):
 
 class SubscriptionManager(models.Manager):
 
-    # TODO:
-
-    def notify_to_be_expired_subscribers(self):
+    def get_expiring(self, timedelta=timezone.timedelta(days=30)):
         """
-        Sends an email to users whose subscriptions
-        expire.
+        Returns all subscriptions that expire.
         """
-        subscriptions = self.all_expire_in(30)
-        for subscription in subscriptions:
-            self.send_expiration_email(subscription)
-
-    def all_expire_in(self, days):
-        """
-        Returns all subscriptions that expire in a
-        given amount of days (exactly).
-        """
-        subscriptions = self.filter(end_date=timezone.now().date()+timezone.timedelta(days=days)).filter(canceled_at__isnull=True)
+        # Get all expiring periods
+        period_model = apps.get_model('period', 'Period')
+        expiring_periods = period_model.objects.get_active().filter(end_date=timezone.now().date+timedelta)
+        # Get subscription of these periods, which have not been canceled
+        subscriptions = self.filter(canceled_at__isnull=True).filter(period__in=expiring_periods)
         return subscriptions
 
-    @staticmethod
-    def send_expiration_email(subscription):
+    def send_expiration_emails(self):
         """
-        Sends expiration email for a given
-        subscription.
+        Sends an email to users whose subscriptions expire.
         """
-        send_mail(
-            subject=settings.EMAIL_SUBJECT_PREFIX + 'Abo verlängern',
-            message=render_to_string('emails/subscription_expiration.txt', {
-                'to_name': subscription.user.first_name,
-                'subscription': subscription,
-                'url': '{}{}'.format(settings.BASE_URL, reverse('login'))
-                       + '?next=' + reverse('payment_create', kwargs={'subscription_id': subscription.id})
-            }),
-            from_email=settings.DEFAULT_FROM_EMAIL,
-            recipient_list=[subscription.user.email],
-            fail_silently=False
-        )
+        # Get all expiring subscriptions
+        expiring_subscriptions = self.get_expiring(timezone.timedelta(days=30))
+
+        # Loop through subscriptions and send an reminder email to all users
+        token_model = apps.get_model('token', 'Token')
+        messages = []
+        for subscription in expiring_subscriptions:
+            # If subscription is not owned by a user, skip
+            user = subscription.user
+            if user is None:
+                continue
+            # Create login token
+            token = token_model.objects.create(email_address=user.primary_email(), purpose='login')
+            # Add expiration email message
+            messages.append((
+                settings.EMAIL_SUBJECT_PREFIX + 'Abo verlängern',
+                render_to_string('emails/subscription_expiration.txt', {
+                    'to_name': user.first_name,
+                    'subscription_id': subscription.id,
+                    'token': token
+                }),
+                settings.DEFAULT_FROM_EMAIL,
+                [user.email]
+            ))
+
+        # Send all expiration emails
+        send_mass_mail(tuple(messages), fail_silently=False)
 
 
 class PeriodManager(models.Manager):
