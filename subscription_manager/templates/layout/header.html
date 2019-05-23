@@ -15,10 +15,10 @@
     <nav id="header-nav">
 
         <div class="left">
-            <a class="{% active 'plan_list' %}" href="{% url 'plan_list' %}">Abo bestellen</a>
+            <a class="{% active 'plan_list' 'signup' 'subscription_create' %}" href="{% url 'plan_list' %}">Abo bestellen</a>
             {% if user.is_authenticated %}
-                <a class="{% active 'subscription_list' %}" href="{% url 'subscription_list' %}">Abonnements</a>
-                <a class="{% active 'email_address_list' %}" href="{% url 'email_address_list' %}">E-Mail-Adressen</a>
+                <a class="{% active 'subscription_list' 'subscription_detail' 'subscription_update' 'subscription_cancel' 'period_create' %}" href="{% url 'subscription_list' %}">Abonnements</a>
+                <a class="{% active 'email_address_list' 'email_address_create' 'email_address_delete' %}" href="{% url 'email_address_list' %}">E-Mail-Adressen</a>
                 {% if user.is_staff %}
                     <a href="{% url 'admin:index' %}">Verwaltung</a>
                 {% endif %}

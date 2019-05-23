@@ -1,6 +1,8 @@
-{{ to_name }}, wir haben deine Zahlung erhalten. Vielen Dank!
+{% if payment.amount != 0 %}{{ to_name }}, wir haben deine Zahlung erhalten. Vielen Dank!
 
-Wir haben dein Abo aktiviert. Es ist gültig bis am {{ payment.period.end_date }}.
+Wir haben dein Abo aktiviert. {% else %}{{ to_name }}, wir haben dein Abo aktiviert.
+
+{% endif %}Es ist gültig bis am {{ payment.period.end_date }}.
 
 Du erhältst die ZS ab jetzt an untenstehende Adresse geliefert.
 {{ payment.period.subscription.full_name }}

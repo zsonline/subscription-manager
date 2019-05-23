@@ -76,8 +76,8 @@ class SubscriptionManager(models.Manager):
         """
         Sends an email to users whose subscriptions expire.
         """
-        # Get all expiring subscriptions
-        expiring_subscriptions = self.get_expiring(timezone.timedelta(days=30))
+        # Get all expiring subscriptions which are renewable
+        expiring_subscriptions = self.get_expiring(timezone.timedelta(days=30)).filter(plan__is_renewable=True)
 
         # Loop through subscriptions and send an reminder email to all users
         token_model = apps.get_model('token', 'Token')
