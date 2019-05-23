@@ -1,7 +1,7 @@
 {{ to_name }}, verifiziere deine E-Mail-Adresse.
 
 Klicke dafür auf diesen Link: {{ token.url }}.
-Er ist gültig bis am {{ token.valid_until }}.
+Er ist gültig bis am {{ token.valid_until|date:'j. F Y, G.i \U\h\r' }}.
 
 Nach der Verifizierung kannst ein Abo bestellen.
 

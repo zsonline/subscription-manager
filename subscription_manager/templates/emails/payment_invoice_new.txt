@@ -1,6 +1,6 @@
 {{ to_name }}, vielen Dank für deine Bestellung.
 
-Bitte begleiche folgende Rechnung bis spätestens am {{ payment.due_on }}. Sobald wir die Zahlung erhalten haben, aktivieren wir dein Abo.
+Bitte begleiche folgende Rechnung bis spätestens am {{ payment.due_on|date:'j. F Y' }}. Sobald wir die Zahlung erhalten haben, aktivieren wir dein Abo.
 
 Betrag:
 {{ payment.amount }} Franken

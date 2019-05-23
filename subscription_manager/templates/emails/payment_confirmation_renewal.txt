@@ -2,7 +2,7 @@
 
 Wir haben dein Abo verlängert. {% else %}{{ to_name }}, wir haben dein Abo verlängert.
 
-{% endif %}Es ist gültig bis am {{ payment.period.end_date }}.
+{% endif %}Es ist gültig bis am {{ payment.period.end_date|date:'j. F Y' }}.
 
 Du erhältst die ZS weiterhin an untenstehende Adresse geliefert.
 {{ payment.period.subscription.full_name }}
