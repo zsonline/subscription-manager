@@ -58,12 +58,6 @@ templates/
 └── subscription
 ```
 
-
-## Contributors
-
-- [Robin Bisping](https://www.robinbisping.com/)
-
-
 ## Helpful links
 
 - [Django documentation](https://docs.djangoproject.com/en/dev/)
