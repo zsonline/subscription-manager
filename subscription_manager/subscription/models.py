@@ -191,7 +191,7 @@ class Subscription(models.Model):
         Returns true if the subscription has not been
         canceled and one active period exists.
         """
-        return not self.is_canceled() and self.get_active_periods().count() == 1
+        return not self.is_canceled() and self.get_active_periods().count() > 0
     is_active.boolean = True
 
     def get_active_periods(self):

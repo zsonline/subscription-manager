@@ -8,6 +8,10 @@
 {% endblock %}
 
 {% block content %}
+    <div class="action-bar">
+        <a class="button grey" href="{% url 'subscription_list' %}">Zurück zur Aboübersicht</a>
+    </div>
+
     <h4>{{ subscription.plan }}</h4>
     <p>
         {{ subscription.full_name }}<br>

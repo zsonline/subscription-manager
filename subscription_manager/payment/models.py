@@ -25,7 +25,7 @@ class Payment(models.Model):
         max_length=20,
         choices=(
             ('invoice', 'Banküberweisung'),
-            ('twint', 'Twint')
+            # ('twint', 'Twint')
         ),
         default='invoice',
         verbose_name='Zahlungsmethode'
@@ -152,10 +152,11 @@ class Payment(models.Model):
         self.paid_at = timezone.now()
         self.save()
 
-        # Adjust period interval
-        self.period.start_date = timezone.now().date()
-        self.period.end_date = (timezone.now() + self.period.subscription.plan.duration).date()
-        self.period.save()
+        # Adjust period interval if payment is received after already set start date
+        if self.paid_at.date() > self.period.start_date:
+            self.period.start_date = self.paid_at.date()
+            self.period.end_date = (self.paid_at + self.period.subscription.plan.duration).date()
+            self.period.save()
 
         if not self.is_renewal():
             # New subscription
