@@ -18,12 +18,15 @@ class TokenBackend(backends.ModelBackend):
             return None
 
         # Encode code and find it in database
-        token = Token.objects.get(code=code)
-        # If token is valid, delete token and return user
-        if token is not None and token.is_valid():
-            user = token.email_address.user
-            token.delete()
-            if user.is_active:
-                return user
+        try:
+            token = Token.objects.get(code=code)
+            # If token is valid, delete token and return user
+            if token.is_valid():
+                user = token.email_address.user
+                token.delete()
+                if user.is_active:
+                    return user
+        except Token.DoesNotExist:
+            pass
 
         return None

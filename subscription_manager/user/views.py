@@ -116,7 +116,7 @@ def token_verification_view(request, code):
         if not token.email_address.is_verified() and not token.email_address.recently_verified(timezone.timedelta(days=1)):
             token.email_address.verify()
         # Get user
-        user = authenticate(code=code)
+        user = authenticate(request, code=code)
         # If authentication is successful, log user in
         if user is not None:
             login(request, user)
@@ -134,7 +134,7 @@ def token_verification_view(request, code):
         if not token.email_address.is_verified() and not token.email_address.recently_verified(timezone.timedelta(days=1)):
             token.email_address.verify()
         # Get user
-        user = authenticate(code=code)
+        user = authenticate(request, code=code)
         # If authentication is successful, log user in
         if user is not None:
             login(request, user)
