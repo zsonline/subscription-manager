@@ -8,8 +8,6 @@ from django.shortcuts import reverse
 from django.template.loader import render_to_string
 from django.utils import timezone
 
-from constance import config
-
 from .managers import UserManager, TokenManager
 
 
@@ -260,11 +258,11 @@ class Token(models.Model):
             user = self.email_address.user
             if user is None:
                 raise ValueError
-            if Token.objects.count_created_in_last_hour(user) >= config.TOKENS_PER_USER_PER_HOUR:
+            if Token.objects.count_created_in_last_hour(user) >= settings.TOKENS_PER_USER_PER_HOUR:
                 raise self.TokenQuotaExceededError
 
             # Set valid until
-            self.valid_until = timezone.now() + config.TOKEN_EXPIRATION
+            self.valid_until = timezone.now() + settings.TOKEN_EXPIRATION
 
             # Try creating a token object
             while True:

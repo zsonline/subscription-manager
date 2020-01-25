@@ -1,5 +1,4 @@
 from random import randint
-from constance import config
 from post_office import mail
 
 from django.conf import settings
@@ -79,7 +78,7 @@ class Payment(models.Model):
         # If object is newly created
         if not self.pk:
             # Set due on date
-            self.due_on = timezone.now().date() + config.PERIOD_OF_PAYMENT
+            self.due_on = timezone.now().date() + timezone.timedelta(days=30)
 
             # Generate code
             while True:
@@ -130,7 +129,7 @@ class Payment(models.Model):
 
         # Add accounting emails to recipient list
         recipient_list = [self.period.subscription.user.email]
-        recipient_list += config.EMAIL_ACCOUNTING.split(';')
+        recipient_list += settings.ACCOUNTING_EMAIL
 
         mail.send(
             subject=settings.EMAIL_SUBJECT_PREFIX + 'Rechnung',

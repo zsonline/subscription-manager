@@ -13,18 +13,18 @@ try:
 
     from subscription_manager.user.models import Token
 
-    @timer(10)
+    @timer(5)
     def send_queued_mail(signum):
         """
-        Send queued mail every 10 seconds
+        Send queued mail every 5 seconds
         """
         call_command('send_queued_mail', '--processes=1', '--verbosity=0')
 
-    @cron(40, 2, -1, -1, -1)
+    @cron(0, 4, -1, -1, -1)
     def clean_database(num):
         """
         Clear expired sessions, remove expired tokens
-        and clean email log.
+        and clean email log each day at 4 am.
         """
         call_command('clearsessions', '--verbosity=0')
         Token.objects.all_expired().delete()

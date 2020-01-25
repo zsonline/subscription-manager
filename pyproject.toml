@@ -10,7 +10,6 @@ django = "~2.2"
 django-compressor = "^2.4"
 django-debug-toolbar = "^2.1"
 django-import-export = "^2.0.1"
-django-constance = {extras = ["database"], version = "^2.5.0"}
 django-libsass = "^0.8"
 django-post_office = "^3.2.1"
 

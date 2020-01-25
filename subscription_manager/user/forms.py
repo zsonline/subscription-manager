@@ -1,8 +1,6 @@
 from django import forms
 from django.conf import settings
 
-from constance import config
-
 from .models import User, Token
 
 
@@ -103,7 +101,7 @@ class LoginForm(forms.Form):
             self.add_error(None, 'Der Account ist gesperrt.')
             return False
 
-        if Token.objects.count_created_in_last_hour(user, 'login') >= config.TOKENS_PER_USER_PER_HOUR:
+        if Token.objects.count_created_in_last_hour(user, 'login') >= settings.TOKENS_PER_USER_PER_HOUR:
             self.add_error(None, 'Du hast die maximale Anzahl an Tokens erreicht. Warte eine Stunde, bevor du es erneut probierst.')
             return False
 
