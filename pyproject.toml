@@ -1,0 +1,21 @@
+[tool.poetry]
+name = "subscription-manager"
+version = "2.0"
+description = "Web application for managing newspaper subscriptions"
+authors = ["Robin Bisping"]
+
+[tool.poetry.dependencies]
+python = "^3.8"
+django = "~2.2"
+django-compressor = "^2.4"
+django-debug-toolbar = "^2.1"
+django-import-export = "^2.0.1"
+django-constance = {extras = ["database"], version = "^2.5.0"}
+django-libsass = "^0.8"
+django-post_office = "^3.2.1"
+
+[tool.poetry.dev-dependencies]
+
+[build-system]
+requires = ["poetry>=0.12"]
+build-backend = "poetry.masonry.api"
