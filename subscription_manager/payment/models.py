@@ -1,8 +1,8 @@
 from random import randint
 from constance import config
+from post_office import mail
 
 from django.conf import settings
-from django.core.mail import send_mail
 from django.db import models, IntegrityError, transaction
 from django.template.loader import render_to_string
 from django.utils import timezone
@@ -132,15 +132,14 @@ class Payment(models.Model):
         recipient_list = [self.period.subscription.user.email]
         recipient_list += config.EMAIL_ACCOUNTING.split(';')
 
-        send_mail(
+        mail.send(
             subject=settings.EMAIL_SUBJECT_PREFIX + 'Rechnung',
             message=render_to_string(template, {
                 'to_name': self.period.subscription.user.first_name,
                 'payment': self
             }),
-            from_email=settings.DEFAULT_FROM_EMAIL,
-            recipient_list=recipient_list,
-            fail_silently=False
+            recipients=recipient_list,
+            priority='middle'
         )
 
     def confirm(self):
@@ -168,13 +167,12 @@ class Payment(models.Model):
             template = 'emails/payment_confirmation_renewal.txt'
 
         # Send confirmation email
-        send_mail(
+        mail.send(
             subject=settings.EMAIL_SUBJECT_PREFIX + subject,
             message=render_to_string(template, {
                 'to_name': self.period.subscription.user.first_name,
                 'payment': self
             }),
-            from_email=settings.DEFAULT_FROM_EMAIL,
-            recipient_list=[self.period.subscription.user.email],
-            fail_silently=False
+            recipients=[self.period.subscription.user.email],
+            priority='middle'
         )
