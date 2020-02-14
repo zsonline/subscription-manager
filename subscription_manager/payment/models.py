@@ -1,7 +1,7 @@
 from random import randint
 
 from django.conf import settings
-from django.core.mail import send_mail
+from django.core.mail import EmailMessage, send_mail
 from django.db import models, IntegrityError, transaction
 from django.template.loader import render_to_string
 from django.utils import timezone
@@ -127,20 +127,17 @@ class Payment(models.Model):
             # Renewal subscription
             template = 'emails/payment_invoice_renewal.txt'
 
-        # Add accounting emails to recipient list
-        recipient_list = [self.period.subscription.user.email]
-        recipient_list.append(settings.ACCOUNTING_EMAIL)
-
-        send_mail(
+        email = EmailMessage(
             subject=settings.EMAIL_SUBJECT_PREFIX + 'Rechnung',
-            message=render_to_string(template, {
+            body=render_to_string(template, {
                 'to_name': self.period.subscription.user.first_name,
                 'payment': self
             }),
             from_email=settings.DEFAULT_FROM_EMAIL,
-            recipient_list=recipient_list,
-            fail_silently=False
+            to=[self.period.subscription.user.email],
+            bcc=settings.ACCOUNTING_EMAIL  # Add accounting email
         )
+        email.send(fail_silently=False)
 
     def confirm(self):
         """
