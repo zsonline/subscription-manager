@@ -67,7 +67,6 @@ class PeriodInline(admin.StackedInline):
         return ''
 
 
-
 class SubscriptionAdmin(ExportMixin, admin.ModelAdmin):
     """
     Subscription model admin

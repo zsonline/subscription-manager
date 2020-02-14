@@ -240,6 +240,7 @@ class SubscriptionCancelView(edit.DeleteView):
         subscription = self.get_object()
         subscription.canceled_at = timezone.now()
         subscription.save()
+        messages.success(request, 'Dein Abo wurde gekündigt.')
         return HttpResponseRedirect(self.success_url)
 
 

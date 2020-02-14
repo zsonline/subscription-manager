@@ -10,7 +10,7 @@ Du erhältst die ZS weiterhin an untenstehende Adresse geliefert.
 {{ payment.period.subscription.additional_address_line }}{% endif %}
 {{ payment.period.subscription.postcode }} {{ payment.period.subscription.town }}
 
-Du kannst deine Adresse unter https://www.abo.zs-online.ch ändern.
+Du kannst deine Adresse unter https://www.abo.zs-online.ch jederzeit ändern.
 
 Wir wünschen dir eine interessante Lektüre.
 
