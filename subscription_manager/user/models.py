@@ -1,8 +1,8 @@
 import uuid
-from post_office import mail
 
 from django.conf import settings
 from django.contrib.auth.models import AbstractUser
+from django.core.mail import send_mail
 from django.db import models, transaction, IntegrityError
 from django.shortcuts import reverse
 from django.template.loader import render_to_string
@@ -310,14 +310,15 @@ class Token(models.Model):
             url += '?next=' + next_page
 
         # Send email
-        mail.send(
+        send_mail(
             subject=settings.EMAIL_SUBJECT_PREFIX + subject,
             message=render_to_string(template, {
                 'to_name': self.email_address.user.first_name,
                 'token': self
             }),
-            recipients=[self.email_address.email],
-            priority='high'
+            from_email=settings.DEFAULT_FROM_EMAIL,
+            recipient_list=[self.email_address.email],
+            fail_silently=False
         )
 
         # Update sent_at field

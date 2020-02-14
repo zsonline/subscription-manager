@@ -14,8 +14,9 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'django_redis',
+    'djcelery_email',
     'import_export',
-    'post_office',
     'subscription_manager.payment.apps.PaymentConfig',
     'subscription_manager.subscription.apps.SubscriptionConfig',
     'subscription_manager.user.apps.UserConfig'
@@ -78,9 +79,11 @@ AUTH_PASSWORD_VALIDATORS = [
 LOGIN_URL = '/login/'
 LOGIN_REDIRECT_URL = '/home/'
 
+LANGUAGE_CODE = 'de-ch'
 TIME_ZONE = 'Europe/Zurich'
-USE_I18N = False
-USE_L10N = False
+USE_I18N = True
+USE_L10N = True
+USE_TZ = True
 
 STATIC_URL = '/static/'
 STATICFILES_DIRS = (
@@ -93,6 +96,7 @@ STATICFILES_FINDERS = (
 )
 STATIC_ROOT = "static_files/"
 
+ADMINS = [('ZS Informatik', 'informatik@medienverein.ch')]
 EMAIL_SUBJECT_PREFIX = '[ZS] '
 DEFAULT_FROM_EMAIL = 'Zürcher Studierendenzeitung <server@zs-online.ch>'
 ADMINS = [('ZS Informatik', 'informatik@medienverein.ch')]

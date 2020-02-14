@@ -26,10 +26,14 @@ DATABASES = {
 }
 CONN_MAX_AGE = None
 
-# Caching
 CACHES = {
     'default': {
-        'BACKEND': 'django.core.cache.backends.locmem.LocMemCache',
+        'BACKEND': 'django_redis.cache.RedisCache',
+        'LOCATION': 'redis://:{}@{}:{}/{}'
+            .format(os.environ['REDIS_PASSWORD'], os.environ['REDIS_HOST'], os.environ['REDIS_PORT'], os.environ['REDIS_DATABASE']),
+        'OPTIONS': {
+            'CLIENT_CLASS': 'django_redis.client.DefaultClient',
+        }
     }
 }
 CONSTANCE_DATABASE_CACHE_BACKEND = 'default'
@@ -39,15 +43,19 @@ SESSION_CACHE_ALIAS = "default"
 SESSION_COOKIE_SECURE = True
 
 # Email
-EMAIL_BACKEND = 'post_office.EmailBackend'
+EMAIL_BACKEND = 'djcelery_email.backends.CeleryEmailBackend'
 EMAIL_USE_SSL = True
 EMAIL_HOST = os.environ['EMAIL_HOST']
 EMAIL_PORT = os.environ['EMAIL_PORT']
 EMAIL_HOST_USER = os.environ['EMAIL_HOST_USER']
 EMAIL_HOST_PASSWORD = os.environ['EMAIL_HOST_PASSWORD']
-POST_OFFICE = {
-    'BATCH_SIZE': 10
-}
+
+# Celery
+CELERY_BROKER_URL = 'redis://:{}@{}:{}/{}'\
+    .format(os.environ['REDIS_PASSWORD'], os.environ['REDIS_HOST'], os.environ['REDIS_PORT'], os.environ['REDIS_DATABASE'])
+CELERY_ACCEPT_CONTENT = ['json']
+CELERY_TASK_SERIALIZER = 'json'
+CELERY_RESULT_SERIALIZER = 'json'
 
 # Logging
 LOGGING = {
