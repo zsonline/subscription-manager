@@ -6,7 +6,6 @@ PROJECT_ROOT = os.path.dirname(os.path.abspath(__file__))
 
 INSTALLED_APPS = [
     'compressor',
-    'constance.backends.database',
     'debug_toolbar',
     'django.contrib.admin',
     'django.contrib.auth',
@@ -14,8 +13,6 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'django_redis',
-    'djcelery_email',
     'import_export',
     'subscription_manager.payment.apps.PaymentConfig',
     'subscription_manager.subscription.apps.SubscriptionConfig',
@@ -96,7 +93,6 @@ STATICFILES_FINDERS = (
 )
 STATIC_ROOT = "static_files/"
 
-ADMINS = [('ZS Informatik', 'informatik@medienverein.ch')]
 EMAIL_SUBJECT_PREFIX = '[ZS] '
 DEFAULT_FROM_EMAIL = 'Zürcher Studierendenzeitung <server@zs-online.ch>'
 ADMINS = [('ZS Informatik', 'informatik@medienverein.ch')]

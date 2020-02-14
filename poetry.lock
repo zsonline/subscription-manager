@@ -58,25 +58,6 @@ six = ">=1.12.0"
 
 [[package]]
 category = "main"
-description = "Django live settings with pluggable backends, including Redis."
-name = "django-constance"
-optional = false
-python-versions = "*"
-version = "2.5.0"
-
-[package.dependencies]
-six = "*"
-
-[package.dependencies.django-picklefield]
-optional = true
-version = "*"
-
-[package.extras]
-database = ["django-picklefield"]
-redis = ["redis"]
-
-[[package]]
-category = "main"
 description = "A configurable set of panels that display various debug information about the current request/response."
 name = "django-debug-toolbar"
 optional = false
@@ -111,20 +92,6 @@ version = "0.8"
 [package.dependencies]
 django-compressor = ">=1.3"
 libsass = ">=0.7.0,<1"
-
-[[package]]
-category = "main"
-description = "Pickled object field for Django"
-name = "django-picklefield"
-optional = false
-python-versions = "*"
-version = "2.0"
-
-[package.dependencies]
-Django = ">=1.11"
-
-[package.extras]
-tests = ["tox"]
 
 [[package]]
 category = "main"
@@ -294,7 +261,7 @@ python-versions = "*"
 version = "1.3.0"
 
 [metadata]
-content-hash = "1b154a4557640a5e76400e30ab6a15acc23ede8b96d9995bff0d9989c8dd4124"
+content-hash = "ef7389a95404d339b70e9cdb048f88875a79274caccb9d13699b7b2055594b28"
 python-versions = "^3.8"
 
 [metadata.files]
@@ -317,10 +284,6 @@ django-compressor = [
     {file = "django_compressor-2.4-py2.py3-none-any.whl", hash = "sha256:57ac0a696d061e5fc6fbc55381d2050f353b973fb97eee5593f39247bc0f30af"},
     {file = "django_compressor-2.4.tar.gz", hash = "sha256:d2ed1c6137ddaac5536233ec0a819e14009553fee0a869bea65d03e5285ba74f"},
 ]
-django-constance = [
-    {file = "django-constance-2.5.0.tar.gz", hash = "sha256:c47db4abd5788584115db681c0e8fef8ff870d49af90aa359076f0833a537199"},
-    {file = "django_constance-2.5.0-py2.py3-none-any.whl", hash = "sha256:1b536d153c168ef548fea5bdcdea84afab83892e2163ec4e896557a3139effd7"},
-]
 django-debug-toolbar = [
     {file = "django-debug-toolbar-2.1.tar.gz", hash = "sha256:24c157bc6c0e1648e0a6587511ecb1b007a00a354ce716950bff2de12693e7a8"},
     {file = "django_debug_toolbar-2.1-py3-none-any.whl", hash = "sha256:77cfba1d6e91b9bc3d36dc7dc74a9bb80be351948db5f880f2562a0cbf20b6c5"},
@@ -332,10 +295,6 @@ django-import-export = [
 django-libsass = [
     {file = "django-libsass-0.8.tar.gz", hash = "sha256:38fab4ce1245542f3afd7248dc48f8a0b261f5f6c61e7cc43969a9c9079b5ffd"},
     {file = "django_libsass-0.8-py3-none-any.whl", hash = "sha256:3e74fd8e75ac0e6ebc0443efc3e530167981bf279fecc2294094c820ae266fbb"},
-]
-django-picklefield = [
-    {file = "django-picklefield-2.0.tar.gz", hash = "sha256:f1733a8db1b6046c0d7d738e785f9875aa3c198215de11993463a9339aa4ea24"},
-    {file = "django_picklefield-2.0-py2.py3-none-any.whl", hash = "sha256:9052f2dcf4882c683ce87b4356f29b4d014c0dad645b6906baf9f09571f52bc8"},
 ]
 django-post-office = [
     {file = "django-post_office-3.2.1.tar.gz", hash = "sha256:e32427822f647719575094f790ca949ef9f9827ec0e8378cb021f01f3834b2a4"},
