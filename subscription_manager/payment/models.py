@@ -129,7 +129,7 @@ class Payment(models.Model):
 
         # Add accounting emails to recipient list
         recipient_list = [self.period.subscription.user.email]
-        recipient_list += settings.ACCOUNTING_EMAIL
+        recipient_list.append(settings.ACCOUNTING_EMAIL)
 
         send_mail(
             subject=settings.EMAIL_SUBJECT_PREFIX + 'Rechnung',

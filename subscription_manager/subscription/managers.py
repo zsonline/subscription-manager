@@ -66,21 +66,22 @@ class SubscriptionManager(models.Manager):
         Returns all subscriptions that expire.
         """
         # Get all expiring periods
-        period_model = apps.get_model('period', 'Period')
-        expiring_periods = period_model.objects.get_active().filter(end_date=timezone.now().date+timedelta)
+        period_model = apps.get_model('subscription', 'Period')
+        end_date = (timezone.now() + timedelta).date()
+        expiring_periods = period_model.objects.get_active().filter(end_date=end_date)
         # Get subscription of these periods, which have not been canceled
         subscriptions = self.filter(canceled_at__isnull=True).filter(period__in=expiring_periods)
         return subscriptions
 
-    def send_expiration_emails(self):
+    def send_expiration_emails(self, remaining_days=30):
         """
         Sends an email to users whose subscriptions expire.
         """
         # Get all expiring subscriptions which are renewable
-        expiring_subscriptions = self.get_expiring(timezone.timedelta(days=30)).filter(plan__is_renewable=True)
+        expiring_subscriptions = self.get_expiring(timezone.timedelta(days=remaining_days)).filter(plan__is_renewable=True)
 
         # Loop through subscriptions and send an reminder email to all users
-        token_model = apps.get_model('token', 'Token')
+        token_model = apps.get_model('user', 'Token')
         messages = []
         for subscription in expiring_subscriptions:
             # If subscription is not owned by a user, skip
@@ -90,12 +91,18 @@ class SubscriptionManager(models.Manager):
             # Create login token
             token = token_model.objects.create(email_address=user.primary_email(), purpose='login')
             # Add expiration email message
+            subject = settings.EMAIL_SUBJECT_PREFIX + 'Abo verlängern'
+            remaining_days_text = 'in {} Tagen'.format(remaining_days)
+            if remaining_days == 1:
+                subject = settings.EMAIL_SUBJECT_PREFIX + 'Abo endet heute'
+                remaining_days_text = 'heute'
             messages.append((
-                settings.EMAIL_SUBJECT_PREFIX + 'Abo verlängern',
+                subject,
                 render_to_string('emails/subscription_expiration.txt', {
                     'to_name': user.first_name,
                     'subscription_id': subscription.id,
-                    'token': token
+                    'token': token,
+                    'remaining_days': remaining_days_text
                 }),
                 settings.DEFAULT_FROM_EMAIL,
                 [user.email]

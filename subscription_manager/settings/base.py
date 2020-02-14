@@ -13,6 +13,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'django_cron',
     'import_export',
     'subscription_manager.payment.apps.PaymentConfig',
     'subscription_manager.subscription.apps.SubscriptionConfig',
@@ -94,10 +95,15 @@ STATICFILES_FINDERS = (
 STATIC_ROOT = "static_files/"
 
 EMAIL_SUBJECT_PREFIX = '[ZS] '
-DEFAULT_FROM_EMAIL = 'Zürcher Studierendenzeitung <server@zs-online.ch>'
+DEFAULT_FROM_EMAIL = 'Zürcher Studierendenzeitung <abo@zs-online.ch>'
 ADMINS = [('ZS Informatik', 'informatik@medienverein.ch')]
 ACCOUNTING_EMAIL = 'verlag@medienverein.ch'
-SERVER_EMAIL = 'server@zs-online.ch'
+SERVER_EMAIL = 'abo@zs-online.ch'
+
+CRON_CLASSES = [
+    'subscription_manager.cron.SendEmails',
+    'subscription_manager.cron.CleanDatabase'
+]
 
 COMPRESS_ENABLED = True
 COMPRESS_PRECOMPILERS = (

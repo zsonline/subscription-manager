@@ -1,6 +1,6 @@
-{{ to_name }}, dein Abo läuft in 30 Tagen aus. Verlängere es jetzt, damit du weiterhin die ZS erhältst.
+{{ to_name }}, dein Abo endet {{ remaining_days }}. Verlängere es jetzt, damit du weiterhin die ZS erhältst.
 
-Klicke auf diesen Link, um dich anzumelden: {{ token.url }}?next={% url 'payment_create' subscription_id %}.
+Öffne diesen Link, um dich anzumelden: {{ token.url }}?next={% url 'period_create' subscription_id %}.
 Er ist gültig bis am {{ token.valid_until|date:'j. F Y, G.i \U\h\r' }}. Nach der Anmeldung kannst du dein Abo verlängern.
 
 Wenn der Link bereits abgelaufen ist, kannst du dich unter https://www.abo.zs-online.ch anmelden und so dein Abo verlängern.
