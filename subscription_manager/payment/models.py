@@ -18,7 +18,7 @@ class Payment(models.Model):
         verbose_name='Periode'
     )
     amount = models.PositiveIntegerField(
-        verbose_name='Betrag in CHF'
+        verbose_name='Betrag in Schweizer Franken'
     )
     method = models.CharField(
         max_length=20,

@@ -5,6 +5,6 @@ Er ist gültig bis am {{ token.valid_until|date:'j. F Y, G.i \U\h\r' }}. Nach de
 
 Wenn der Link bereits abgelaufen ist, kannst du dich unter https://www.abo.zs-online.ch anmelden und so dein Abo verlängern.
 
-Es würde uns freuen, dich weiterhin zu unseren Leserinnen und Lesern zählen zu dürfen.
+Es würde uns freuen, dich weiterhin an Bord zu haben.
 
 Die Zürcher Studierendenzeitung
