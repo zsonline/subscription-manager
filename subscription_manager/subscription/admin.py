@@ -17,6 +17,31 @@ class SubscriptionResource(resources.ModelResource):
         fields = ('first_name', 'last_name', 'address_line', 'additional_address_line', 'postcode', 'town')
 
 
+class ActiveSubscriptionResource(SubscriptionResource):
+    """
+    Defines the data resource for active subscriptions which can be exported.
+    """
+    def export(self, queryset=None, *args, **kwargs):
+        """
+        Filter queryset based on set filter value.
+        """
+        exclude_pks = []
+
+        if queryset is None:
+            queryset = self.get_queryset()
+
+        # Loop through queryset
+        for subscription in queryset:
+            # Collect primary keys of instances which do not fit the filter criteria
+            if not subscription.is_active():
+                exclude_pks.append(subscription.pk)
+
+        # Remove collected primary keys
+        queryset = queryset.exclude(pk__in=exclude_pks)
+
+        return super().export(queryset, *args, **kwargs)
+
+
 class IsActiveListFilter(admin.SimpleListFilter):
     """
     Custom list filter which filters subscription by
