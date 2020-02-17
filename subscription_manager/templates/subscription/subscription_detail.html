@@ -29,7 +29,7 @@
                 {% if period.start_date|date:'Y' == period.end_date|date:'Y'  %}
                     <h3>Zahlungsperiode {{ period.start_date|date:'Y' }}</h3>
                 {% else %}
-                    <h3>Zahlungsperiode {{ period.start_date|date:'Y' }}/{{ period.end_date|date:'Y' }}</h3>
+                    <h3>Zahlungsperiode {{ period.start_date|date:'Y' }} bis {{ period.end_date|date:'Y' }}</h3>
                 {% endif %}
 
                 {# Badges #}
