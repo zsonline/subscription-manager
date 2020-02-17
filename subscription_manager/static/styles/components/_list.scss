@@ -30,24 +30,23 @@
       &:after {
         content: '';
         position: absolute;
-        top: 0.3em;
-        left: 0.1em;
+        top: 5px;
+        left: 3px;
         box-sizing: border-box;
-        height: 1em;
-        width: 1em;
-        border: solid 3px $dark-grey;
+        height: 17px;
+        width: 17px;
+        border: solid 3px $light-grey;
         border-radius: 50%;
-        color: $dark-grey;
         background-color: $white;
       }
 
       &:before {
         content: '';
-        background-color: $dark-grey;
+        background-color: $light-grey;
         position: absolute;
         bottom: -1.5em;
         top: -1.5em;
-        left: 0.5em;
+        left: 10px;
         width: 3px;
       }
     }
