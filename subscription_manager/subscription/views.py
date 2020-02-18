@@ -63,7 +63,15 @@ class SubscriptionCreateView(View):
         """
         Renders empty forms on a get request.
         """
-        subscription_form = SubscriptionForm()
+        if request.user.is_authenticated:
+            subscription_form = SubscriptionForm(
+                initial={
+                    'first_name': request.user.first_name,
+                    'last_name': request.user.last_name
+                }
+            )
+        else:
+            subscription_form = SubscriptionForm()
         payment_form = PaymentForm(
             plan=self.plan
         )
