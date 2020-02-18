@@ -135,7 +135,7 @@ class Payment(models.Model):
             }),
             from_email=settings.DEFAULT_FROM_EMAIL,
             to=[self.period.subscription.user.email],
-            bcc=settings.ACCOUNTING_EMAIL  # Add accounting email
+            bcc=[settings.ACCOUNTING_EMAIL]  # Add accounting email
         )
         email.send(fail_silently=False)
 
