@@ -94,7 +94,7 @@ class Plan(models.Model):
         Checks whether a given user is eligible
         to purchase the subscription.
         """
-        if user is None or self in Plan.objects.filter_eligible(user, purpose):
+        if user is not None and self in Plan.objects.filter_eligible(user, purpose):
             return True
         return False
     is_eligible.boolean = True
@@ -217,7 +217,7 @@ class Subscription(models.Model):
         """
         Returns true if the given user can renew the subscription.
         """
-        if user == self.user and self.plan.is_eligible(user, 'renewal') and self.expires_soon():
+        if user == self.user and self.plan.is_eligible(user, 'renewal') and self.expires_soon() and self.is_paid():
             return True
         return False
 

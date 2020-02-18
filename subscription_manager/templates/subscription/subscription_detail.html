@@ -58,10 +58,10 @@
                     {% endif %}
                 </div>
 
-                {% if period.payment.is_paid %}
-                    <h4>Laufzeit</h4>
-                    <p>{{ period.start_date }} bis {{ period.end_date }}</p>
+                <h4>Laufzeit</h4>
+                <p>{{ period.start_date }} bis {{ period.end_date }}</p>
 
+                {% if period.payment.is_paid %}
                     <h4>Betrag</h4>
                     <p>{{ period.payment.amount }} Franken</p>
                 {% endif %}

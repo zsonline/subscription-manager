@@ -20,6 +20,26 @@ class PlanManager(models.Manager):
             ).exclude(
                 eligible_active_subscriptions_per_user=0
             )
+
+            # If user is logged in, perform additional checks
+            if user is not None and user.is_authenticated:
+
+                # Exclude plans for which the user has reached the maximum allowed amount
+                subscription_model = apps.get_model('subscription', 'Subscription')
+                now = timezone.now().date()
+                plans = plans.exclude(
+                    subscription__in=subscription_model.objects.filter(
+                        user=user,
+                        period__end_date__gt=now,
+                        period__start_date__lte=now,
+                        canceled_at__isnull=True
+                    ).annotate(
+                        num_subs_of_plan=models.Count('plan__id')
+                    ).exclude(
+                        num_subs_of_plan__lt=models.F('plan__eligible_active_subscriptions_per_user')
+                    )
+                )
+
         elif purpose == 'renewal':
             # Filter renewable plans
             plans = self.filter(
@@ -32,22 +52,6 @@ class PlanManager(models.Manager):
 
         # If user is logged in, perform additional checks
         if user is not None and user.is_authenticated:
-
-            # Exclude plans for which the user has reached the maximum allowed amount
-            subscription_model = apps.get_model('subscription', 'Subscription')
-            now = timezone.now().date()
-            plans = plans.exclude(
-                subscription__in=subscription_model.objects.filter(
-                        user=user,
-                        period__end_date__gt=now,
-                        period__start_date__lte=now,
-                        canceled_at__isnull=True
-                    ).annotate(
-                        num_subs_of_plan=models.Count('plan__id')
-                    ).exclude(
-                        num_subs_of_plan__lt=models.F('plan__eligible_active_subscriptions_per_user')
-                    )
-            )
 
             # Exclude plans for which the user's email domain is not eligible
             verified_email_domains = user.verified_email_domains()

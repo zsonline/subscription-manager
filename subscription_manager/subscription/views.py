@@ -339,7 +339,7 @@ class PeriodCreateView(View):
         # Check if it is the right user, she is eligible and the plan is renewable
         if not subscription.can_be_renewed_by(request.user):
             # If it is not the case, raise 404
-            raise Http404('Subscription does not exist.')
+            raise Http404('Subscription cannot be renewed.')
 
         self.subscription = subscription
 
