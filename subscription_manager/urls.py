@@ -12,7 +12,7 @@ urlpatterns = [
     path('', include('subscription_manager.payment.urls')),
     path('', include('subscription_manager.subscription.urls')),
     path('', include('subscription_manager.user.urls')),
-    path('verwaltung/', include('subscription_manager.management.urls')),
+    path('verwaltung/', include('subscription_manager.administration.urls')),
     path('admin/', admin.site.urls)
 ]
 

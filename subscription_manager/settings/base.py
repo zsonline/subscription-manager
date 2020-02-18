@@ -15,7 +15,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'django_cron',
     'import_export',
-    'subscription_manager.management.apps.ManagementConfig',
+    'subscription_manager.administration.apps.AdministrationConfig',
     'subscription_manager.payment.apps.PaymentConfig',
     'subscription_manager.subscription.apps.SubscriptionConfig',
     'subscription_manager.user.apps.UserConfig'
