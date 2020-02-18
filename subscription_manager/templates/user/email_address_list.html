@@ -25,11 +25,11 @@
                         <span class="badge danger">Nicht verifiziert</span>
                     {% endif %}
                     {% if email_address.is_primary %}
-                        <span class="badge success">Primäre E-Mail-Adresse</span>
+                        <span class="badge info">Primäre E-Mail-Adresse</span>
                     {% endif %}
                     {% if email_address.verified_at %}
                         {% if email_address.recently_verified %}
-                            <span class="badge info">Verifiziert am {{ email_address.verified_at|date:'d. F Y' }}</span>
+                            <span class="badge grey">Verifiziert am {{ email_address.verified_at|date:'d. F Y' }}</span>
                         {% else %}
                             <span class="badge warning">Verifiziert am {{ email_address.verified_at|date:'d. F Y' }}</span>
                         {% endif %}

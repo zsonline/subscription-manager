@@ -10,7 +10,7 @@
 
 {% block content %}
     <div class="action-bar">
-        <a class="button info" href="{% url 'plan_list' %}">Abo bestellen</a>
+        <a class="button info" href="{% url 'plan_list' %}">Neues Abo bestellen</a>
     </div>
 
     {% if subscriptions|length > 0 %}
@@ -25,17 +25,18 @@
                         {% if subscription.is_active %}
                             <span class="badge success">Aktiv</span>
                         {% else %}
-                            {% if not subscription.is_canceled %}
-                                <span class="badge danger">Inaktiv</span>
+                            <span class="badge danger">Inaktiv</span>
+                        {% endif %}
+                        {% if subscription.is_canceled %}
+                            <span class="badge danger">Gekündigt</span>
+                        {% else %}
+                            {% if subscription.is_paid %}
+                                <span class="badge success">Bezahlt</span>
                             {% else %}
-                                <span class="badge danger">Gekündigt</span>
+                                <span class="badge danger">Nicht bezahlt</span>
                             {% endif %}
                         {% endif %}
-                        {% if subscription.is_paid %}
-                            <span class="badge success">Bezahlt</span>
-                        {% else %}
-                            <span class="badge danger">Nicht bezahlt</span>
-                        {% endif %}
+
                     </div>
 
                     <p>
