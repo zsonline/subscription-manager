@@ -13,6 +13,17 @@
     </div>
 
     <h4>{{ subscription.plan }}</h4>
+    <div>
+        {% if subscription.is_active %}
+            <span class="badge success">Aktiv</span>
+        {% else %}
+            {% if not subscription.is_canceled %}
+                <span class="badge danger">Inaktiv</span>
+            {% else %}
+                <span class="badge danger">Gekündigt</span>
+            {% endif %}
+        {% endif %}
+    </div>
     <p>
         {{ subscription.full_name }}<br>
         {{ subscription.address_line }}<br>
@@ -23,14 +34,18 @@
     </p>
 
     <ul class="list timeline">
+        {% if subscription.is_canceled %}
+            <li>
+                <h3>Gekündigt</h3>
+
+                <h4>Gekündigt am</h4>
+                <p>{{ subscription.canceled_at|date:'j. F Y' }}</p>
+            </li>
+        {% endif %}
         {% for period in periods %}
             <li>
 
-                {% if period.start_date|date:'Y' == period.end_date|date:'Y'  %}
-                    <h3>Zahlungsperiode {{ period.start_date|date:'Y' }}</h3>
-                {% else %}
-                    <h3>Zahlungsperiode {{ period.start_date|date:'Y' }} bis {{ period.end_date|date:'Y' }}</h3>
-                {% endif %}
+                <h3>Zahlungsperiode {{ period.start_date|date:'Y' }}</h3>
 
                 {# Badges #}
                 <div>
@@ -42,7 +57,13 @@
                     <span class="badge info">{{ period.payment.get_method_display }}</span>
                 </div>
 
-                <p>{{ period.start_date }} bis {{ period.end_date }}</p>
+                {% if period.payment.is_paid %}
+                    <h4>Laufzeit</h4>
+                    <p>{{ period.start_date }} bis {{ period.end_date }}</p>
+
+                    <h4>Betrag</h4>
+                    <p>{{ period.payment.amount }} Franken</p>
+                {% endif %}
 
                 {# Invoice #}
                 {% if not period.payment.is_paid and period.payment.method == 'invoice' %}
