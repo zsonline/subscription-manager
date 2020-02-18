@@ -8,8 +8,6 @@ from django.utils import timezone
 
 from subscription_manager.subscription.models import Period, Subscription
 
-from .managers import PaymentManager
-
 
 class Payment(models.Model):
     period = models.OneToOneField(
@@ -46,8 +44,6 @@ class Payment(models.Model):
         default=timezone.now,
         verbose_name='Erstellt am'
     )
-
-    objects = PaymentManager()
 
     class Meta:
         verbose_name = 'Zahlung'

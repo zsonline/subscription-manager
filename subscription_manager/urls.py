@@ -9,7 +9,6 @@ from .views import HomeRedirectView
 
 urlpatterns = [
     path('', HomeRedirectView.as_view(), name='home'),
-    path('', include('subscription_manager.payment.urls')),
     path('', include('subscription_manager.subscription.urls')),
     path('', include('subscription_manager.user.urls')),
     path('verwaltung/', include('subscription_manager.administration.urls')),

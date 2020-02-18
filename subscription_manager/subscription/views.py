@@ -240,6 +240,9 @@ class SubscriptionCancelView(edit.DeleteView):
         # Check if subscription is active
         if not subscription.is_active():
             raise Http404('Subscription is inactive')
+        # Check if subscription is paid
+        if not subscription.is_paid():
+            raise Http404('Subscription is inactive')
         return subscription
 
     def delete(self, request, *args, **kwargs):
