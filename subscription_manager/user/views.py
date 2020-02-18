@@ -88,7 +88,7 @@ def login_view(request):
                     # Create success message
                     messages.success(request, 'Wir haben dir einen Anmeldelink per E-Mail an {} geschickt.'.format(user.email))
                 else:
-                    messages.error(request, 'Du hast die maximale Anzahl an E-Mail-Tokens erreicht. Warte eine Stunde, bevor du dich erneut versuchst anzumelden.')
+                    messages.error(request, 'Du hast die maximale Anzahl an E-Mail-Tokens erreicht. Warte eine Stunde, bevor du erneut versuchst dich anzumelden.')
                 # Redirect to this page
                 return redirect('login')
 
