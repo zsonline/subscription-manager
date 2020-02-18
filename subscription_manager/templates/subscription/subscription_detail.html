@@ -17,10 +17,9 @@
         {% if subscription.is_active %}
             <span class="badge success">Aktiv</span>
         {% else %}
-            {% if not subscription.is_canceled %}
-                <span class="badge danger">Inaktiv</span>
-            {% else %}
-                <span class="badge danger">Gekündigt</span>
+            <span class="badge danger">Inaktiv</span>
+            {% if subscription.is_canceled %}
+                <span class="badge grey">Gekündigt</span>
             {% endif %}
         {% endif %}
     </div>
