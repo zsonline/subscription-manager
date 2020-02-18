@@ -6,7 +6,12 @@
 
 {% block content %}
     <ul class="list">
+        <li>
+            <h3>Zahlungen bestätigen</h3>
+            <p>Bestätige eingegange Zahlungen und schalte die dazugehörigen Abos frei.</p>
 
+            <a class="button info" href="#">Zahlungen bestätigen</a>
+        </li>
 
         <li>
             <h3>Abos exportieren</h3>
@@ -28,7 +33,7 @@
                 Kontaktiere im Zweifelsfall die Informatik.
             </p>
 
-            <a class="button danger" href="{% url 'admin:index' %}">Erweiterte Verwaltung</a>
+            <a class="button danger" href="{% url 'admin:index' %}">Erweiterte Verwaltung öffnen</a>
         </li>
     </ul>
 {% endblock %}

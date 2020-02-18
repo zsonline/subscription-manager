@@ -5,5 +5,5 @@ from django.views.generic import View, TemplateView
 
 
 @method_decorator(staff_member_required(login_url='login'), name='dispatch')
-class ManagementListView(TemplateView):
-    template_name = 'management/management_list.html'
+class AdministrationListView(TemplateView):
+    template_name = 'administration/administration_home.html'

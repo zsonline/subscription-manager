@@ -3,9 +3,9 @@ from django.views.generic.base import RedirectView
 
 from subscription_manager.subscription.views import SubscriptionExportView
 
-from .views import ManagementListView
+from .views import AdministrationListView
 
 urlpatterns = [
-    path('', ManagementListView.as_view(), name='management_list'),
+    path('', AdministrationListView.as_view(), name='administration_home'),
     path('exportieren/<str:format>/', SubscriptionExportView.as_view(), name='subscriptions_export'),
 ]
