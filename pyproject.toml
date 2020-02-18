@@ -12,6 +12,7 @@ django-debug-toolbar = "^2.1"
 django-import-export = "^2.0.1"
 django-libsass = "^0.8"
 django_cron = "^0.5.1"
+django-dotenv = "^1.4.2"
 
 [tool.poetry.dev-dependencies]
 
