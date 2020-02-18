@@ -130,7 +130,7 @@ def token_verification_view(request, code):
             if next_page is not None:
                 return redirect(next_page)
             # Redirect user to login home otherwise
-            return redirect('subscription_list')
+            return redirect('home')
 
     # Do login but add different success message
     elif token.purpose == 'signup':
@@ -148,7 +148,7 @@ def token_verification_view(request, code):
             if next_page is not None:
                 return redirect(next_page)
             # Redirect user to login home otherwise
-            return redirect('subscription_list')
+            return redirect('home')
 
     # Do email verification
     elif token.purpose == 'verification':

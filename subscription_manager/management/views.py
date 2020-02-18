@@ -4,6 +4,6 @@ from django.utils.decorators import method_decorator
 from django.views.generic import View, TemplateView
 
 
-@method_decorator(staff_member_required, name='dispatch')
+@method_decorator(staff_member_required(login_url='login'), name='dispatch')
 class ManagementListView(TemplateView):
     template_name = 'management/management_list.html'

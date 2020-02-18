@@ -254,7 +254,7 @@ class SubscriptionCancelView(edit.DeleteView):
         return HttpResponseRedirect(self.success_url)
 
 
-@method_decorator(staff_member_required, name='dispatch')
+@method_decorator(staff_member_required(login_url='login'), name='dispatch')
 class SubscriptionExportView(View):
     """
     Supports the export of active subscriptions' addresses

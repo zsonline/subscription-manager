@@ -75,8 +75,8 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
-LOGIN_URL = '/login/'
-LOGIN_REDIRECT_URL = '/home/'
+LOGIN_URL = '/anmelden/'
+LOGIN_REDIRECT_URL = ''
 
 LANGUAGE_CODE = 'de-ch'
 TIME_ZONE = 'Europe/Zurich'

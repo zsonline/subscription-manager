@@ -5,12 +5,13 @@ from django.views.generic.base import RedirectView, TemplateView
 
 import debug_toolbar
 
+from .views import HomeRedirectView
+
 urlpatterns = [
-    path('', RedirectView.as_view(pattern_name='plan_list', permanent=True)),
+    path('', HomeRedirectView.as_view(), name='home'),
     path('', include('subscription_manager.payment.urls')),
     path('', include('subscription_manager.subscription.urls')),
     path('', include('subscription_manager.user.urls')),
-    path('home/', RedirectView.as_view(pattern_name='subscription_list', permanent=True)),
     path('verwaltung/', include('subscription_manager.management.urls')),
     path('admin/', admin.site.urls)
 ]
