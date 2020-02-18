@@ -1,7 +1,7 @@
 from django import forms
 from django.conf import settings
 
-from .models import User, Token
+from .models import EmailAddress, User, Token
 
 
 class SignUpForm(forms.ModelForm):
@@ -20,25 +20,6 @@ class SignUpForm(forms.ModelForm):
             }
         }
 
-    def __init__(self, *args, **kwargs):
-        """
-        Constructor. A given plan is added as an attribute to
-        the object and a help text generated for the email field.
-        """
-        # Read passed parameters
-        self.plan = kwargs.pop('plan', None)
-
-        # Call super constructor
-        super().__init__(*args, **kwargs)
-
-        # Add help text if plan is eligible for only certain email addresses
-        if self.plan is not None:
-            if self.plan.get_eligible_email_domains():
-                # Add help text
-                self.fields['email'].help_text = \
-                    'Die E-Mail-Adresse muss auf {} enden.'.format(
-                        self.plan.get_readable_eligible_email_domains('oder'))
-
     def clean_email(self):
         """
         Checks if the given email is allowed to purchase
@@ -46,13 +27,8 @@ class SignUpForm(forms.ModelForm):
         """
         email = self.cleaned_data['email']
 
-        if self.plan is not None and self.plan.get_eligible_email_domains():
-            # Extract email domain from email address
-            email_domain = email.split('@')[-1]
-            # Check if extracted domain is in list
-            if email_domain not in self.plan.get_eligible_email_domains():
-                self.add_error('email', 'Deine E-Mail-Adresse muss auf {} enden.'
-                               .format(self.plan.get_readable_eligible_email_domains('oder')))
+        if EmailAddress.objects.filter(email=email).exists():
+            self.add_error('email', 'Ein Account mit dieser E-Mail-Adresse existiert bereits.')
 
         return email
 

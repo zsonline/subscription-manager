@@ -78,15 +78,16 @@ class User(AbstractUser):
         return EmailAddress.objects.get(user=self, is_primary=True)
 
     def save(self, *args, **kwargs):
-        is_created = self.id is None
-
-        super().save(*args, **kwargs)
-
         # If it is a new object, create an email address object
+        is_created = self.id is None
         if is_created:
-            EmailAddress.objects.create(user=self, email=self.email, is_primary=True)
-
-        return super().save(*args, **kwargs)
+            try:
+                super().save(*args, **kwargs)
+                EmailAddress.objects.create(user=self, email=self.email, is_primary=True)
+            except IntegrityError:
+                pass
+        else:
+            super().save(*args, **kwargs)
 
 
 class EmailAddress(models.Model):
@@ -174,18 +175,10 @@ class EmailAddress(models.Model):
         """
         # Check that it the email address is not primary
         if self.is_primary:
-            raise Exception
+            raise self.EmailAddressIsPrimaryException
 
         # Delete email address
         super().delete(using, keep_parents)
-
-    def send_verification(self):
-        """
-        Creates a token for verification and sends it
-        to this email address. Returns true if it was successful.
-        """
-        token = Token.objects.create_and_send(email_address=self, purpose='verification')
-        return token is not None
 
     def verify(self):
         """
@@ -193,6 +186,9 @@ class EmailAddress(models.Model):
         """
         self.verified_at = timezone.now()
         self.save()
+
+    class EmailAddressIsPrimaryException(Exception):
+        pass
 
 
 class Token(models.Model):

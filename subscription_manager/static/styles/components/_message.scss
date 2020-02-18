@@ -19,7 +19,7 @@
     @include message($warning);
   }
 
-  &.danger {
+  &.danger, &.error {
     @include message($danger);
   }
 }

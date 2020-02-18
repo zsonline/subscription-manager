@@ -12,7 +12,7 @@
         <a class="button grey" href="{% url 'subscription_list' %}">Zurück zur Aboübersicht</a>
     </div>
 
-    <h4>{{ subscription.plan }}</h4>
+    <h3>{{ subscription.plan }}</h3>
     <div>
         {% if subscription.is_active %}
             <span class="badge success">Aktiv</span>
@@ -54,7 +54,9 @@
                     {% else %}
                         <span class="badge danger">Nicht bezahlt</span>
                     {% endif %}
-                    <span class="badge info">{{ period.payment.get_method_display }}</span>
+                    {% if period.payment.amount > 0 %}
+                        <span class="badge info">{{ period.payment.get_method_display }}</span>
+                    {% endif %}
                 </div>
 
                 {% if period.payment.is_paid %}

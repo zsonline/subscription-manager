@@ -64,6 +64,17 @@ class TokenManager(models.Manager):
     """
     Custom manager for tokens.
     """
+    def create(self, **obj_data):
+        """
+        Catch exceptions and return null instead of rasing an exception.
+        """
+        try:
+            token = super().create(**obj_data)
+        except self.model.TokenQuotaExceededError:
+            token = None
+
+        return token
+
     def create_and_send(self, next_page=None, **obj_data):
         """
         Creates and sends a token object.
@@ -72,7 +83,7 @@ class TokenManager(models.Manager):
         token = self.create(**obj_data)
         if token is not None:
             token.send(next_page)
-        return token
+        return token is not None
 
     def filter_valid(self, user, purpose=None):
         """

@@ -38,9 +38,10 @@ def signup_view(request):
             # If successful
             if user is not None:
                 # Create and send verification token
-                Token.objects.create_and_send(email_address=user.primary_email(), purpose='signup', next_page=next_page)
+                # Token quota can not be reached as the email address cannot already exist
+                success = Token.objects.create_and_send(email_address=user.primary_email(), purpose='signup', next_page=next_page)
                 # Create success message
-                messages.success(request, 'Wir haben dir eine E-Mail geschickt, um deine E-Mail-Adresse zu verfizieren.')
+                messages.success(request, 'Wir haben dir eine E-Mail an {} geschickt, um deine E-Mail-Adresse zu verfizieren.'.format(user.primary_email()))
                 # Redirect to this page
                 return redirect('login')
 
@@ -82,9 +83,12 @@ def login_view(request):
             # If user exists
             if user is not None:
                 # Create and send token
-                Token.objects.create_and_send(email_address=user.primary_email(), purpose='login', next_page=next_page)
-                # Create success message
-                messages.success(request, 'Wir haben dir einen Anmeldelink per E-Mail geschickt.'.format(user.email))
+                success = Token.objects.create_and_send(email_address=user.primary_email(), purpose='login', next_page=next_page)
+                if success:
+                    # Create success message
+                    messages.success(request, 'Wir haben dir einen Anmeldelink per E-Mail an {} geschickt.'.format(user.email))
+                else:
+                    messages.error(request, 'Du hast die maximale Anzahl an E-Mail-Tokens erreicht. Warte eine Stunde, bevor du dich erneut versuchst anzumelden.')
                 # Redirect to this page
                 return redirect('login')
 
@@ -212,7 +216,7 @@ class EmailAddressCreateView(edit.CreateView):
         if success:
             messages.success(self.request, 'Wir haben dir eine Nachricht an {} geschickt, um die E-Mail-Adresse zu verifizieren.'.format(email_address.email))
         else:
-            messages.error(self.request, 'Du hast die maximale Anzahl an E-Mail-Tokens erreicht. Warte eine Stunde, bevor du eine neue Verifikationsanfrage sendest.')
+            messages.error(self.request, 'Du hast die maximale Anzahl an E-Mail-Tokens erreicht. Deine E-Mail-Adresse wurde erstellt, ist aber noch nicht verifiziert. Warte eine Stunde, bevor du eine Verifikationsanfrage sendest.')
         return super().get_success_url()
 
 
@@ -242,8 +246,12 @@ class EmailAddressDeleteView(edit.DeleteView):
         return email_address
 
     def delete(self, request, *args, **kwargs):
-        messages.success(request, 'Die E-Mail-Adresse {} wurde entfernt.'.format(self.get_object().email))
-        return super().delete(request, *args, **kwargs)
+        try:
+            messages.success(request, 'Die E-Mail-Adresse {} wurde entfernt.'.format(self.get_object().email))
+            return super().delete(request, *args, **kwargs)
+        except self.model.EmailAddressIsPrimaryException:
+            # Show 404 exception if email address cannot deleted, because it is the primary address
+            raise Http404('Email address is primary')
 
 
 def email_send_verification_view(request, email_address_id):
@@ -258,7 +266,7 @@ def email_send_verification_view(request, email_address_id):
         messages.error(request, 'Die E-Mail-Adresse wurde in den letzten 24 Stunden bereits verifiziert.')
         return redirect('email_address_list')
 
-    success = email_address.send_verification()
+    success = Token.objects.create_and_send(email_address=email_address, purpose='verification')
     if success:
         messages.success(request, 'Wir haben dir eine Nachricht an {} geschickt, um die E-Mail-Adresse zu verifizieren.'.format(email_address.email))
     else:
