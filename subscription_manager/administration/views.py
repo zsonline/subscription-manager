@@ -1,3 +1,5 @@
+import re
+
 from django.contrib import messages
 from django.contrib.admin.views.decorators import staff_member_required
 from django.db.models import Q
@@ -33,8 +35,9 @@ class AdministrationPaymentListView(ListView):
         # as first name, last name or code
         user_query = self.request.GET.get('query')
         if user_query is not None and user_query != '':
+            payment_codes = re.findall(r'\d+', user_query)
             queryset = queryset.filter(
-                Q(code__icontains=user_query) |
+                Q(pk__in=payment_codes) |
                 Q(period__subscription__first_name__icontains=user_query) | Q(period__subscription__last_name__icontains=user_query) |
                 Q(period__subscription__user__first_name__icontains=user_query) | Q(period__subscription__user__last_name__icontains=user_query)
             )

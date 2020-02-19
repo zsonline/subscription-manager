@@ -33,7 +33,7 @@ class IsPaidListFilter(admin.SimpleListFilter):
 
 class PaymentAdmin(admin.ModelAdmin):
     list_display = ['period', 'amount', 'method', 'code',  'is_paid', 'paid_at']
-    search_fields = ['code', 'amount', 'subscription__first_name', 'subscription__last_name', 'subscription__user__first_name', 'subscription__user__last_name']
+    search_fields = ['amount', 'subscription__first_name', 'subscription__last_name', 'subscription__user__first_name', 'subscription__user__last_name']
     actions = ['confirm_payments']
     list_filter = [IsPaidListFilter, 'method', 'amount']
 
