@@ -158,9 +158,18 @@ class SubscriptionListView(list.ListView):
     model = Subscription
     context_object_name = 'subscriptions'
     template_name = 'subscription/subscription_list.html'
+    ordering = ['canceled_at', '-created_at']
 
     def get_queryset(self):
-        return Subscription.objects.filter(user=self.request.user)
+        queryset = Subscription.objects.filter(user=self.request.user)
+
+        ordering = self.get_ordering()
+        if ordering:
+            if isinstance(ordering, str):
+                ordering = (ordering,)
+            queryset = queryset.order_by(*ordering)
+
+        return queryset
 
 
 @method_decorator(login_required, name='dispatch')
