@@ -69,6 +69,18 @@ class Payment(models.Model):
         return self.period.subscription.period_set.count() > 1
     is_renewal.boolean = True
 
+    def save(self, force_insert=False, force_update=False, using=None, update_fields=None):
+        """
+        Overrides the save method. If the object is newly created,
+        set the due on date.
+        """
+        # If object is newly created
+        if not self.pk:
+            # Set due on date
+            self.due_on = timezone.now().date() + timezone.timedelta(days=30)
+
+        super().save(force_insert, force_update, using, update_fields)
+
     def handle(self):
         """
         Handles the payment by sending an invoice via email
