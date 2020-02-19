@@ -47,8 +47,9 @@ TEMPLATES = [
                 'django.contrib.messages.context_processors.messages'
             ],
             'libraries': {
+                'humanize': 'subscription_manager.utils.templatetags.humanize',
                 'navigation': 'subscription_manager.utils.templatetags.navigation',
-                'humanize': 'subscription_manager.utils.templatetags.humanize'
+                'url_arguments': 'subscription_manager.utils.templatetags.url_arguments'
             },
         },
     },

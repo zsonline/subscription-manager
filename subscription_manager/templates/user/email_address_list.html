@@ -3,9 +3,9 @@
 {% block title %}E-Mail-Adressen{% endblock %}
 
 {% block description %}
-    Deine primäre E-Mail-Adresse wird für die Anmeldung benötigt. Füge weitere
-    E-Mail-Adressen hinzu, um Abos bestellen zu können, die nur für gewisse
-    Adressen erhältlich sind.
+    Wir schicken dir alle E-Mails an deine primäre E-Mail-Adresse Diese wird auch
+    für die Anmeldung verwendet. Füge weitere E-Mail-Adressen hinzu, um Abos bestellen
+    zu können, die nur für gewisse Adressen erhältlich sind.
 {% endblock %}
 
 {% block content %}
@@ -38,7 +38,7 @@
 
                 {% if not email_address.recently_verified %}
                     <p class="message warning">
-                        Diese E-Mail-Adresse muss verifiziert werden, um Abos bestellen zu können, die nur für diese
+                        Diese E-Mail-Adresse muss erneut verifiziert werden, um Abos bestellen zu können, die nur für diese
                         E-Mail-Adresse zugelassen sind.
                     </p>
                 {% endif %}

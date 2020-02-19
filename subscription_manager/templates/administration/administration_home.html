@@ -10,7 +10,7 @@
             <h3>Zahlungen bestätigen</h3>
             <p>Bestätige eingegange Zahlungen und schalte die dazugehörigen Abos frei.</p>
 
-            <a class="button info" href="#">Zahlungen bestätigen</a>
+            <a class="button info" href="{% url 'administration_payment_list' %}">Zahlungen bestätigen</a>
         </li>
 
         <li>
@@ -18,9 +18,9 @@
             <p>Exportiere alle aktiven Abos als Komma getrennte Werte (.csv), als Open Document Sheet (.ods) oder als Excel-Datei (.xlsx).</p>
 
             Herunterladen als:
-            <a class="button grey" href="{% url 'subscriptions_export' 'csv' %}">.csv-Datei</a>
-            <a class="button grey" href="{% url 'subscriptions_export' 'ods' %}">.ods-Datei</a>
-            <a class="button grey" href="{% url 'subscriptions_export' 'xlsx' %}">.xlsx-Datei</a>
+            <a class="button grey" href="{% url 'administration_subscription_export' 'csv' %}">.csv-Datei</a>
+            <a class="button grey" href="{% url 'administration_subscription_export' 'ods' %}">.ods-Datei</a>
+            <a class="button grey" href="{% url 'administration_subscription_export' 'xlsx' %}">.xlsx-Datei</a>
         </li>
 
         <li>

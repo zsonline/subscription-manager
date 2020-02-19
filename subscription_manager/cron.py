@@ -12,9 +12,8 @@ class SendEmails(CronJobBase):
 
     def do(self):
         """
-        Send notification emails to users whose subscriptions
-        are expiring within 30 days or whose subscription has
-        ended.
+        Send notification emails to users whose subscriptions are
+        expiring within 30 days or whose subscription end in 1 day.
         """
         Subscription.objects.send_expiration_emails(30)
         Subscription.objects.send_expiration_emails(1)
@@ -26,8 +25,8 @@ class CleanDatabase(CronJobBase):
 
     def do(self):
         """
-        Clear expired sessions, remove expired tokens
-        and clean email log each day at 4 am.
+        Clear expired sessions and remove expired tokens
+        each day at 4 am.
         """
         call_command('clearsessions', '--verbosity=0')
         Token.objects.all_expired().delete()

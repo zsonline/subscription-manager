@@ -14,7 +14,6 @@ from django.views.generic import detail, edit, list
 
 from subscription_manager.payment.forms import PaymentForm
 
-from .admin import ActiveSubscriptionResource
 from .forms import SubscriptionForm
 from .models import Subscription, Plan, Period
 
@@ -255,68 +254,6 @@ class SubscriptionCancelView(edit.DeleteView):
         subscription.save()
         messages.success(request, 'Dein Abo wurde gekündigt.')
         return HttpResponseRedirect(self.success_url)
-
-
-@method_decorator(staff_member_required(login_url='login'), name='dispatch')
-class SubscriptionExportView(View):
-    """
-    Supports the export of active subscriptions' addresses
-    as .csv, .ods, and .xlsx documents.
-    """
-    format = 'csv'  # Default format is .csv
-
-    def dispatch(self, request, *args, **kwargs):
-        """
-        Dispatch method is called before get or post method.
-        Checks if requested format is supported.
-        """
-        # Get format argument and check if it is supported. Otherwise,
-        # raise 404 exception.
-        format_arg = self.kwargs.get('format')
-        if format_arg not in ['csv', 'ods', 'xlsx']:
-            raise Http404()
-        # Store format as class attribute
-        self.format = format_arg
-
-        return super().dispatch(request, *args, **kwargs)
-
-    def content_type(self):
-        """
-        Return the format's corresponding content type.
-        """
-        if self.format == 'csv':
-            return 'text/csv'
-        elif self.format == 'ods':
-            return 'application/vnd.oasis.opendocument.spreadsheet'
-        elif self.format == 'xlsx':
-            return 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
-        return ''
-
-    def content(self):
-        """
-        Return the content formatted as the requested document.
-        """
-        if self.format == 'csv':
-            return ActiveSubscriptionResource().export().csv
-        elif self.format == 'ods':
-            return ActiveSubscriptionResource().export().ods
-        elif self.format == 'xlsx':
-            return ActiveSubscriptionResource().export().xlsx
-        return ''
-
-    def get(self, request, *args, **kwargs):
-        """
-        Return the document as an attachement.
-        """
-        response = HttpResponse(
-            content=self.content(),
-            content_type=self.content_type()
-        )
-        response['Content-Disposition'] = 'attachment; filename="{}-active-subscriptions.{}"'.format(
-            timezone.now().strftime('%Y-%m-%d'),
-            self.format
-        )
-        return response
 
 
 @method_decorator(login_required, name='dispatch')
