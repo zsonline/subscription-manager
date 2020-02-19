@@ -161,7 +161,7 @@ class SubscriptionListView(list.ListView):
     ordering = ['canceled_at', '-created_at']
 
     def get_queryset(self):
-        queryset = Subscription.objects.filter(user=self.request.user)
+        queryset = Subscription.objects.filter(user=self.request.user).select_related('plan', 'user')
 
         ordering = self.get_ordering()
         if ordering:
