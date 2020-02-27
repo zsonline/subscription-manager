@@ -15,8 +15,8 @@ class SendEmails(CronJobBase):
         Send notification emails to users whose subscriptions are
         expiring within 30 days or whose subscription end in 1 day.
         """
-        Subscription.objects.send_expiration_emails(30)
-        Subscription.objects.send_expiration_emails(1)
+        Subscription.objects.send_expiration_emails(remaining_days=30)
+        Subscription.objects.send_expiration_emails(remaining_days=1)
 
 
 class CleanDatabase(CronJobBase):

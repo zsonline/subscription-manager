@@ -170,54 +170,17 @@ class Subscription(models.Model):
     def full_name(self):
         return '{} {}'.format(self.first_name, self.last_name)
 
-    def end_date(self):
-        last_paid_period = self.period_set.filter(payment__paid_at__isnull=False).order_by('-end_date').first()
-        if last_paid_period is None:
-            return None
-        return last_paid_period.end_date
-
-    def is_canceled(self):
-        """
-        Returns true if the canceled_at field is set.
-        """
-        return self.canceled_at is not None
-    is_canceled.boolean = True
-
-    def is_active(self):
-        """
-        Returns true if the subscription has not been
-        canceled and one active period exists.
-        """
-        return not self.is_canceled() and self.get_active_periods().count() > 0
-    is_active.boolean = True
-
-    def get_active_periods(self):
-        """
-        Returns active periods of the subscription
-        (should be zero or one periods).
-        """
-        return Period.objects.get_active(subscription=self)
-
     def get_last_period(self):
         """
         Returns the last period of the subscription.
         """
         return self.period_set.order_by('-end_date').first()
 
-    def is_paid(self):
-        """
-        Return true if for all associated periods a payment
-        has been received. False otherwise.
-        """
-        unpaid_periods = self.period_set.filter(payment__paid_at__isnull=True)
-        return unpaid_periods.count() == 0
-    is_paid.boolean = True
-
     def can_be_renewed_by(self, user):
         """
         Returns true if the given user can renew the subscription.
         """
-        if user == self.user and self.plan.is_eligible(user, 'renewal') and self.expires_soon() and self.is_paid():
+        if user == self.user and self.plan.is_eligible(user, 'renewal') and self.expires_soon() and self.is_paid:
             return True
         return False
 
@@ -243,7 +206,7 @@ class Subscription(models.Model):
         the given amount of days.
         """
         # Check if end_date is instance of date
-        return self.end_date() < timezone.now().date() + timezone.timedelta(days=days)
+        return self.end_date < timezone.now().date() + timezone.timedelta(days=days)
 
     def expires_soon(self):
         """
@@ -285,7 +248,7 @@ class Period(models.Model):
         verbose_name_plural = 'Perioden'
 
     def __str__(self):
-        return 'Periode {} für {}'.format(self.start_date, self.subscription)
+        return 'Periode #{} ({} bis {})'.format(self.pk, self.start_date, self.end_date)
 
     def has_started(self):
         """

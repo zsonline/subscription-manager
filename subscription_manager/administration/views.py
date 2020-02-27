@@ -22,14 +22,14 @@ class AdministrationPaymentListView(ListView):
     context_object_name = 'payments'
     template_name = 'administration/administration_payment_list.html'
     ordering = '-created_at'
-    paginate_by = 20
+    paginate_by = 10
 
     def get_queryset(self):
         """
         Only show unpaid payments with an amount greater than zero.
         If a query has been specified, execute it.
         """
-        queryset = Payment.objects.filter(paid_at__isnull=True, amount__gt=0)
+        queryset = Payment.objects.filter(paid_at__isnull=True, amount__gt=0).select_related('period__subscription__user')
 
         # If a query is specified filter results for payments that have the query
         # as first name, last name or code

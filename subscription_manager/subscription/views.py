@@ -192,7 +192,7 @@ class SubscriptionDetailView(detail.DetailView):
         subscription_id = self.kwargs['subscription_id']
         user = self.request.user
         # Get object or raise 404
-        subscription = get_object_or_404(Subscription, id=subscription_id, user=user)
+        subscription = get_object_or_404(Subscription.objects.select_related('plan'), id=subscription_id, user=user)
         return subscription
 
     def get_context_data(self, **kwargs):
@@ -200,7 +200,7 @@ class SubscriptionDetailView(detail.DetailView):
         Adds all associated payments to the context.
         """
         data = super().get_context_data(**kwargs)
-        periods = Period.objects.filter(subscription=self.get_object()).order_by('-end_date')
+        periods = Period.objects.filter(subscription=self.object).order_by('-end_date').select_related('payment')
         data['periods'] = periods
         return data
 
@@ -223,7 +223,7 @@ class SubscriptionUpdateView(edit.UpdateView):
         # Get object or raise 404
         subscription = get_object_or_404(Subscription, id=subscription_id, user=user)
         # Check if subscription is active
-        if not subscription.is_active():
+        if not subscription.is_active:
             raise Http404('Subscription is inactive')
         return subscription
 
@@ -246,10 +246,10 @@ class SubscriptionCancelView(edit.DeleteView):
         # Get object or raise 404
         subscription = get_object_or_404(Subscription, id=subscription_id, user=user)
         # Check if subscription is active
-        if not subscription.is_active():
+        if not subscription.is_active:
             raise Http404('Subscription is inactive')
         # Check if subscription is paid
-        if not subscription.is_paid():
+        if not subscription.is_paid:
             raise Http404('Subscription is inactive')
         return subscription
 

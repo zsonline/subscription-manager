@@ -2,6 +2,7 @@ from django.apps import apps
 from django.conf import settings
 from django.core.mail import send_mass_mail
 from django.db import models
+from django.db.models import BooleanField, Case, DateField, IntegerField, Max, Min, Sum, When
 from django.shortcuts import reverse
 from django.template.loader import render_to_string
 from django.utils import timezone
@@ -65,41 +66,129 @@ class PlanManager(models.Manager):
 
 class SubscriptionManager(models.Manager):
 
+    def get_queryset(self):
+        """
+        Annotate queryset with computed fields is_canceled, active_periods_sum,
+        is_active, unpaid_payments_sum, is_paid, start_date, and end_date.
+        """
+        queryset = super().get_queryset()
+        # Annotate queryset with columns is_canceled, active_periods_sum,
+        # is_active, unpaid_payments_sum, is_paid, start_date, and end_date.
+        queryset = queryset.annotate(
+            is_canceled=Case(
+                When(
+                    canceled_at__isnull=False,
+                    then=True
+                ),
+                default=False,
+                output_field=BooleanField()
+            ),
+            active_periods_sum=Sum(
+                Case(
+                    When(
+                        canceled_at__isnull=True,
+                        period__start_date__isnull=False,
+                        period__end_date__isnull=False,
+                        period__start_date__lte=timezone.now().date(),
+                        period__end_date__gt=timezone.now().date(),
+                        period__payment__paid_at__isnull=False,
+                        then=1
+                    ),
+                    default=0,
+                    output_field=IntegerField()
+                )
+            ),
+            is_active=Case(
+                When(
+                    active_periods_sum__gte=1,
+                    then=True
+                ),
+                default=False,
+                output_field=BooleanField()
+            ),
+            unpaid_payments_sum=Sum(
+                Case(
+                    When(
+                        period__payment__paid_at__isnull=True,
+                        then=1
+                    ),
+                    default=0,
+                    output_field=IntegerField()
+                )
+            ),
+            is_paid=Case(
+                When(
+                    unpaid_payments_sum=0,
+                    then=True
+                ),
+                default=False,
+                output_field=BooleanField()
+            ),
+            start_date=Min(
+                Case(
+                    When(
+                        period__payment__paid_at__isnull=False,
+                        then='period__start_date'
+                    ),
+                    default=None,
+                    output_field=DateField()
+                )
+            ),
+            end_date=Max(
+                Case(
+                    When(
+                        period__payment__paid_at__isnull=False,
+                        then='period__end_date'
+                    ),
+                    default=None,
+                    output_field=DateField()
+                )
+            )
+        )
+        return queryset
+
     def get_expiring(self, timedelta=timezone.timedelta(days=30)):
         """
         Returns all subscriptions that expire.
         """
-        # Get all expiring periods
-        period_model = apps.get_model('subscription', 'Period')
+        # Get all expiring subscriptions
         end_date = (timezone.now() + timedelta).date()
-        expiring_periods = period_model.objects.get_active().filter(end_date=end_date)
-        # Get subscription of these periods, which have not been canceled
-        subscriptions = self.filter(canceled_at__isnull=True).filter(period__in=expiring_periods)
-        return subscriptions
+        expiring_subscriptions = self.filter(is_canceled=False, end_date=end_date)
+        return expiring_subscriptions
 
-    def send_expiration_emails(self, remaining_days=30):
+    def send_expiration_emails(self, queryset=None, remaining_days=None):
         """
         Sends an email to users whose subscriptions expire.
         """
+        if remaining_days is None and queryset is None:
+            return
         # Get all expiring subscriptions which are renewable
-        expiring_subscriptions = self.get_expiring(timezone.timedelta(days=remaining_days)).filter(plan__is_renewable=True)
+        if queryset is None:
+            queryset = self.get_expiring(timezone.timedelta(days=remaining_days)).filter(plan__is_renewable=True)
 
         # Loop through subscriptions and send an reminder email to all users
         token_model = apps.get_model('user', 'Token')
         messages = []
-        for subscription in expiring_subscriptions:
+        for subscription in queryset:
             # If subscription is not owned by a user, skip
             user = subscription.user
             if user is None:
                 continue
+
             # Create login token
             token = token_model.objects.create(email_address=user.primary_email(), purpose='login')
+
             # Add expiration email message
-            subject = settings.EMAIL_SUBJECT_PREFIX + 'Abo verlängern'
-            remaining_days_text = 'in {} Tagen'.format(remaining_days)
-            if remaining_days == 1:
+            if remaining_days is None:
+                subject = settings.EMAIL_SUBJECT_PREFIX + 'Abo verlängern'
+                remaining_days_text = 'bald'
+            elif remaining_days == 1:
                 subject = settings.EMAIL_SUBJECT_PREFIX + 'Abo endet heute'
                 remaining_days_text = 'heute'
+            else:
+                subject = settings.EMAIL_SUBJECT_PREFIX + 'Abo verlängern'
+                remaining_days_text = 'in {} Tagen'.format(remaining_days)
+
             messages.append((
                 subject,
                 render_to_string('emails/subscription_expiration.txt', {

@@ -234,7 +234,7 @@ class Token(models.Model):
         verbose_name = 'Token'
 
     def __str__(self):
-        return self.code
+        return str(self.code)
 
     def is_valid(self):
         """
