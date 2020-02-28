@@ -61,5 +61,3 @@ LOGGING = {
         }
     }
 }
-
-COMPRESS_OFFLINE = True
