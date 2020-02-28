@@ -10,6 +10,7 @@ header {
 
   #header-logo {
     grid-area: logo;
+    display: contents;
   }
 
   #header-nav-toggle {
@@ -85,10 +86,6 @@ header {
     grid-template-rows: 1fr;
     grid-template-areas: "logo navigation";
     grid-column-gap: 3rem;
-
-    #header-logo {
-      grid-area: logo;
-    }
 
     #header-nav-toggle {
       display: none;
