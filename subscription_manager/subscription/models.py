@@ -170,19 +170,27 @@ class Subscription(models.Model):
     def full_name(self):
         return '{} {}'.format(self.first_name, self.last_name)
 
+    def has_ended(self):
+        """
+        True if the subscription has ended.
+        """
+        return self.end_date is not None and self.end_date <= timezone.now().date()
+    has_ended.boolean = True
+
     def get_last_period(self):
         """
         Returns the last period of the subscription.
         """
         return self.period_set.order_by('-end_date').first()
 
-    def can_be_renewed_by(self, user):
+    def is_renewable(self):
         """
-        Returns true if the given user can renew the subscription.
+        Returns true if the subscription can be renewed by its user.
         """
-        if user == self.user and self.plan.is_eligible(user, 'renewal') and self.expires_soon() and self.is_paid:
+        if self.plan.is_eligible(self.user, 'renewal') and self.expires_soon() and self.is_paid:
             return True
         return False
+    is_renewable.boolean = True
 
     def renew(self):
         """

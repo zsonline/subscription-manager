@@ -16,11 +16,17 @@
     <div>
         {% if subscription.is_active %}
             <span class="badge success">Aktiv</span>
+        {% elif subscription.is_canceled %}
+            <span class="badge grey">Gekündigt</span>
+        {% elif subscription.is_paid and subscription.has_ended %}
+            <span class="badge grey">Abgelaufen</span>
         {% else %}
-            <span class="badge danger">Inaktiv</span>
-            {% if subscription.is_canceled %}
-                <span class="badge grey">Gekündigt</span>
-            {% endif %}
+            <span class="badge grey">Inaktiv</span>
+        {% endif %}
+        {% if subscription.is_paid %}
+            <span class="badge success">Bezahlt</span>
+        {% else %}
+            <span class="badge danger">Offene Rechnung</span>
         {% endif %}
     </div>
     <p>
@@ -39,6 +45,13 @@
 
                 <h4>Gekündigt am</h4>
                 <p>{{ subscription.canceled_at|date:'j. F Y' }}</p>
+            </li>
+        {% elif subscription.is_paid and subscription.has_ended %}
+            <li>
+                <h3>Abgelaufen</h3>
+
+                <h4>Abgelaufen am</h4>
+                <p>{{ subscription.end_date|date:'j. F Y' }}</p>
             </li>
         {% endif %}
         {% for period in periods %}
@@ -81,7 +94,12 @@
 
                         <h4>Mitteilungsfeld</h4>
                         <p>
-                            <em>{{ period.payment.code }}</em>
+                            <em class="danger">{{ period.payment.code }}</em>
+                        </p>
+
+                        <h4>Zahlbar bis</h4>
+                        <p>
+                            {{ period.payment.due_on }}
                         </p>
 
                         <h4>IBAN</h4>

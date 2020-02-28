@@ -46,7 +46,7 @@ class Payment(models.Model):
         verbose_name_plural = 'Zahlungen'
 
     def __str__(self):
-        return 'Zahlung #{} ({} Franken, {}, {})'.format(self.pk, self.amount, self.get_method_display(), self.paid_at.date())
+        return 'Zahlung #{} ({} Franken, {}, {})'.format(self.pk, self.amount, self.get_method_display(), self.paid_at)
 
     @property
     def code(self):

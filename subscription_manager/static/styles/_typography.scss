@@ -41,14 +41,54 @@ a {
 
 em {
   font-style: normal;
-  color: $danger;
+
   font-weight: 700;
 }
-a em {
-  color: $danger;
-  text-decoration: underline;
+
+em {
+  font-style: normal;
+  font-weight: 700;
+
+  &.info {
+    color: $info;
+  }
+
+  &.success {
+    color: $success;
+  }
+
+  &.warning {
+    color: $warning;
+  }
+
+  &.danger {
+    color: $danger;
+  }
+}
+
+@mixin link_emphasise($colour) {
+  color: $colour;
 
   &:hover, &:focus, &:active {
-    color: lighten($danger, 15%);
+        color: lighten($colour, 15%);
+    }
+}
+a em {
+  text-decoration: underline;
+
+  &.success {
+    @include link_emphasise($info)
+  }
+
+  &.success {
+    @include link_emphasise($success)
+  }
+
+  &.warning {
+    @include link_emphasise($warning)
+  }
+
+  &.danger {
+    @include link_emphasise($danger)
   }
 }

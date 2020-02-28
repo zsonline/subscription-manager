@@ -30,7 +30,7 @@
         {% if user.is_authenticated %}
             <div class="right">
                 <span>Du bist angemeldet als {{ user.full_name }}.</span>
-                <a href="{% url 'logout' %}"><em>Abmelden</em></a>
+                <a href="{% url 'logout' %}"><em class="danger">Abmelden</em></a>
             </div>
         {% endif %}
 

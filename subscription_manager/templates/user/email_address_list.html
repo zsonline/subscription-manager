@@ -25,7 +25,7 @@
                         <span class="badge danger">Nicht verifiziert</span>
                     {% endif %}
                     {% if email_address.is_primary %}
-                        <span class="badge info">Primäre E-Mail-Adresse</span>
+                        <span class="badge success">Primäre E-Mail-Adresse</span>
                     {% endif %}
                     {% if email_address.verified_at %}
                         {% if email_address.recently_verified %}
