@@ -99,7 +99,7 @@ STATIC_ROOT = "static_files/"
 EMAIL_SUBJECT_PREFIX = '[ZS] '
 DEFAULT_FROM_EMAIL = 'Zürcher Studierendenzeitung <abo@zs-online.ch>'
 ADMINS = [('ZS Informatik', 'informatik@medienverein.ch')]
-ACCOUNTING_EMAIL = 'verlag@medienverein.ch'
+ACCOUNTING_EMAIL = 'abo@zs-online.ch'
 SERVER_EMAIL = 'abo@zs-online.ch'
 
 CRON_CLASSES = [
