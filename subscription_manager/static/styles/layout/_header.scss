@@ -1,41 +1,132 @@
-$header-height: 9rem;
-
 header {
-  padding: 2em 1em;
+  padding: 1rem;
+  border-bottom: solid 1px $light-grey;
+  display: grid;
+  grid-template-columns: min-content auto;
+  grid-template-rows: min-content min-content;
+  grid-template-areas:
+          "logo navigation-toggle"
+          "navigation navigation";
+
+  #header-logo {
+    grid-area: logo;
+    display: contents;
+  }
+
+  #header-nav-toggle {
+    grid-area: navigation-toggle;
+    display: flex;
+    align-items: center;
+    justify-content: end;
+  }
+
+  #header-nav {
+    grid-area: navigation;
+
+    display: none;
+    grid-template-rows: min-content min-content;
+    grid-template-areas:
+            "top"
+            "bottom";
+
+    margin-top: 1rem;
+
+    &.toggled {
+      display: grid;
+    }
+
+    .left, .right {
+      &:not(:last-child) {
+        margin-bottom: 2rem;
+      }
+    }
+
+    .left {
+      grid-area: top;
+    }
+
+    .right {
+      grid-area: bottom;
+    }
+
+    a, span {
+      display: block;
+
+      &.active {
+        font-weight: 700;
+      }
+
+      &:not(:first-child) {
+        margin-top: .5em;
+      }
+      &:not(:last-child) {
+        margin-bottom: .5em;
+      }
+    }
+
+    span {
+      color: $grey;
+    }
+  }
 
   h1 {
-    margin: .1em 0 0 0;
-    font-size: 1.6em;
-  }
-
-  #logo {
-    text-decoration: none;
-    color: $black;
-  }
-
-  nav {
-    margin-top: 1em;
+    display: none;
   }
 }
 
 @media (min-width: $medium) {
   header {
-    box-sizing: border-box;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    height: $header-height;
-
-    h1 {
-      font-size: 1.8em;
-    }
-
-    nav {
-      margin-top: 0;
-    }
+    padding: 2rem;
   }
 }
 
 @media (min-width: $large) {
+  header {
+    grid-template-columns: min-content auto;
+    grid-template-rows: 1fr;
+    grid-template-areas: "logo navigation";
+    grid-column-gap: 3rem;
 
+    #header-nav-toggle {
+      display: none;
+    }
+
+    #header-nav {
+      grid-area: navigation;
+
+      display: grid;
+      grid-template-columns: auto min-content;
+      grid-template-rows: 1fr;
+      grid-template-areas: "left right";
+
+      margin: 0;
+
+      .left, .right {
+        display: flex;
+        align-items: center;
+        margin: 0 !important;
+      }
+
+      .left {
+        grid-area: left;
+
+        a, span {
+          margin: 0 2em 0 0;
+        }
+      }
+
+      .right {
+        grid-area: right;
+
+        a, span {
+          margin: 0 0 0 2em;
+        }
+      }
+
+      a, span {
+        display: inline-block;
+        white-space: nowrap;
+      }
+    }
+  }
 }

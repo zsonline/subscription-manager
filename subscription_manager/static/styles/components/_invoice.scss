@@ -1,0 +1,9 @@
+.invoice {
+  display: grid;
+  grid-template-columns: min-content auto;
+  grid-column-gap: 1rem;
+
+  h4, p {
+    margin: .25em 0 !important;
+  }
+}

@@ -1,0 +1,43 @@
+{% extends "base.html" %}
+
+{% block title %}Abo verlängern{% endblock %}
+
+{% block description %}
+    Verlängere jetzt dein Abo, damit du die Zürcher Studierendenzeitung
+    auch weiterhin lesen kannst.
+{% endblock %}
+
+{% block content %}
+    <h3>{{ subscription.plan.name }}</h3>
+
+    <p>
+        {{ subscription.full_name }}<br>
+        {{ subscription.address_line }}<br>
+        {% if subscription.additional_address_line %}
+            {{ subscription.additional_address_line }}<br>
+        {% endif %}
+        {{ subscription.postcode }} {{ subscription.town }}
+    </p>
+
+    <form action="{% url 'period_create' subscription.id %}" method="post">
+        {% csrf_token %}
+
+        <fieldset>
+            <h3>Zahlung</h3>
+            <p>
+                Wir freuen uns über jeden Franken, den du mehr bezahlst. So können wir uns mal einen neuen
+                Computer anschaffen oder unser selbstgekochtes Weihnachtsessen aufpeppen.
+            </p>
+            {{ payment_form.as_p }}
+            <p class="message warning">
+                Wir unterstützen zurzeit nur Zahlungen mittels Banküberweisung. Nach dem Kauf deines Abos
+                schicken wir dir eine Rechnung. Sobald wir die Zahlung erhalten haben, aktivieren wir dein Abo.
+            </p>
+        </fieldset>
+
+        <fieldset>
+            <input type="submit" class="button success" value="Verlängern">
+            <a class="button grey" href="{% url 'subscription_list' %}">Abbrechen</a>
+        </fieldset>
+    </form>
+{% endblock %}

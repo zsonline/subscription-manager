@@ -1,60 +1,53 @@
-@mixin button($colour, $hover-colour: lighten($colour, 10%)) {
-  border-color: $colour;
-  color: $colour;
+@mixin button($colour) {
+  background-color: $colour;
+  color: text-contrast($colour);
 
   &:focus, &:active, &:hover {
-    color: lighten($hover-colour, 10%);
-    border-color: lighten($hover-colour, 10%);
+    background-color: lighten($colour, 10%);
+    color: text-contrast(lighten($colour, 10%));
   }
 }
 
 .button {
-  // Reset input styles
+  // Reset input styles for form buttons
   width: auto;
   overflow: visible;
   background: transparent;
-  color: inherit;
   font: inherit;
   outline: none;
+  border: none;
 
-  padding: .5em;
-  text-decoration: none;
   display: inline-block;
-  border: 2px solid;
+  padding: .75em;
+  text-align: center;
+  text-decoration: none;
+  cursor: pointer;
 
-  &:focus, &:active, &:hover {
-    cursor: pointer;
-  }
-
-  // Primary coloured button
-  &.primary {
-    @include button($primary)
-  }
-
-  // Secondary coloured button
-  &.secondary {
-    @include button($secondary)
-  }
-
-  // Black button (default)
-  &, &.black {
-    @include button($black, $dark-grey)
+  &, &.grey {
+    @include button($light-grey);
   }
 
   &.info {
-    @include button($info)
+    @include button($info);
   }
 
   &.success {
-    @include button($success)
+    @include button($success);
   }
 
   &.warning {
-    @include button($warning)
+    @include button($warning);
   }
 
   &.danger {
-    @include button($danger)
+    @include button($danger);
   }
 
+  &.transparent {
+    @include button(rgba(255, 255, 255, 0))
+  }
+
+  &.no-pointer {
+    cursor: text;
+  }
 }

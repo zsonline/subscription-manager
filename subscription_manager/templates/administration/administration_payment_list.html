@@ -1,0 +1,81 @@
+{% extends 'base.html' %}
+
+{% load url_arguments %}
+
+{% block title %}Zahlungen bestätigen{% endblock %}
+
+{% block description %}
+    Durch das Bestätigen einer Zahlung wird der Kauf oder die
+    Verlängerung per E-Mail bestätigt.
+{% endblock %}
+
+{% block content %}
+    <div class="action-bar">
+        <a class="button grey" href="{% url 'administration_home' %}">Zurück zur Verwaltungsübersicht</a>
+    </div>
+
+    <form action="" method="get">
+        <fieldset>
+            <p>
+                <label for="query">Suchbegriff (Vorname, Nachname oder Code)</label>
+                <input id="query" name="query" type="text" value="{{ request.GET.query }}">
+            </p>
+        </fieldset>
+
+        <fieldset>
+            <input class="button success" type="submit" value="Suchen">
+            <a class="button grey" href="?{% url_replace_arg request 'query' '' %}">Zurücksetzen</a>
+        </fieldset>
+    </form>
+
+    {% if payments|length > 0 %}
+        <p class="message warning">
+            Bestätige nur Zahlungen, die auf dem Bankkonto bereits eingetroffen sind.
+        </p>
+
+        <div id="table-wrapper" class="table">
+            <table>
+                <tr>
+                    <th>Erstellt am</th>
+                    <th>Name (Abo)</th>
+                    <th>Name (Account)</th>
+                    <th>Code</th>
+                    <th>Betrag</th>
+                    <th>Aktionen</th>
+                </tr>
+                {% for payment in payments %}
+                    <tr>
+                        <td>{{ payment.created_at }}</td>
+                        <td>{{ payment.period.subscription.full_name }}</td>
+                        <td>{{ payment.period.subscription.user.full_name }}</td>
+                        <td>{{ payment.code }}</td>
+                        <td>{{ payment.amount }} Franken</td>
+                        <td><a class="button success" href="{% url 'administration_payment_confirm' payment.pk %}">Zahlung bestätigen</a></td>
+                    </tr>
+                {% endfor %}
+            </table>
+        </div>
+
+        <script type="text/javascript">
+            // Make table full width on wide screens
+            function fullWidthTable() {
+                const windowWidth = window.innerWidth;
+                const tableWrapper = document.getElementById('table-wrapper');
+                const table = tableWrapper.childNodes[1];
+                if(windowWidth > 1000) {
+                    table.style.position = 'absolute';
+                    tableWrapper.style.height = table.offsetHeight + 'px';
+                } else {
+                    table.style.position = 'unset';
+                    tableWrapper.style.height = 'unset';
+                }
+            }
+            fullWidthTable();
+            window.addEventListener('resize', fullWidthTable);
+        </script>
+
+        {% include "components/pagination.html" %}
+    {% else %}
+        <p class="message info">Keine Zahlungen vorhanden.</p>
+    {% endif %}
+{% endblock %}

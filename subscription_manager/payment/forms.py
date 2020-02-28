@@ -1,11 +1,5 @@
-# Python imports
-from random import randint
-
-# Django imports
 from django import forms
-from django.db import IntegrityError
 
-# Application imports
 from .models import Payment
 
 
@@ -19,7 +13,7 @@ class PaymentForm(forms.ModelForm):
 
     class Meta:
         model = Payment
-        fields = ('amount',)
+        fields = ('amount', 'method')
 
     def __init__(self, *args, **kwargs):
         """
@@ -28,21 +22,21 @@ class PaymentForm(forms.ModelForm):
         validation and for generating the help text.
         """
         # Read passed parameters
-        self.min_price = kwargs.pop('min_price', None)
+        self.plan = kwargs.pop('plan', None)
 
-        if self.min_price is None:
-            raise forms.ValidationError('Payment form improperly instantiated.')
+        if self.plan is None:
+            raise forms.ValidationError('Payment form improperly instantiated. Plan is missing.')
 
         # Call super constructor
         super().__init__(*args, **kwargs)
 
-        # Add help text
-        self.fields['amount'].help_text = \
-            'Der Preis muss mindestens {} Franken betragen.'.format(self.min_price)
-        if self.min_price == 0:
-            self.fields['amount'].help_text = \
-                'Zahl so viel du willst.'.format(self.min_price)
+        # Add initial data
+        self.fields['amount'].initial = self.plan.price
 
+        # Add help text
+        self.fields['amount'].help_text = 'Der Preis muss mindestens {} Franken betragen.'.format(self.plan.price)
+        if self.plan.price == 0:
+            self.fields['amount'].help_text = 'Zahle so viel du willst.'
 
     def clean_amount(self):
         """
@@ -54,27 +48,7 @@ class PaymentForm(forms.ModelForm):
         amount = self.cleaned_data['amount']
 
         # Check whether price is high enough
-        if amount is None or amount < self.min_price:
-            self.add_error('amount', 'Der Preis muss mindestens {} Franken betragen.'.format(self.min_price))
+        if amount is None or amount < self.plan.price:
+            self.add_error('amount', 'Der Preis muss mindestens {} Franken betragen.'.format(self.plan.price))
 
         return amount
-
-    def save(self, commit=True):
-        """
-        Overrides the default save method. It generates
-        and saves a unique payment code.
-        """
-        # Default method
-        payment = super().save(commit=False)
-        # Try creating unique code object
-        while True:
-            try:
-                # Generate a code
-                code = 'ZS1-' + str(randint(1000, 9999)) + '-' + str(randint(1000, 9999))
-                payment.code = code
-                if commit:
-                    payment.save()
-            except IntegrityError:
-                continue
-            break
-        return payment

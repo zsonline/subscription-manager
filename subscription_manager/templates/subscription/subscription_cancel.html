@@ -1,18 +1,28 @@
-{% extends 'layouts/manager.html' %}
+{% extends 'base.html' %}
 
 {% block title %}Abo kündigen{% endblock %}
 
-{% block breadcrumbs %}
-    <a href="{% url 'subscription_list' %}">Abonnements</a>
-    <span>Abo kündigen</span>
+{% block description %}
+    Bist du sicher, dass du dieses Abo kündigen willst?
 {% endblock %}
 
 {% block content %}
-    {% include 'includes/subscription.html' %}
+    <h3>{{ subscription.plan.name }}</h3>
+    <p>
+        {{ subscription.full_name }}<br>
+        {{ subscription.address_line }}<br>
+        {% if subscription.additional_address_line %}
+            {{ subscription.additional_address_line }}<br>
+        {% endif %}
+        {{ subscription.postcode }} {{ subscription.town }}
+    </p>
 
     <form method="post">
         {% csrf_token %}
-        <p>Bist du sicher, dass du dieses Abo kündigen willst?</p>
-        <input class="button danger" type="submit" value="Kündigen" />
+
+        <fieldset>
+            <input class="button danger" type="submit" value="Kündigen">
+            <a class="button grey" href="{% url 'subscription_list' %}">Abbrechen</a>
+        </fieldset>
     </form>
 {% endblock %}

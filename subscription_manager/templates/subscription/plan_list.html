@@ -1,42 +1,65 @@
-{% extends 'layouts/manager.html' %}
+{% extends 'base.html' %}
 
-{% block title %}Neues Abonnement{% endblock %}
+{% load humanize %}
 
-{% block breadcrumbs %}
-    <a href="{% url 'subscription_list' %}">Abonnements</a>
-    <span>Neues Abonnement</span>
+{% block title %}Unsere Abos{% endblock %}
+
+{% block description %}
+    Das Studium findet nicht nur im Hörsaal statt. Die Zürcher Studierendenzeitung versorgt dich mit
+    den wichtigsten Neuigkeiten rund um den Campus. Abonniere ein Jahr Zusatzwissen für dich und deine WG.
 {% endblock %}
 
 {% block content %}
-    <p class="description">
-        Abonnentinnen und Abonnenten bekommen die Zürcher Studierendenzeitung sechsmal jährlich in ihren Briefkasten geliefert.
-    </p>
-
-    <ul id="plans">
+    <ul class="list">
         {% for plan in plans %}
-
             <li class="plan">
 
                 <h3>{{ plan.name }}</h3>
                 <p>{{ plan.description }}</p>
 
-                <div class="price">
-                    {% if plan.price == 0 %}
-                        <span class="amount">Gratis</span>
-                    {% else %}
-                        <span class="amount">{{ plan.price }}</span> Franken
+                {% if user.is_authenticated %}
+                    <a href="{% url 'subscription_create' plan.slug %}" class="button info">Bestellen</a>
+                {% else %}
+                    <a href="{% url 'signup' %}" class="button info">Bestellen</a>
+                {% endif %}
+                <span class="button transparent no-pointer">
+                    {{ plan.price|humanize:'money'|capfirst }}
+                    {% if plan.price != 0 %}
                         /
-                        {% if plan.duration == 1 %}
-                            1 Monat
-                        {% else %}
-                            {{ plan.duration }} Monate
-                        {% endif %}
+                        {{ plan.duration|humanize:'duration' }}
                     {% endif %}
-                </div>
+                </span>
 
-                <a href="{% url 'subscription_create' plan.slug %}" class="button black">Abonnieren</a>
             </li>
+        {% empty %}
+            <p class="message info">Leider haben wir zurzeit kein passendes Abo für dich.</p>
+        {% endfor %}
 
+        {% for plan in not_eligible_plans %}
+            <li class="plan disabled">
+
+                <h3>{{ plan.name }}</h3>
+                <p>{{ plan.description }}</p>
+
+                <p>
+                    <span class="badge danger">Nicht erhältlich</span>
+                    Du brauchst eine kürzlich verifizierte E-Mail-Adresse, die auf {{ plan.get_readable_eligible_email_domains }} endet.
+                    {% if plan.eligible_active_subscriptions_per_user <= 1 %}
+                        Du darfst maximal {{ plan.eligible_active_subscriptions_per_user|humanize:'number' }} aktives Abo von diesem Typ besitzen.
+                    {% else %}
+                        Du darfst maximal {{ plan.eligible_active_subscriptions_per_user|humanize:'number' }} aktive Abos von diesem Typ besitzen.
+                    {% endif %}
+                </p>
+
+                <p>
+                    {{ plan.price|humanize:'money'|capfirst }}
+                    {% if plan.price != 0 %}
+                        /
+                        {{ plan.duration|humanize:'duration' }}
+                    {% endif %}
+                </p>
+
+            </li>
         {% endfor %}
     </ul>
 {% endblock %}

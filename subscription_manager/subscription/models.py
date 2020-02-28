@@ -1,140 +1,212 @@
-# Python imports
-from datetime import date
-
-# Pip imports
-from dateutil.relativedelta import relativedelta
-
-# Django imports
 from django.contrib.auth import get_user_model
-from django.core.exceptions import ObjectDoesNotExist
 from django.db import models
 from django.utils import timezone
 
-# Application imports
-from .managers import SubscriptionManager
+from .managers import PlanManager, SubscriptionManager, PeriodManager
+
+
+class Plan(models.Model):
+    """
+    Model that holds the data for a plan (a type of subscription).
+    Such a plan can or cannot be purchased by users.
+    """
+    name = models.CharField(
+        max_length=50,
+        verbose_name='Name'
+    )
+    description = models.TextField(
+        blank=True,
+        verbose_name='Beschreibung'
+    )
+    slug = models.SlugField(
+        unique=True,
+        verbose_name='Slug'
+    )
+    duration = models.DurationField(
+        default=timezone.timedelta(days=365),
+        verbose_name='Laufzeit'
+    )
+    price = models.PositiveIntegerField(
+        verbose_name='Preis'
+    )
+    is_purchasable = models.BooleanField(
+        default=True,
+        verbose_name='Käuflich'
+    )
+    is_renewable = models.BooleanField(
+        default=True,
+        verbose_name='Erneuerbar'
+    )
+    eligible_active_subscriptions_per_user = models.PositiveIntegerField(
+        null=True,
+        blank=True,
+        default=None,
+        verbose_name='Anzahl aktiver Abos pro Leserin',
+        help_text='Kein Wert bedeutet, dass es keine Begrenzung gibt.'
+    )
+    eligible_email_domains = models.TextField(
+        blank=True,
+        default='',
+        verbose_name='Berechtigte E-Mail-Domains',
+        help_text='E-Mail-Adressen müssen mit einem Semikolon getrennt sein.'
+    )
+    created_at = models.DateTimeField(
+        default=timezone.now,
+        verbose_name='Erstellt am'
+    )
+
+    class Meta:
+        verbose_name = 'Abotyp'
+        verbose_name_plural = 'Abotypen'
+
+    objects = PlanManager()
+
+    def __str__(self):
+        return self.name
+
+    def get_eligible_email_domains(self):
+        """
+        Returns a list of the eligible email domains.
+        """
+        if self.eligible_email_domains is None:
+            return []
+
+        eligible_email_domains_list = self.eligible_email_domains.split(';')
+        return list(filter(None, eligible_email_domains_list))
+
+    def get_readable_eligible_email_domains(self, conjunction='oder'):
+        """
+        Returns a readable string of the eligible email domains.
+        """
+        # Prefixes the @-symbol to all domains
+        eligible_email_domains = ['@' + email_domain for email_domain in self.get_eligible_email_domains()]
+
+        # Converts list to string of comma- and conjunction-separated domains and returns it
+        if len(eligible_email_domains) == 0:
+            return ''
+        elif len(eligible_email_domains) == 1:
+            return eligible_email_domains[0]
+        else:
+            return ', '.join(eligible_email_domains[:-1]) + ' ' + conjunction + ' ' + eligible_email_domains[-1]
+
+    def is_eligible(self, user, purpose='purchase'):
+        """
+        Checks whether a given user is eligible
+        to purchase the subscription.
+        """
+        if user is not None and self in Plan.objects.filter_eligible(user, purpose):
+            return True
+        return False
+    is_eligible.boolean = True
 
 
 class Subscription(models.Model):
     """
-    Model that holds the information for a
-    user's subscription.
+    Model that holds the data for a user's subscription (an instance of a plan).
+    A purchased plan corresponds to a subscription.
     """
     user = models.ForeignKey(
-        get_user_model(),
+        to=get_user_model(),
         on_delete=models.CASCADE,
-        related_name='subscription_set'
+        null=True,
+        blank=True,
+        verbose_name='Account'
     )
     plan = models.ForeignKey(
-        'Plan',
+        to='Plan',
         on_delete=models.PROTECT,
-        verbose_name='Abo-Typ'
+        verbose_name='Abotyp'
     )
-    address_line_1 = models.CharField(
-        'Adresse',
-        max_length=50
+    first_name = models.CharField(
+        max_length=30,
+        verbose_name='Vorname'
     )
-    address_line_2 = models.CharField(
-        'Adresszusatz',
-        max_length=50,
-        blank=True,
+    last_name = models.CharField(
+        max_length=150,
+        verbose_name='Nachname'
+    )
+    address_line = models.CharField(
+        max_length=100,
+        verbose_name='Adresszeile'
+    )
+    additional_address_line = models.CharField(
         null=True,
+        blank=True,
+        max_length=100,
+        verbose_name='Zusätzliche Adresszeile'
     )
     postcode = models.CharField(
-        'Postleitzahl',
         max_length=8,
+        verbose_name='Postleitzahl'
     )
-    city = models.CharField(
-        'Ort',
-        max_length=50
+    town = models.CharField(
+        max_length=100,
+        verbose_name='Ort'
     )
     country = models.CharField(
-        'Land',
         max_length=50,
-        default='Schweiz'
-    )
-    start_date = models.DateField(
-        null=True,
-        blank=True
-    )
-    end_date = models.DateField(
-        null=True,
-        blank=True
+        default='Schweiz',
+        verbose_name='Land'
     )
     canceled_at = models.DateTimeField(
         null=True,
-        blank=True
+        blank=True,
+        verbose_name='Gekündigt am'
     )
-    created_at = models.DateTimeField(auto_now_add=True)
+    created_at = models.DateTimeField(
+        default=timezone.now,
+        verbose_name='Erstellt am'
+    )
 
-    # Custom model manager
     objects = SubscriptionManager()
 
     class Meta:
-        verbose_name = 'Abonnement'
+        verbose_name = 'Abo'
+        verbose_name_plural = 'Abos'
 
     def __str__(self):
-        return '{} #{} von {}'.format(self.plan, self.id, self.user.full_name())
+        return 'Abo #{} ({} {}, {})'.format(self.pk, self.first_name, self.last_name, self.town)
 
-    def has_started(self):
-        """
-        True if the subscription has started.
-        Otherwise false.
-        """
-        return self.start_date is not None and self.start_date <= timezone.now().date()
+    def full_name(self):
+        return '{} {}'.format(self.first_name, self.last_name)
 
     def has_ended(self):
         """
         True if the subscription has ended.
-        Otherwise false.
         """
         return self.end_date is not None and self.end_date <= timezone.now().date()
+    has_ended.boolean = True
 
-    def is_canceled(self):
+    def get_last_period(self):
         """
-        Returns true if the canceled_at field
-        is set.
+        Returns the last period of the subscription.
         """
-        return self.canceled_at is not None
+        return self.period_set.order_by('-end_date').first()
 
-    def is_active(self):
+    def is_renewable(self):
         """
-        Checks whether the subscription is active.
+        Returns true if the subscription can be renewed by its user.
         """
-        return not self.is_canceled() and self.has_started() and not self.has_ended()
-    is_active.boolean = True
+        if self.plan.is_eligible(self.user, 'renewal') and self.expires_soon() and self.is_paid:
+            return True
+        return False
+    is_renewable.boolean = True
 
     def renew(self):
         """
-        Renews the subscription by the duration of the
-        plan.
+        Renews the subscription by the duration of the plan.
         """
-        self.end_date += relativedelta(months=self.plan.duration)
-        self.save()
-        return self
-
-    def has_open_payments(self):
-        """
-        Returns true if at least one payment associated with
-        this subscription is open. Otherwise false.
-        """
-        payments = self.payment_set.all()
-        if payments is None:
-            return False
-        for payment in payments:
-            if not payment.is_paid():
-                return True
-        return False
-
-    def last_payment_amount(self):
-        """
-        Returns the last payment's amount. If no
-        payment exists, None is returned.
-        """
-        try:
-            last_payment = self.payment_set.latest('created_at')
-        except ObjectDoesNotExist:
+        # Get last period
+        last_period = self.get_last_period()
+        if last_period is None:
             return None
-        return last_payment.amount
+
+        # Create new period object
+        return Period.objects.create(
+            subscription=self,
+            start_date=last_period.end_date + timezone.timedelta(days=1),
+            end_date=last_period.end_date + timezone.timedelta(days=1) + self.plan.duration
+        )
 
     def expires_in_lt(self, days):
         """
@@ -142,45 +214,69 @@ class Subscription(models.Model):
         the given amount of days.
         """
         # Check if end_date is instance of date
-        if isinstance(self.end_date, date) and self.end_date >= timezone.now().date():
-            return self.end_date - timezone.now().date() <= timezone.timedelta(days=days)
-        return False
+        return self.end_date < timezone.now().date() + timezone.timedelta(days=days)
 
     def expires_soon(self):
         """
-        Returns true if subscription expires in less than
-        30 days.
+        Returns true if subscription expires in less than 30 days.
         """
         return self.expires_in_lt(30)
 
 
-class Plan(models.Model):
+class Period(models.Model):
     """
-    Model that holds the information for a
-    type of subscription (i.e. price).
+    Model that holds the data of a period. A period is one cycle of a user's
+    subscription. If a user renews her subscription, a new period is created
+    for that subscription.
     """
-    name = models.CharField(
-        'Name',
-        max_length=50
+    subscription = models.ForeignKey(
+        to='Subscription',
+        on_delete=models.CASCADE,
+        verbose_name='Abonnement'
     )
-    description = models.TextField(
-        'Beschreibung'
+    start_date = models.DateField(
+        null=True,
+        blank=True,
+        verbose_name='Anfangsdatum'
     )
-    slug = models.SlugField(
-        'Slug',
-        unique=True
+    end_date = models.DateField(
+        null=True,
+        blank=True,
+        verbose_name='Enddatum'
     )
-    duration = models.PositiveSmallIntegerField(
-        'Laufzeit',
-        default=12,
-        help_text='Laufzeit in Monaten'
-    )  # In months
-    price = models.PositiveSmallIntegerField(
-        'Preis'
+    created_at = models.DateTimeField(
+        default=timezone.now,
+        verbose_name='Erstellt am'
     )
+
+    objects = PeriodManager()
 
     class Meta:
-        verbose_name = 'Abo-Typ'
+        verbose_name = 'Periode'
+        verbose_name_plural = 'Perioden'
 
     def __str__(self):
-        return self.name
+        return 'Periode #{} ({} bis {})'.format(self.pk, self.start_date, self.end_date)
+
+    def has_started(self):
+        """
+        True if the period has started.
+        """
+        return self.start_date is not None and self.start_date <= timezone.now().date()
+    has_started.boolean = True
+
+    def has_ended(self):
+        """
+        True if the period has ended.
+        """
+        return self.end_date is not None and self.end_date <= timezone.now().date()
+    has_ended.boolean = True
+
+    def is_active(self):
+        """
+        The period is active if it has started but not ended yet.
+        These inequations have to hold: start_date <= now < end_date.
+        It has also to be paid.
+        """
+        return self.has_started() and not self.has_ended() and self.payment.is_paid()
+    is_active.boolean = True

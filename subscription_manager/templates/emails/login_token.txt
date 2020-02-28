@@ -1,3 +1,0 @@
-{% extends 'base_email.txt' %}
-
-{% block content %}das ist dein Anmelde-Link: {{ url }}.{% endblock %}

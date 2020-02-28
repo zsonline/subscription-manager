@@ -1,33 +1,23 @@
-// Variables
-@import "base/breakpoints";
-@import "base/colours";
-
 // Reset
 @import "vendors/normalize";
 
 // Base
-@import "base/typography";
+@import "breakpoints";
+@import "colours";
+@import "typography";
 
 // Components
-@import "components/link";
+@import "components/action";
 @import "components/button";
 @import "components/badge";
-@import "components/alert";
 @import "components/form";
+@import "components/invoice";
+@import "components/list";
+@import "components/message";
 @import "components/table";
-@import "components/navigation";
-@import "components/card";
-@import "components/breadcrumbs";
-@import "components/announcement";
+@import "components/pagination";
 
 // Layout
-@import "layout/header";
 @import "layout/body";
 @import "layout/footer";
-@import "layout/vertical";
-@import "layout/manager";
-@import "layout/error";
-
-// Pages
-@import "pages/authentication";
-@import "pages/subscription";
+@import "layout/header";

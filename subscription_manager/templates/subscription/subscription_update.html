@@ -1,18 +1,23 @@
-{% extends 'layouts/manager.html' %}
+{% extends 'base.html' %}
 
 {% block title %}Adresse ändern{% endblock %}
 
-{% block breadcrumbs %}
-    <a href="{% url 'subscription_list' %}">Abonnements</a>
-    <span>Adresse ändern</span>
+{% block description %}
+    Möchtest du die Zürcher Studierendenzeitung an eine andere
+    Adresse geliefert bekommen? Dann ändere hier deine Adresse.
 {% endblock %}
 
 {% block content %}
-    {% include 'includes/subscription.html' %}
-
     <form method="post">
         {% csrf_token %}
-        {{ form.as_p }}
-        <input class="button black" type="submit" value="Speichern" />
+
+        <fieldset>
+            {{ form.as_p }}
+        </fieldset>
+
+        <fieldset>
+            <input class="button success" type="submit" value="Speichern">
+            <a class="button grey" href="{% url 'subscription_list' %}">Abbrechen</a>
+        </fieldset>
     </form>
 {% endblock %}

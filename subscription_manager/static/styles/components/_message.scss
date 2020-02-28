@@ -1,0 +1,31 @@
+@mixin message($colour) {
+  background-color: hsl(hue($colour), saturation($colour), 75%);
+  color: text-contrast(hsl(hue($colour), saturation($colour), 75%));
+}
+
+.message {
+  box-sizing: border-box;
+  padding: .75em;
+
+  &, &.info {
+    @include message($info);
+  }
+
+  &.success {
+    @include message($success);
+  }
+
+  &.warning {
+    @include message($warning);
+  }
+
+  &.danger, &.error {
+    @include message($danger);
+  }
+}
+
+#messages {
+  .message {
+    margin: 0;
+  }
+}

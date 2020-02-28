@@ -1,0 +1,10 @@
+{{ to_name }}, dein Abo endet {{ remaining_days }}. Verlängere es jetzt, damit du weiterhin die ZS erhältst.
+
+Öffne diesen Link, um dich anzumelden: {{ token.url }}?next={% url 'period_create' subscription_id %}. Nach der Anmeldung kannst du dein Abo verlängern.
+Der Link ist gültig bis am {{ token.valid_until|date:'j. F Y, G.i \U\h\r' }}.
+
+Wenn der Link bereits abgelaufen ist, kannst du dich unter https://www.abo.zs-online.ch anmelden und so dein Abo verlängern.
+
+Es würde uns freuen, dich weiterhin an Bord zu haben.
+
+Die Zürcher Studierendenzeitung

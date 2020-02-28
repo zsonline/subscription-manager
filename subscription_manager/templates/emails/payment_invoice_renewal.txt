@@ -1,0 +1,26 @@
+{{ to_name }}, vielen Dank für die Erneuerung deines Abos.
+
+Bitte begleiche folgende Rechnung bis spätestens am {{ payment.due_on|date:'j. F Y' }}. Sobald wir die Zahlung erhalten haben, erneuern wir dein Abo.
+
+Betrag:
+{{ payment.amount }} Franken
+
+Mitteilungsfeld:
+{{ payment.code }}
+
+IBAN:
+CH32 0070 0110 0030 6727 2
+
+Kontoinhaber:
+Medienverein ZS
+Rämistrasse 62
+8001 Zürich
+
+Finanzinstitut:
+Zürcher Kantonalbank
+Postfach
+8010 Zürich
+
+Wir freuen uns, dich weiterhin an Bord zu haben.
+
+Die Zürcher Studierendenzeitung

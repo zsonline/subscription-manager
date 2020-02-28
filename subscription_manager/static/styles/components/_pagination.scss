@@ -1,0 +1,11 @@
+.pagination {
+  padding: 1em 0;
+
+  .current, .links {
+    display: block;
+  }
+
+  .current {
+    margin-bottom: .5em;
+  }
+}

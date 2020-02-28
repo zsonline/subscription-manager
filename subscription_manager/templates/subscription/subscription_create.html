@@ -1,48 +1,34 @@
-{% extends 'layouts/manager.html' %}
+{% extends "base.html" %}
 
-{% block title %}{{ plan.name }}{% endblock %}
+{% block title %}{{ plan.name }} bestellen{% endblock %}
 
-{% block breadcrumbs %}
-    <a href="{% url 'subscription_list' %}">Abonnements</a>
-    <a href="{% url 'plan_list' %}">Neues Abonnement</a>
-    <span>{{ plan.name }}</span>
-{% endblock %}
+{% block description %}{{ plan.description }}{% endblock %}
 
 {% block content %}
-    <p class="description">{{ plan.description }}</p>
-
     <form action="{% url 'subscription_create' plan.slug %}" method="post">
         {% csrf_token %}
 
         <fieldset>
-            <h3>Abonnement</h3>
+            <h3>Adresse</h3>
             {{ subscription_form.as_p }}
         </fieldset>
 
         <fieldset>
-            <h3>Preis</h3>
-
-            <p>Wir freuen uns über jeden Franken, den du mehr bezahlst. So können wir uns mal einen neuen Computer anschaffen oder unser selbstgekochtes Weihnachtsessen aufpeppen.</p>
-
-            {{ payment_form.as_p }}
-
+            <h3>Zahlung</h3>
             <p>
-                Laufzeit:
-                {% if plan.duration == 1 %}
-                    1 Monat
-                {% else %}
-                    {{ plan.duration }} Monate
-                {% endif %}
+                Wir freuen uns über jeden Franken, den du mehr bezahlst. So können wir uns mal einen neuen
+                Computer anschaffen oder unser selbstgekochtes Weihnachtsessen aufpeppen.
             </p>
-
-            <p class="alert info">
-                Wir unterstützen nur Zahlungen mittels Banküberweisung. Nach dem Kauf deines Abonnements
-                schicken wir dir eine Rechnung. Sobald die Zahlung bei uns eingetroffen ist, aktivieren wir es.
+            {{ payment_form.as_p }}
+            <p class="message warning">
+                Wir unterstützen zurzeit nur Zahlungen mittels Banküberweisung. Nach dem Kauf deines Abos
+                schicken wir dir eine Rechnung. Sobald wir die Zahlung erhalten haben, aktivieren wir dein Abo.
             </p>
         </fieldset>
 
         <fieldset>
-            <input class="button black" type="submit" value="Abonnieren" />
+            <input type="submit" class="button success" value="Bestellen">
+            <a class="button grey" href="{% url 'plan_list' %}">Abbrechen</a>
         </fieldset>
     </form>
 {% endblock %}

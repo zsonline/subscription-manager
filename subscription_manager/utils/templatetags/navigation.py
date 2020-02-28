@@ -1,22 +1,18 @@
-# Django imports
 from django import template
-from django.shortcuts import reverse
 
 
 register = template.Library()
 
 
 @register.simple_tag(takes_context=True)
-def active(context, view_name):
+def active(context, *view_names):
     """
-    Tag function that compares the current url
-    with the path of a given view name. If they
-    are equal, the string 'active' is returned.
-    Otherwise an empty string.
+    Tag function that compares the given view names with the
+    requested view name. If at least one is equal, 'active'
+    is returned. Otherwise an empty string.
     """
     request = context['request']
-    if reverse(view_name) == '/' and request.path != '/':
-        return ''
-    if reverse(view_name) in request.path:
-        return 'active'
+    for view_name in view_names:
+        if request.resolver_match.url_name == view_name:
+            return 'active'
     return ''

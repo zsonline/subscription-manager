@@ -1,6 +1,7 @@
-{% extends 'base_error.html' %}
+{% extends 'base.html' %}
 
-{% block content %}
-    <h2>{% block title %}Seite nicht gefunden{% endblock %}</h2>
-    <p>Die angeforderte Seite {{ request.path }} existiert nicht.</p>
+{% block title %}Seite nicht gefunden{% endblock %}
+
+{% block description %}
+    Die angeforderte Seite {{ request.path }} existiert nicht.
 {% endblock %}

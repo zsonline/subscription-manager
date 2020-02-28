@@ -1,3 +1,0 @@
-@function black($percentage) {
-  @return hsl(0, 0, 100 - $percentage)
-}

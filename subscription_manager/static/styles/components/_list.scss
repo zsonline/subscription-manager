@@ -1,0 +1,70 @@
+.list {
+  margin: 2rem 0 0 0;
+  padding: 0;
+
+  li {
+    &:not(:first-child) {
+      margin-top: 2rem
+    }
+    &:not(:last-child) {
+      margin-bottom: 2rem
+    }
+    list-style: none;
+
+    &.disabled {
+      color: $grey;
+    }
+
+    div, p, ul {
+      &:not(:last-child) {
+        margin-bottom: 1em;
+      }
+    }
+  }
+
+  &.timeline {
+    li {
+      position: relative;
+      padding-left: 2em;
+
+      &:after {
+        content: '';
+        position: absolute;
+        top: 5px;
+        left: 3px;
+        box-sizing: border-box;
+        height: 17px;
+        width: 17px;
+        border: solid 3px $light-grey;
+        border-radius: 50%;
+        background-color: $white;
+      }
+
+      &:before {
+        content: '';
+        background-color: $light-grey;
+        position: absolute;
+        bottom: -1.5em;
+        top: -1.5em;
+        left: 10px;
+        width: 3px;
+      }
+    }
+  }
+}
+
+
+@media all and (min-width: $medium) {
+  .list {
+    margin-top: 3rem;
+
+    li {
+      &:not(:first-child) {
+        margin-top: 3rem
+      }
+      &:not(:last-child) {
+        margin-bottom: 3rem
+      }
+    }
+  }
+}

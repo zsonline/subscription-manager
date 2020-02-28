@@ -1,0 +1,56 @@
+{% load static %}
+{% load navigation %}
+
+<header>
+
+    <a id="header-logo" href="http://zs-online.ch/">
+        <img src="{% static 'images/zs-logo-black.svg' %}" height="50" alt="Zürcher Studierendenzeitung ZS">
+        <h1>Zürcher Studierendenzeitung</h1>
+    </a>
+
+    <div id="header-nav-toggle">
+        <a href="#">Navigation anzeigen</a>
+    </div>
+
+    <nav id="header-nav">
+
+        <div class="left">
+            <a class="{% active 'plan_list' 'signup' 'subscription_create' %}" href="{% url 'plan_list' %}">Abo bestellen</a>
+            {% if user.is_authenticated %}
+                <a class="{% active 'subscription_list' 'subscription_detail' 'subscription_update' 'subscription_cancel' 'period_create' %}" href="{% url 'subscription_list' %}">Abonnements</a>
+                <a class="{% active 'email_address_list' 'email_address_create' 'email_address_delete' %}" href="{% url 'email_address_list' %}">E-Mail-Adressen</a>
+                {% if user.is_staff %}
+                    <a class="{% active 'administration_home' 'administration_payment_list' %}" href="{% url 'administration_home' %}">Verwaltung</a>
+                {% endif %}
+            {% else %}
+                <a class="{% active 'login' %}" href="{% url 'login' %}">Abo verwalten</a>
+            {% endif %}
+        </div>
+
+        {% if user.is_authenticated %}
+            <div class="right">
+                <span>Du bist angemeldet als {{ user.full_name }}.</span>
+                <a href="{% url 'logout' %}"><em class="danger">Abmelden</em></a>
+            </div>
+        {% endif %}
+
+    </nav>
+
+</header>
+
+<script type="text/javascript">
+    // Add event listener to navigation toggle
+    document.getElementById("header-nav-toggle").children[0].addEventListener("click", function(event) {
+        const navigationToggle = event.target,
+            navigation = document.getElementById("header-nav");
+
+        // Add class to navigation and change toggle text depending on the navigation's state
+        if(navigation.classList.contains("toggled")) {
+            navigation.classList.remove("toggled");
+            navigationToggle.innerText = "Navigation anzeigen";
+        } else {
+            navigation.classList.add("toggled");
+            navigationToggle.innerText = "Navigation verbergen";
+        }
+    });
+</script>

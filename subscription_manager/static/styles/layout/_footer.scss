@@ -1,51 +1,21 @@
 footer {
-  padding: 1em;
+  box-sizing: border-box;
+  padding: 1rem;
+  background-color: $lighter-grey;
 
-  div:not(.column), #credits {
-    margin: 1em 0;
-
-    &:last-child {
-      margin-bottom: 0;
-    }
-  }
-
-  b {
-    display: block;
-    margin-top: 0.2em;
-    font-size: 1.2em;
+  div {
+    margin: 3rem 0;
+    max-width: $medium;
   }
 
   address {
     font-style: normal;
-  }
-
-  small {
-    color: $grey;
-
-    a {
-      color: $grey !important;
-      &:hover, &:focus, &:active {
-        color: $light-grey !important;
-      }
-    }
+    margin: .5em 0;
   }
 }
 
 @media all and (min-width: $medium) {
-
   footer {
-    display: flex;
-
-    .column {
-      flex: 1;
-    }
-
-    #credits {
-      display: flex;
-      justify-content: flex-end;
-      align-items: flex-end;
-      text-align: right;
-    }
+      padding: 1rem 2rem;
   }
-
 }

@@ -1,0 +1,7 @@
+{{ to_name }}, hier ist dein Anmelde-Link.
+
+{{ token.url }}
+
+Der Link ist gültig bis am {{ token.valid_until|date:'j. F Y, G.i \U\h\r' }}.
+
+Die Zürcher Studierendenzeitung

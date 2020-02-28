@@ -1,64 +1,90 @@
-{% extends 'layouts/manager.html' %}
+{% extends 'base.html' %}
 
 {% block title %}Abonnements{% endblock %}
 
-{% block breadcrumbs %}
-    <span>Abonnements</span>
+{% block description %}
+    Adressen ändern, Abos verlängern, Rechnungen bezahlen:
+    Hier kannst du deine Abonnements verwalten.
 {% endblock %}
 
 {% block content %}
+    <div class="action-bar">
+        <a class="button info" href="{% url 'plan_list' %}">Neues Abo bestellen</a>
+    </div>
+
     {% if subscriptions|length > 0 %}
-        <p>
-            <a class="button primary" href="{% url 'plan_list' %}">Neues Abonnement</a>
-        </p>
-
-        <div class="cards">
+        <ul class="list">
             {% for subscription in subscriptions %}
-                <div class="card">
-                    {% include 'includes/subscription.html' %}
+                <li>
 
-                    <div class="status">
-                        <h4>Status</h4>
+                    <h3>{{ subscription.plan.name }}</h3>
+
+                    {# Badges #}
+                    <div>
                         {% if subscription.is_active %}
                             <span class="badge success">Aktiv</span>
-                            <br>
-                            Gültig bis {{ subscription.end_date }}
+                        {% elif subscription.is_canceled %}
+                            <span class="badge grey">Gekündigt</span>
+                        {% elif subscription.is_paid and subscription.has_ended %}
+                            <span class="badge grey">Abgelaufen</span>
                         {% else %}
-                            <span class="badge danger">Inaktiv</span>
-                            {% if subscription.has_ended %}
-                                <br>
-                                Am {{ subscription.end_date }} abgelaufen
-                            {% elif subscription.is_canceled %}
-                                <br>
-                                Am {{ subscription.canceled_at.date }} gekündigt
-                            {% endif %}
+                            <span class="badge grey">Inaktiv</span>
                         {% endif %}
+                        {% if subscription.is_paid %}
+                            <span class="badge success">Bezahlt</span>
+                        {% else %}
+                            <span class="badge danger">Offene Rechnung</span>
+                        {% endif %}
+
                     </div>
 
-                    {% if subscription.has_open_payments %}
-                        <div class="payment">
-                            <h4>Zahlung</h4>
-                            <a href="{% url 'subscription_detail' subscription.id %}">Offene Rechnung</a>
-                        </div>
-                    {% endif %}
+                    <p>
+                        {{ subscription.full_name }}<br>
+                        {{ subscription.address_line }}<br>
+                        {% if subscription.additional_address_line %}
+                            {{ subscription.additional_address_line }}<br>
+                        {% endif %}
+                        {{ subscription.postcode }} {{ subscription.town }}
+                    </p>
 
                     {% if subscription.is_active %}
-                        <div class="actions">
-                            <h4>Optionen</h4>
-                            <a href="{% url 'subscription_update' subscription.id %}">Adresse ändern</a>
-                            {% if subscription.expires_soon and not subscription.has_open_payments %}
-                                <a href="{% url 'payment_create' subscription.id %}">Verlängern</a>
-                            {% endif %}
-                            {% if not subscription.has_open_payments %}
-                                <a href="{% url 'subscription_cancel' subscription.id %}">Kündigen</a>
-                            {% endif %}
-                        </div>
+                        <p>
+                            Gültig bis {{ subscription.end_date|date:'j. F Y' }}
+                        </p>
+                    {% elif subscription.is_canceled %}
+                        <p>
+                            Gekündigt am {{ subscription.canceled_at|date:'j. F Y' }}
+                        </p>
+                    {% elif subscription.is_paid and subscription.has_ended %}
+                        <p>
+                            Abgelaufen am {{ subscription.end_date|date:'j. F Y' }}
+                        </p>
                     {% endif %}
-                </div>
+
+                    {# Actions #}
+                    <ul class="actions">
+                        {% if subscription.is_active and subscription.is_renewable %}
+                            <li><a href="{% url 'period_create' subscription.id %}"><em class="danger">Verlängern</em></a></li>
+                        {% endif %}
+                        {% if not subscription.is_paid %}
+                            <li><a href="{% url 'subscription_detail' subscription.id %}"><em class="danger">Offene Rechnung</em></a></li>
+                        {% else %}
+                            <li><a href="{% url 'subscription_detail' subscription.id %}">Zahlungsübersicht</a></li>
+                        {% endif %}
+                        {% if subscription.is_active %}
+                            <li><a href="{% url 'subscription_update' subscription.id %}">Adresse ändern</a></li>
+                            {% if subscription.is_paid %}
+                                <li><a href="{% url 'subscription_cancel' subscription.id %}">Kündigen</a></li>
+                            {% endif %}
+                        {% endif %}
+                    </ul>
+                </li>
             {% endfor %}
-        </div>
+        </ul>
+
     {% else %}
-        <p>Du hast kein Abonnement.</p>
-        <a class="button primary" href="{% url 'plan_list' %}">Neues Abonnement</a>
+
+        <p class="message info">Du hast noch kein Abo.</p>
+
     {% endif %}
 {% endblock %}

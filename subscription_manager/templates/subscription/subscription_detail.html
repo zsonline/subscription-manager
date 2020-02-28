@@ -1,41 +1,129 @@
-{% extends 'layouts/manager.html' %}
+{% extends 'base.html' %}
 
-{% block title %}Zahlungsdetails{% endblock %}
+{% block title %}Zahlungsübersicht{% endblock %}
 
-{% block breadcrumbs %}
-    <a href="{% url 'subscription_list' %}">Abonnements</a>
-    <span>Zahlungsdetails</span>
+{% block description %}
+    Behalte die Übersicht über dein Abo.
+    Hier siehst du die offenen Rechnungen und den Zahlungsverlauf des Abos.
 {% endblock %}
 
 {% block content %}
-    {% include 'includes/subscription.html' %}
+    <div class="action-bar">
+        <a class="button grey" href="{% url 'subscription_list' %}">Zurück zur Aboübersicht</a>
+    </div>
 
-    {% for payment in payments %}
-        <div class="invoice">
-            <h3>Rechnung</h3>
+    <h3>{{ subscription.plan }}</h3>
+    <div>
+        {% if subscription.is_active %}
+            <span class="badge success">Aktiv</span>
+        {% elif subscription.is_canceled %}
+            <span class="badge grey">Gekündigt</span>
+        {% elif subscription.is_paid and subscription.has_ended %}
+            <span class="badge grey">Abgelaufen</span>
+        {% else %}
+            <span class="badge grey">Inaktiv</span>
+        {% endif %}
+        {% if subscription.is_paid %}
+            <span class="badge success">Bezahlt</span>
+        {% else %}
+            <span class="badge danger">Offene Rechnung</span>
+        {% endif %}
+    </div>
+    <p>
+        {{ subscription.full_name }}<br>
+        {{ subscription.address_line }}<br>
+        {% if subscription.additional_address_line %}
+            {{ subscription.additional_address_line }}<br>
+        {% endif %}
+        {{ subscription.postcode }} {{ subscription.town }}
+    </p>
 
-            <h4>Betrag</h4>
-            {{ payment.amount }}
+    <ul class="list timeline">
+        {% if subscription.is_canceled %}
+            <li>
+                <h3>Gekündigt</h3>
 
-            <h4>Mitteilungsfeld</h4>
-            {{ payment.code }}<br>
-            <small>Das Mitteilungsfeld brauchen wir, um die Zahlung deiner Bestellung zuzuordnen.</small>
+                <h4>Gekündigt am</h4>
+                <p>{{ subscription.canceled_at|date:'j. F Y' }}</p>
+            </li>
+        {% elif subscription.is_paid and subscription.has_ended %}
+            <li>
+                <h3>Abgelaufen</h3>
 
-            <h4>Bankverbindung</h4>
-            <h5>IBAN</h5>
-            CH32 0070 0110 0030 6727 2
+                <h4>Abgelaufen am</h4>
+                <p>{{ subscription.end_date|date:'j. F Y' }}</p>
+            </li>
+        {% endif %}
+        {% for period in periods %}
+            <li>
 
-            <h5>Bankkonto-Nummer</h5>
-            1100-3067.272
+                <h3>Zahlungsperiode {{ period.start_date|date:'Y' }}</h3>
 
-            <h5>Kontoinhaber</h5>
-            Medienverein ZS<br>
-            8001 Zürich
+                {# Badges #}
+                <div>
+                    {% if period.payment.is_paid %}
+                        <span class="badge success">Bezahlt</span>
+                    {% else %}
+                        <span class="badge danger">Nicht bezahlt</span>
+                    {% endif %}
+                    {% if period.payment.amount > 0 %}
+                        <span class="badge info">{{ period.payment.get_method_display }}</span>
+                    {% endif %}
+                </div>
 
-            <h5>Finanzinstitut</h5>
-            Zürcher Kantonalbank<br>
-            Postfach<br>
-            8010 Zürich
-        </div>
-    {% endfor %}
+                <h4>Laufzeit</h4>
+                <p>{{ period.start_date }} bis {{ period.end_date }}</p>
+
+                {% if period.payment.is_paid %}
+                    <h4>Betrag</h4>
+                    <p>{{ period.payment.amount }} Franken</p>
+                {% endif %}
+
+                {# Invoice #}
+                {% if not period.payment.is_paid and period.payment.method == 'invoice' %}
+                    <p class="message info">
+                        Bitte begleiche folgende Rechnung bis am {{ period.payment.due_on }}.
+                        Sobald wir die Zahlung erhalten haben, aktivieren wir dein Abo.
+                    </p>
+
+                    <div class="invoice">
+                        <h4>Betrag</h4>
+                        <p>
+                            {{ period.payment.amount }} Franken
+                        </p>
+
+                        <h4>Mitteilungsfeld</h4>
+                        <p>
+                            <em class="danger">{{ period.payment.code }}</em>
+                        </p>
+
+                        <h4>Zahlbar bis</h4>
+                        <p>
+                            {{ period.payment.due_on }}
+                        </p>
+
+                        <h4>IBAN</h4>
+                        <p>
+                            CH32 0070 0110 0030 6727 2
+                        </p>
+
+                        <h4>Kontoinhaber</h4>
+                        <p>
+                            Medienverein ZS<br>
+                            Rämistrasse 62<br>
+                            8001 Zürich
+                        </p>
+
+                        <h4>Finanzinstitut</h4>
+                        <p>
+                            Zürcher Kantonalbank<br>
+                            Postfach<br>
+                            8010 Zürich
+                        </p>
+                    </div>
+                {% endif %}
+
+            </li>
+        {% endfor %}
+    </ul>
 {% endblock %}

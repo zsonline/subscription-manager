@@ -1,7 +1,9 @@
 form {
+  margin: 2rem 0;
+
   fieldset {
     margin: 0;
-    padding: 1rem 0 0 0;
+    padding: .5rem 0;
     border: none;
   }
 
@@ -36,12 +38,17 @@ form {
 
   input, select {
     box-sizing: border-box;
-    border: solid 1px $dark-grey;
+    border: solid 1px $grey;
     padding: .75em;
     width: 100%;
+    background-color: $white;
 
     &:focus {
       border-color: $black;
+    }
+
+    &:disabled {
+      background-color: $lighter-grey;
     }
   }
 }

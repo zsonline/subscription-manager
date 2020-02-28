@@ -1,0 +1,20 @@
+$medium: 600px;
+$large: 1200px;
+
+@media (max-width: $medium) {
+  .hide-small {
+    display: none;
+  }
+}
+
+@media (min-width: $medium) and (max-width: $large) {
+  .hide-medium {
+    display: none;
+  }
+}
+
+@media (min-width: $large) {
+  .hide-large {
+    display: none;
+  }
+}

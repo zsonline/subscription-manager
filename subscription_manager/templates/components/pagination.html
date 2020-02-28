@@ -1,0 +1,19 @@
+{% load url_arguments %}
+
+<div class="pagination">
+    <span class="current">
+        Seite {{ page_obj.number }} von {{ page_obj.paginator.num_pages }}
+    </span>
+
+    <span class="links">
+        {% if page_obj.has_previous %}
+            {# <a class="button grey" href="?{% url_replace_arg request 'page' 1 %}">Erste Seite</a> #}
+            <a class="button grey" href="?{% url_replace_arg request 'page' page_obj.previous_page_number %}">Zurück</a>
+        {% endif %}
+
+        {% if page_obj.has_next %}
+            <a class="button grey" href="?{% url_replace_arg request 'page' page_obj.next_page_number %}">Weiter</a>
+            {# <a class="button grey" href="?{% url_replace_arg request 'page' page_obj.paginator.num_pages %}">Letzte Seite</a> #}
+        {% endif %}
+    </span>
+</div>

@@ -1,70 +1,174 @@
-# Python imports
-import csv
-
-# Django imports
 from django.contrib import admin
-from django.contrib.admin.views.decorators import staff_member_required
-from django.http import HttpResponse
-from django.urls import path
+from django.shortcuts import reverse
+from django.utils.safestring import mark_safe
 
-# Application imports
-from .models import Plan, Subscription
+from import_export import resources
+from import_export.admin import ExportMixin
 
-class SubscriptionAdmin(admin.ModelAdmin):
-    list_display = ['user', 'is_active', 'plan', 'end_date']
-    search_fields = ['user', 'plan', 'address_line_1', 'address_line_2', 'postcode', 'city', 'country']
-    change_list_template = 'subscription/subscription_admin_changelist.html'
+from .models import Period, Plan, Subscription
 
-    def get_urls(self):
-        urls = super().get_urls()
-        new_urls = [
-            path('export/', self.export_active_as_csv),
-        ]
-        return new_urls + urls
 
-    @staticmethod
-    @staff_member_required
-    def export_active_as_csv(request):
+class SubscriptionResource(resources.ModelResource):
+    """
+    Defines the data resource which can be exported.
+    """
+    class Meta:
+        model = Subscription
+        fields = ('first_name', 'last_name', 'address_line', 'additional_address_line', 'postcode', 'town')
+
+
+class ActiveSubscriptionResource(SubscriptionResource):
+    """
+    Defines the data resource for active subscriptions which can be exported.
+    """
+    def export(self, queryset=None, *args, **kwargs):
         """
-        Exports all active subscriptions as
-        CSV document.
+        Only export active subscriptions.
         """
-        # Initialise CSV file
-        response = HttpResponse(content_type='text/csv')
-        response['Content-Disposition'] = 'attachment; filename="zs_subscriptions.csv"'
-        # Fetch all subscriptions
-        subscriptions = Subscription.objects.all()
-        # Write header row
-        writer = csv.writer(response)
-        # Add each active subscription to file
-        for subscription in subscriptions:
-            if subscription.is_active():
-                if subscription.address_line_2 is not None:
-                    writer.writerow([
-                        subscription.user.last_name,
-                        subscription.user.first_name,
-                        '',
-                        subscription.address_line_2,
-                        subscription.address_line_1,
-                        subscription.city,
-                        subscription.postcode
-                    ])
-                else:
-                    writer.writerow([
-                        subscription.user.last_name,
-                        subscription.user.first_name,
-                        '',
-                        '',
-                        subscription.address_line_1,
-                        subscription.city,
-                        subscription.postcode
-                    ])
-        return response
+        if queryset is None:
+            queryset = Subscription.objects.filter(is_active=True)
+
+        return super().export(queryset, *args, **kwargs)
 
 
+class IsActiveListFilter(admin.SimpleListFilter):
+    """
+    Custom list filter which filters subscription by
+    their status
+    """
+    title = 'Aktiv'
+    parameter_name = 'is_active'
+
+    def lookups(self, request, model_admin):
+        """
+        Filter options
+        """
+        return (
+            ('active', 'Aktiv'),
+            ('inactive', 'Inaktiv'),
+        )
+
+    def queryset(self, request, queryset):
+        """
+        Filter queryset based on set filter value.
+        """
+        if self.value() == 'active':
+            queryset = queryset.filter(is_active=True)
+        elif self.value() == 'inactive':
+            queryset = queryset.filter(is_active=False)
+        return queryset
+
+
+class IsPaidListFilter(admin.SimpleListFilter):
+    """
+    Custom list filter which filters subscription by
+    their status
+    """
+    title = 'Bezahlt'
+    parameter_name = 'is_paid'
+
+    def lookups(self, request, model_admin):
+        """
+        Filter options
+        """
+        return (
+            ('paid', 'Bezahlt'),
+            ('unpaid', 'Nicht bezahlt'),
+        )
+
+    def queryset(self, request, queryset):
+        """
+        Filter queryset based on set filter value.
+        """
+        if self.value() == 'paid':
+            queryset = queryset.filter(is_paid=True)
+        elif self.value() == 'unpaid':
+            queryset = queryset.filter(is_paid=False)
+        return queryset
+
+
+class PeriodInline(admin.StackedInline):
+    model = Period
+    extra = 0
+    readonly_fields = ['payment_link']
+
+    def payment_link(self, period):
+        """
+        Returns a payment link if a payment exists.
+        """
+        if period.payment:
+            url = reverse('admin:payment_payment_change', args=[period.payment.pk])
+            return mark_safe('<a href="{}">{}</a>'.format(url, period.payment))
+
+        return ''
+    payment_link.short_description = 'Zahlung'
+
+
+@admin.register(Subscription)
+class SubscriptionAdmin(ExportMixin, admin.ModelAdmin):
+    """
+    Subscription model admin
+    """
+    list_display = [
+        'account_name_field', 'address_name_field', 'plan', 'is_active_field', 'is_paid_field',
+        'start_date_field', 'end_date_field', 'is_canceled_field'
+    ]
+    list_filter = [IsActiveListFilter, IsPaidListFilter, 'plan']
+    search_fields = [
+        'user__email', 'user__first_name', 'user__last_name', 'first_name', 'last_name', 'address_line',
+        'additional_address_line', 'postcode', 'town', 'country'
+    ]
+    actions = ['send_renewal_notification']
+    resource_class = SubscriptionResource
+    inlines = [PeriodInline]
+
+    def get_queryset(self, request):
+        return super().get_queryset(request).prefetch_related('user')
+
+    def account_name_field(self, obj):
+        return obj.user.full_name()
+    account_name_field.short_description = 'Name (Account)'
+
+    def address_name_field(self, obj):
+        return obj.full_name()
+    address_name_field.short_description = 'Name (Adresse)'
+
+    def is_canceled_field(self, obj):
+        return obj.is_canceled
+    is_canceled_field.short_description = 'Gekündigt'
+    is_canceled_field.admin_order_field = 'is_canceled'
+    is_canceled_field.boolean = True
+
+    def is_active_field(self, obj):
+        return obj.is_active
+    is_active_field.short_description = 'Ist aktiv'
+    is_active_field.admin_order_field = 'is_active'
+    is_active_field.boolean = True
+
+    def is_paid_field(self, obj):
+        return obj.is_paid
+    is_paid_field.short_description = 'Ist bezahlt'
+    is_paid_field.admin_order_field = 'is_paid'
+    is_paid_field.boolean = True
+
+    def start_date_field(self, obj):
+        return obj.start_date
+    start_date_field.short_description = 'Anfangsdatum'
+    start_date_field.admin_order_field = 'start_date'
+
+    def end_date_field(self, obj):
+        return obj.end_date
+    end_date_field.short_description = 'Enddatum'
+    end_date_field.admin_order_field = 'end_date'
+
+    def send_renewal_notification(self, request, queryset):
+        Subscription.objects.send_expiration_emails(queryset=queryset)
+    send_renewal_notification.short_description = 'Verlängerungserinnerung senden'
+
+
+@admin.register(Plan)
 class PlanAdmin(admin.ModelAdmin):
-    list_display = ['name', 'duration', 'price']
-
-
-admin.site.register(Subscription, SubscriptionAdmin)
-admin.site.register(Plan, PlanAdmin)
+    """
+    Plan model admin
+    """
+    list_display = ['name', 'price']

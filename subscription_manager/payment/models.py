@@ -1,59 +1,104 @@
-# Pip imports
-from dateutil.relativedelta import relativedelta
+from random import randint
 
-# Django imports
 from django.conf import settings
-from django.core.mail import send_mail
-from django.db import models
+from django.core.mail import EmailMessage, send_mail
+from django.db import models, IntegrityError, transaction
 from django.template.loader import render_to_string
 from django.utils import timezone
 
-# Project imports
-from subscription_manager.subscription.models import Subscription
-
-# Application imports
-from .managers import PaymentManager
+from subscription_manager.subscription.models import Period, Subscription
 
 
 class Payment(models.Model):
-    subscription = models.ForeignKey(
-        Subscription,
+    period = models.OneToOneField(
+        to=Period,
         on_delete=models.CASCADE,
-        verbose_name='Abonnement'
+        verbose_name='Periode'
     )
-    amount = models.IntegerField(
-        'Betrag'
+    amount = models.PositiveIntegerField(
+        verbose_name='Betrag in Schweizer Franken'
     )
-    code = models.CharField(
-        max_length=30,
-        unique=True
+    method = models.CharField(
+        max_length=20,
+        choices=(
+            ('invoice', 'Banküberweisung'),
+            # ('twint', 'Twint')
+        ),
+        default='invoice',
+        verbose_name='Zahlungsmethode'
+    )
+    due_on = models.DateField(
+        verbose_name='Zahlbar bis'
     )
     paid_at = models.DateTimeField(
-        'Bezahlt am',
-        blank=True,
         null=True,
-        default=None
+        blank=True,
+        default=None,
+        verbose_name='Bezahlt am'
     )
-    created_at = models.DateTimeField(auto_now_add=True)
-
-    objects = PaymentManager()
+    created_at = models.DateTimeField(
+        default=timezone.now,
+        verbose_name='Erstellt am'
+    )
 
     class Meta:
         verbose_name = 'Zahlung'
         verbose_name_plural = 'Zahlungen'
 
     def __str__(self):
-        return 'Payment({}, {}, {})'.format(self.subscription.user.email, self.amount, self.paid_at)
+        return 'Zahlung #{} ({} Franken, {}, {})'.format(self.pk, self.amount, self.get_method_display(), self.paid_at)
+
+    @property
+    def code(self):
+        """
+        Payment code.
+        """
+        return 'ZS-{}'.format(self.pk)
 
     def is_paid(self):
+        """
+        Returns true if the paid at datetime is set.
+        """
         return self.paid_at is not None
     is_paid.boolean = True
 
-    def pay_until(self):
-        return (self.created_at + relativedelta(days=30)).date()
-
     def is_renewal(self):
-        return self.subscription.start_date is not None
+        """
+        Returns true if the payment is for a renewal.
+        """
+        return self.period.subscription.period_set.count() > 1
+    is_renewal.boolean = True
+
+    def save(self, force_insert=False, force_update=False, using=None, update_fields=None):
+        """
+        Overrides the save method. If the object is newly created,
+        set the due on date.
+        """
+        # If object is newly created
+        if not self.pk:
+            # Set due on date
+            self.due_on = timezone.now().date() + timezone.timedelta(days=30)
+
+        super().save(force_insert, force_update, using, update_fields)
+
+    def handle(self):
+        """
+        Handles the payment by sending an invoice via email
+        if the amount is not zero. Would also handle other
+        payment methods.
+        """
+        # If purchase was for free, confirm payment
+        if self.amount == 0:
+            self.confirm()
+            return True
+
+        # Send invoice via email
+        if self.method == 'invoice':
+            self.send_invoice()
+            return True
+
+        # All other payment methods are not yet supported
+        return False
 
     def send_invoice(self):
         """
@@ -61,20 +106,23 @@ class Payment(models.Model):
         for this payment.
         """
         if not self.is_renewal():
-            template = 'emails/invoice_new.txt'
+            # New subscription
+            template = 'emails/payment_invoice_new.txt'
         else:
-            template = 'emails/invoice_renewal.txt'
+            # Renewal subscription
+            template = 'emails/payment_invoice_renewal.txt'
 
-        send_mail(
+        email = EmailMessage(
             subject=settings.EMAIL_SUBJECT_PREFIX + 'Rechnung',
-            message=render_to_string(template, {
-                'to_name': self.subscription.user.first_name,
+            body=render_to_string(template, {
+                'to_name': self.period.subscription.user.first_name,
                 'payment': self
             }),
             from_email=settings.DEFAULT_FROM_EMAIL,
-            recipient_list=[self.subscription.user.email],
-            fail_silently=False
+            to=[self.period.subscription.user.email],
+            bcc=[settings.ACCOUNTING_EMAIL]  # Add accounting email
         )
+        email.send(fail_silently=False)
 
     def confirm(self):
         """
@@ -85,26 +133,29 @@ class Payment(models.Model):
         self.paid_at = timezone.now()
         self.save()
 
-        # Adjust subscription details
+        # Adjust period interval if payment is received after already set start date
+        if self.paid_at.date() > self.period.start_date:
+            self.period.start_date = self.paid_at.date()
+            self.period.end_date = (self.paid_at + self.period.subscription.plan.duration).date()
+            self.period.save()
+
         if not self.is_renewal():
-            self.subscription.start_date = timezone.now().date()
-            self.subscription.end_date = timezone.now().date() + relativedelta(months=self.subscription.plan.duration)
+            # New subscription
             subject = 'Abo aktiviert'
             template = 'emails/payment_confirmation_new.txt'
         else:
-            self.subscription.end_date += relativedelta(months=self.subscription.plan.duration)
+            # Renewal subscription
             subject = 'Abo verlängert'
             template = 'emails/payment_confirmation_renewal.txt'
-        self.subscription.save()
 
         # Send confirmation email
         send_mail(
             subject=settings.EMAIL_SUBJECT_PREFIX + subject,
             message=render_to_string(template, {
-                'to_name': self.subscription.user.first_name,
+                'to_name': self.period.subscription.user.first_name,
                 'payment': self
             }),
             from_email=settings.DEFAULT_FROM_EMAIL,
-            recipient_list=[self.subscription.user.email],
+            recipient_list=[self.period.subscription.user.email],
             fail_silently=False
         )

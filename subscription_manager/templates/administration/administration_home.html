@@ -1,0 +1,39 @@
+{% extends 'base.html' %}
+
+{% block title %}Verwaltung{% endblock %}
+
+{% block description %}{% endblock %}
+
+{% block content %}
+    <ul class="list">
+        <li>
+            <h3>Zahlungen bestätigen</h3>
+            <p>Bestätige eingegange Zahlungen und schalte die dazugehörigen Abos frei.</p>
+
+            <a class="button info" href="{% url 'administration_payment_list' %}">Zahlungen bestätigen</a>
+        </li>
+
+        <li>
+            <h3>Abos exportieren</h3>
+            <p>Exportiere alle aktiven Abos als Komma getrennte Werte (.csv), als Open Document Sheet (.ods) oder als Excel-Datei (.xlsx).</p>
+
+            Herunterladen als:
+            <a class="button grey" href="{% url 'administration_subscription_export' 'csv' %}">.csv-Datei</a>
+            <a class="button grey" href="{% url 'administration_subscription_export' 'ods' %}">.ods-Datei</a>
+            <a class="button grey" href="{% url 'administration_subscription_export' 'xlsx' %}">.xlsx-Datei</a>
+        </li>
+
+        <li>
+            <h3>Erweiterte Verwaltung</h3>
+            <p>In der erweiterten Verwaltung kannst du alle gespeicherten Daten einsehen, bearbeiten und löschen.</p>
+
+            <p class="message warning">
+                <b>Sei vorsichtig!</b> Änderungen können nicht rückgängig gemacht werden. Sie können unvorhergesehene
+                Auswirkungen haben, die die Aboverwaltung für betroffene Abonnentinnen und Abonnenten unbrauchbar machen kann.
+                Kontaktiere im Zweifelsfall die Informatik.
+            </p>
+
+            <a class="button danger" href="{% url 'admin:index' %}">Erweiterte Verwaltung öffnen</a>
+        </li>
+    </ul>
+{% endblock %}

@@ -1,0 +1,18 @@
+{% extends 'base.html' %}
+
+{% block title %}E-Mail-Adresse löschen{% endblock %}
+
+{% block description %}
+    Bist du sicher, dass du die E-Mail-Adresse {{ email_address.email }} löschen willst?
+{% endblock %}
+
+{% block content %}
+    <form method="post">
+        {% csrf_token %}
+
+        <fieldset>
+            <input class="button danger" type="submit" value="Löschen">
+            <a class="button grey" href="{% url 'email_address_list' %}">Abbrechen</a>
+        </fieldset>
+    </form>
+{% endblock %}
