@@ -3,7 +3,7 @@ from .base import *
 
 # General
 DEBUG = False
-ALLOWED_HOSTS = ['abo.zs-online.ch', 'www.abo.zs-online.ch', '104.248.43.45']
+ALLOWED_HOSTS = ['abo.zs-online.ch', 'www.abo.zs-online.ch']
 BASE_URL = 'https://www.abo.zs-online.ch'  # Used for sending email links
 
 # Security
