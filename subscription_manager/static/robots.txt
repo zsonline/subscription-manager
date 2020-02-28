@@ -1,0 +1,5 @@
+User-agent: *
+Allow: /bestellen/
+Allow: /anmelden/
+Allow: /registrieren/
+Disallow: /
