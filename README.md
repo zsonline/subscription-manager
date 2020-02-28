@@ -11,7 +11,7 @@ Before installing this project check that [Python](https://www.python.org/) is i
 
 Make sure that your virtual environment is activated when working on this project. To activate it type `poetry shell`. To deactivate it afterwards again type `exit`.
 
-If you want to use this project in production, make sure you have [Postgres](https://www.postgresql.org/) installed and access to a mail server such as [Postfix](http://www.postfix.org/) for sending emails. Both are not needed for development, though. Emails are not sent asynchronously. Therefore, the mail server ideally should be running on the same hardware.
+If you want to use this project in production, make sure you have [Postgres](https://www.postgresql.org/) installed and access to a mail server such as [Postfix](http://www.postfix.org/) for sending emails. Both are not needed for development, though. Emails are not sent asynchronously. Therefore, the mail server should ideally be running on the same hardware.
 
 ### Dependencies
 
@@ -19,9 +19,9 @@ This project is based on a number of other packages. The full list can be found 
 
 ## Getting started
 
-1. The projects main **configuration** is stored in `settings/`. It is divided into development and production settings. Secret variables, however, are not stored in there. Instead, they are read from the environment. Either you set these values each time manually or you make use of a `.env` file. To do so copy `.env.example` to `.env` and complete it. Its content is loaded when running the application.
+1. The project's main **configuration** is stored in `settings/`. It is divided into development and production settings. Secret variables, however, are not stored in there. Instead, they are read from the environment. Either you set these values each time manually or you make use of a `.env` file. To do so copy `.env.example` to `.env` and complete it. Its content is loaded when running the application.
 
-2. Make all **database migrations** by typing `python manage.py makemigrations` and apply them to the database: `python manage.py migrate`. You can optionally load some default data into the database, such as default subscription plans: `python manage.py loaddata plans`.
+2. Make all **database migrations** by typing `python manage.py makemigrations` and apply them to the database: `python manage.py migrate`. You can optionally load some default data into the database, such as the default subscription plans: `python manage.py loaddata plans`.
 
 3. Start the **development server**: `python manage.py runserver`.
 
