@@ -45,7 +45,7 @@ LOGGING = {
         'file': {
             'level': 'DEBUG',
             'class': 'logging.FileHandler',
-            'filename': 'django.log'
+            'filename': '/var/log/subscription-manager/django.log'
         },
         'mail_admins': {
             'level': 'ERROR',
