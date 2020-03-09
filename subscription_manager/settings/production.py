@@ -31,7 +31,7 @@ SESSION_CACHE_ALIAS = "default"
 SESSION_COOKIE_SECURE = True
 
 # Email
-EMAIL_USE_SSL = True
+EMAIL_USE_SSL = os.environ['EMAIL_USE_SSL']
 EMAIL_HOST = os.environ['EMAIL_HOST']
 EMAIL_PORT = os.environ['EMAIL_PORT']
 EMAIL_HOST_USER = os.environ['EMAIL_HOST_USER']
