@@ -1,5 +1,27 @@
 import os
+
+import environ
+
 from django.utils import timezone
+
+# Define environment
+env = environ.Env(
+    SECRET_KEY=(str, ''),
+
+    DATABASE_HOST=(str, 'localhost'),
+    DATABASE_PORT=(int, 5432),
+    DATABASE_NAME=(str, ''),
+    DATABASE_USER=(str, ''),
+    DATABASE_PASSWORD=(str, ''),
+
+    EMAIL_HOST=(str, 'localhost'),
+    EMAIL_PORT=(int, 587),
+    EMAIL_HOST_USER=(int, ''),
+    EMAIL_HOST_PASSWORD=(int, ''),
+    EMAIL_USE_SSL=(bool, True)
+)
+# reading .env file
+environ.Env.read_env()
 
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 PROJECT_ROOT = os.path.dirname(os.path.abspath(__file__))

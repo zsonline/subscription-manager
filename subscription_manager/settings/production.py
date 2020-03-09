@@ -1,26 +1,5 @@
-import environ
-
 # Import base settings
 from .base import *
-
-# Define en
-env = environ.Env(
-    SECRET_KEY=(str, ''),
-
-    DATABASE_HOST=(str, 'localhost'),
-    DATABASE_PORT=(int, 5432),
-    DATABASE_NAME=(str, ''),
-    DATABASE_USER=(str, ''),
-    DATABASE_PASSWORD=(str, ''),
-
-    EMAIL_HOST=(str, 'localhost'),
-    EMAIL_PORT=(int, 587),
-    EMAIL_HOST_USER=(int, ''),
-    EMAIL_HOST_PASSWORD=(int, ''),
-    EMAIL_USE_SSL=(bool, True)
-)
-# reading .env file
-environ.Env.read_env()
 
 # General
 DEBUG = False
