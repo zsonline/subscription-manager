@@ -20,11 +20,12 @@ env = environ.Env(
     EMAIL_HOST_PASSWORD=(int, ''),
     EMAIL_USE_SSL=(bool, True)
 )
-# reading .env file
-environ.Env.read_env()
 
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 PROJECT_ROOT = os.path.dirname(os.path.abspath(__file__))
+
+# reading .env file
+environ.Env.read_env(os.path.join(os.path.dirname(BASE_DIR), '.env'))
 
 INSTALLED_APPS = [
     'compressor',
