@@ -1,5 +1,26 @@
+import environ
+
 # Import base settings
 from .base import *
+
+# Define en
+env = environ.Env(
+    SECRET_KEY=(str, ''),
+
+    DATABASE_HOST=(str, 'localhost'),
+    DATABASE_PORT=(int, 5432),
+    DATABASE_NAME=(str, ''),
+    DATABASE_USER=(str, ''),
+    DATABASE_PASSWORD=(str, ''),
+
+    EMAIL_HOST=(str, 'localhost'),
+    EMAIL_PORT=(int, 587),
+    EMAIL_HOST_USER=(int, ''),
+    EMAIL_HOST_PASSWORD=(int, ''),
+    EMAIL_USE_SSL=(bool, True)
+)
+# reading .env file
+environ.Env.read_env()
 
 # General
 DEBUG = False
@@ -7,7 +28,7 @@ ALLOWED_HOSTS = ['abo.zs-online.ch', 'www.abo.zs-online.ch']
 BASE_URL = 'https://www.abo.zs-online.ch'  # Used for sending email links
 
 # Security
-SECRET_KEY = os.environ['SECRET_KEY']
+SECRET_KEY = env('SECRET_KEY')
 CSRF_COOKIE_SECURE = True
 
 # Server
@@ -17,11 +38,11 @@ WSGI_APPLICATION = 'subscription_manager.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
-        'NAME': os.environ['DATABASE_NAME'],
-        'USER': os.environ['DATABASE_USER'],
-        'PASSWORD': os.environ['DATABASE_PASSWORD'],
-        'HOST': os.environ['DATABASE_HOST'],
-        'PORT': os.environ['DATABASE_PORT']
+        'NAME': env('DATABASE_NAME'),
+        'USER': env('DATABASE_USER'),
+        'PASSWORD': env('DATABASE_PASSWORD'),
+        'HOST': env('DATABASE_HOST'),
+        'PORT': env('DATABASE_PORT')
     }
 }
 CONN_MAX_AGE = None
@@ -31,11 +52,11 @@ SESSION_CACHE_ALIAS = "default"
 SESSION_COOKIE_SECURE = True
 
 # Email
-EMAIL_USE_SSL = os.environ['EMAIL_USE_SSL']
-EMAIL_HOST = os.environ['EMAIL_HOST']
-EMAIL_PORT = os.environ['EMAIL_PORT']
-EMAIL_HOST_USER = os.environ['EMAIL_HOST_USER']
-EMAIL_HOST_PASSWORD = os.environ['EMAIL_HOST_PASSWORD']
+EMAIL_HOST = env('EMAIL_HOST')
+EMAIL_PORT = env('EMAIL_PORT')
+EMAIL_HOST_USER = env('EMAIL_HOST_USER')
+EMAIL_HOST_PASSWORD = env('EMAIL_HOST_PASSWORD')
+EMAIL_USE_SSL = env('EMAIL_USE_SSL')
 
 # Logging
 LOGGING = {

@@ -3,12 +3,7 @@
 import os
 import sys
 
-import dotenv
-
 if __name__ == '__main__':
-    # Load .env variables
-    dotenv.read_dotenv()
-
     # Load settings
     os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'subscription_manager.settings.development')
     try:
