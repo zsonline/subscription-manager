@@ -17,7 +17,7 @@ header {
     grid-area: navigation-toggle;
     display: flex;
     align-items: center;
-    justify-content: end;
+    justify-content: flex-end;
   }
 
   #header-nav {
