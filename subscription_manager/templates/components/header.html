@@ -9,7 +9,7 @@
     </a>
 
     <div id="header-nav-toggle">
-        <a href="#">Navigation anzeigen</a>
+        <a href="#">Navigation</a>
     </div>
 
     <nav id="header-nav">
@@ -47,10 +47,8 @@
         // Add class to navigation and change toggle text depending on the navigation's state
         if(navigation.classList.contains("toggled")) {
             navigation.classList.remove("toggled");
-            navigationToggle.innerText = "Navigation anzeigen";
         } else {
             navigation.classList.add("toggled");
-            navigationToggle.innerText = "Navigation verbergen";
         }
     });
 </script>
