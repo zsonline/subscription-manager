@@ -15,7 +15,8 @@ def active(context, *view_names):
     if request is None:
         return ''
 
-    for view_name in view_names:
-        if request.resolver_match.url_name == view_name:
-            return 'active'
+    if request.resolver_match:
+        for view_name in view_names:
+            if request.resolver_match.url_name == view_name:
+                return 'active'
     return ''
