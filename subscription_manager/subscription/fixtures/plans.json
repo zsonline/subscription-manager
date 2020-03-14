@@ -4,7 +4,7 @@
     "pk": 1,
     "fields": {
       "name": "Regul\u00e4res Abo",
-      "description": "Unser ganz normales Abo. Du zahlst, wir liefern.",
+      "description": "Unser ganz normales Abo. Du zahlst, wir liefern. Die ZS erscheint sechs Mal pro Jahr.",
       "slug": "regular",
       "price": 50
     }
@@ -14,7 +14,7 @@
     "pk": 2,
     "fields": {
       "name": "Studentisches Abo",
-      "description": "Für Studierende der ETH ist die ZS gratis. Registriere dich mit der E-Mail-Adresse deiner Uni.",
+      "description": "Für Studierende der ETH ist die ZS gratis. Registriere dich mit der E-Mail-Adresse deiner Uni. Die ZS erscheint sechs Mal pro Jahr.",
       "slug": "student",
       "price": 0,
       "eligible_active_subscriptions_per_user": 1,
