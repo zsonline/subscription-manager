@@ -44,7 +44,7 @@ def deploy(c):
         # File does not exist
         c.sudo('mkdir -p {}'.format(LOG_DIR))
     c.sudo('chown -R {}:{} {}'.format(PROJECT_USER, PROJECT_GROUP, LOG_DIR))
-    c.sudo('chmod -R 664 {}'.format(LOG_DIR))
+    c.sudo('chmod -R 775 {}'.format(LOG_DIR))
 
     # Create new deployment directory
     c.sudo('mkdir {}'.format(deploy_path))
