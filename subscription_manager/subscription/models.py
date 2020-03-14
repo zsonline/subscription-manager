@@ -187,7 +187,7 @@ class Subscription(models.Model):
         """
         Returns true if the subscription can be renewed by its user.
         """
-        if self.plan.is_eligible(self.user, 'renewal') and self.expires_soon() and self.is_paid:
+        if self.plan.is_eligible(self.user, 'renewal') and self.expires_in_lte(30) and self.is_paid:
             return True
         return False
     is_renewable.boolean = True
@@ -208,19 +208,13 @@ class Subscription(models.Model):
             end_date=last_period.end_date + timezone.timedelta(days=1) + self.plan.duration
         )
 
-    def expires_in_lt(self, days):
+    def expires_in_lte(self, days):
         """
         Returns true if subscription expires in less than
         the given amount of days.
         """
         # Check if end_date is instance of date
-        return self.end_date < timezone.now().date() + timezone.timedelta(days=days)
-
-    def expires_soon(self):
-        """
-        Returns true if subscription expires in less than 30 days.
-        """
-        return self.expires_in_lt(30)
+        return self.end_date <= timezone.now().date() + timezone.timedelta(days=days)
 
 
 class Period(models.Model):
