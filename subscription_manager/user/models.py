@@ -279,7 +279,7 @@ class Token(models.Model):
     def url(self):
         """
         Returns the url for a given code.
-        Example: https://www.hostname.tld/auth/token/1836af19-67df-4090-8229-16ed13036480/
+        Example: https://www.hostname.tld/token/1836af19-67df-4090-8229-16ed13036480/
         """
         return '{}{}'.format(
             settings.BASE_URL,

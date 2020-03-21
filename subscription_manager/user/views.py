@@ -117,7 +117,7 @@ def token_verification_view(request, code):
     # Do login
     if token.purpose == 'login':
         # Verify email if it has not been verified already
-        if not token.email_address.is_verified() and not token.email_address.recently_verified(timezone.timedelta(days=1)):
+        if not token.email_address.recently_verified(timezone.timedelta(days=1)):
             token.email_address.verify()
         # Get user
         user = authenticate(request, code=code)
@@ -135,7 +135,7 @@ def token_verification_view(request, code):
     # Do login but add different success message
     elif token.purpose == 'signup':
         # Verify email if it has not been verified already
-        if not token.email_address.is_verified() and not token.email_address.recently_verified(timezone.timedelta(days=1)):
+        if not token.email_address.recently_verified(timezone.timedelta(days=1)):
             token.email_address.verify()
         # Get user
         user = authenticate(request, code=code)
