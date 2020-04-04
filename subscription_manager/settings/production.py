@@ -3,11 +3,11 @@ from .base import *
 
 # General
 DEBUG = False
-ALLOWED_HOSTS = ['abo.zs-online.ch', 'www.abo.zs-online.ch', '104.248.43.45']
+ALLOWED_HOSTS = ['abo.zs-online.ch', 'www.abo.zs-online.ch']
 BASE_URL = 'https://www.abo.zs-online.ch'  # Used for sending email links
 
 # Security
-SECRET_KEY = os.environ['SECRET_KEY']
+SECRET_KEY = env('SECRET_KEY')
 CSRF_COOKIE_SECURE = True
 
 # Server
@@ -17,11 +17,11 @@ WSGI_APPLICATION = 'subscription_manager.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
-        'NAME': os.environ['DATABASE_NAME'],
-        'USER': os.environ['DATABASE_USER'],
-        'PASSWORD': os.environ['DATABASE_PASSWORD'],
-        'HOST': os.environ['DATABASE_HOST'],
-        'PORT': os.environ['DATABASE_PORT']
+        'NAME': env('DATABASE_NAME'),
+        'USER': env('DATABASE_USER'),
+        'PASSWORD': env('DATABASE_PASSWORD'),
+        'HOST': env('DATABASE_HOST'),
+        'PORT': env('DATABASE_PORT')
     }
 }
 CONN_MAX_AGE = None
@@ -31,11 +31,11 @@ SESSION_CACHE_ALIAS = "default"
 SESSION_COOKIE_SECURE = True
 
 # Email
-EMAIL_USE_SSL = True
-EMAIL_HOST = os.environ['EMAIL_HOST']
-EMAIL_PORT = os.environ['EMAIL_PORT']
-EMAIL_HOST_USER = os.environ['EMAIL_HOST_USER']
-EMAIL_HOST_PASSWORD = os.environ['EMAIL_HOST_PASSWORD']
+EMAIL_HOST = env('EMAIL_HOST')
+EMAIL_PORT = env('EMAIL_PORT')
+EMAIL_HOST_USER = env('EMAIL_HOST_USER')
+EMAIL_HOST_PASSWORD = env('EMAIL_HOST_PASSWORD')
+EMAIL_USE_SSL = env('EMAIL_USE_SSL')
 
 # Logging
 LOGGING = {
@@ -45,7 +45,7 @@ LOGGING = {
         'file': {
             'level': 'DEBUG',
             'class': 'logging.FileHandler',
-            'filename': 'django.log'
+            'filename': '/var/log/subscription-manager/django.log'
         },
         'mail_admins': {
             'level': 'ERROR',

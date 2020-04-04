@@ -2,7 +2,7 @@ import uuid
 
 from django.conf import settings
 from django.contrib.auth.models import AbstractUser
-from django.core.mail import send_mail
+from django.core.mail import EmailMessage
 from django.db import models, transaction, IntegrityError
 from django.shortcuts import reverse
 from django.template.loader import render_to_string
@@ -279,7 +279,7 @@ class Token(models.Model):
     def url(self):
         """
         Returns the url for a given code.
-        Example: https://www.hostname.tld/auth/token/1836af19-67df-4090-8229-16ed13036480/
+        Example: https://www.hostname.tld/token/1836af19-67df-4090-8229-16ed13036480/
         """
         return '{}{}'.format(
             settings.BASE_URL,
@@ -306,16 +306,17 @@ class Token(models.Model):
             url += '?next=' + next_page
 
         # Send email
-        send_mail(
+        email = EmailMessage(
             subject=settings.EMAIL_SUBJECT_PREFIX + subject,
-            message=render_to_string(template, {
+            body=render_to_string(template, {
                 'to_name': self.email_address.user.first_name,
                 'token': self
             }),
             from_email=settings.DEFAULT_FROM_EMAIL,
-            recipient_list=[self.email_address.email],
-            fail_silently=False
+            reply_to=[settings.DEFAULT_REPLY_TO_EMAIL],
+            to=[self.email_address.email]
         )
+        email.send(fail_silently=False)
 
         # Update sent_at field
         self.sent_at = timezone.now()

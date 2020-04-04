@@ -1,8 +1,31 @@
 import os
+
+import environ
+
 from django.utils import timezone
+
+# Define environment
+env = environ.Env(
+    SECRET_KEY=(str, ''),
+
+    DATABASE_HOST=(str, 'localhost'),
+    DATABASE_PORT=(int, 5432),
+    DATABASE_NAME=(str, ''),
+    DATABASE_USER=(str, ''),
+    DATABASE_PASSWORD=(str, ''),
+
+    EMAIL_HOST=(str, 'localhost'),
+    EMAIL_PORT=(int, 587),
+    EMAIL_HOST_USER=(int, ''),
+    EMAIL_HOST_PASSWORD=(int, ''),
+    EMAIL_USE_SSL=(bool, True)
+)
 
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 PROJECT_ROOT = os.path.dirname(os.path.abspath(__file__))
+
+# reading .env file
+environ.Env.read_env(os.path.join(os.path.dirname(BASE_DIR), '.env'))
 
 INSTALLED_APPS = [
     'compressor',
@@ -97,10 +120,11 @@ STATICFILES_FINDERS = (
 STATIC_ROOT = "static_files/"
 
 EMAIL_SUBJECT_PREFIX = '[ZS] '
-DEFAULT_FROM_EMAIL = 'Zürcher Studierendenzeitung <abo@zs-online.ch>'
+DEFAULT_FROM_EMAIL = 'Zürcher Studierendenzeitung <server@zs-online.ch>'
+DEFAULT_REPLY_TO_EMAIL = 'abo@zs-online.ch'
+SERVER_EMAIL = 'server@zs-online.ch'
 ADMINS = [('ZS Informatik', 'informatik@medienverein.ch')]
-ACCOUNTING_EMAIL = 'verlag@medienverein.ch'
-SERVER_EMAIL = 'abo@zs-online.ch'
+ACCOUNTING_EMAIL = 'abo@zs-online.ch'
 
 CRON_CLASSES = [
     'subscription_manager.cron.SendEmails',

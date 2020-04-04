@@ -41,6 +41,12 @@ main {
     grid-template-columns: 1fr 1fr;
     grid-column-gap: 2rem;
 
+    &.image {
+      background-image: url("/static/images/zs-covers.png");
+      background-repeat: no-repeat;
+      background-position: center right;
+    }
+
     .container {
       grid-column-start: 1;
       grid-column-end: 2;
