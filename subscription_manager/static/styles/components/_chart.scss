@@ -1,0 +1,15 @@
+.chart {
+  width: 100%;
+  display: block;
+}
+
+.loading {
+  background-color: $white;
+  animation: LoadingAnimation 2s ease infinite;
+}
+
+@keyframes LoadingAnimation {
+  0%{background-color: $white}
+  50%{background-color: $lighter-grey}
+  100%{background-color: $white}
+}

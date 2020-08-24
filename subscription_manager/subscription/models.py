@@ -177,11 +177,17 @@ class Subscription(models.Model):
         return self.end_date is not None and self.end_date <= timezone.now().date()
     has_ended.boolean = True
 
+    def get_first_period(self):
+        """
+        Returns the first period of the subscription.
+        """
+        return self.period_set.order_by('start_date').first()
+
     def get_last_period(self):
         """
         Returns the last period of the subscription.
         """
-        return self.period_set.order_by('-end_date').first()
+        return self.period_set.order_by('start_date').last()
 
     def is_renewable(self):
         """
