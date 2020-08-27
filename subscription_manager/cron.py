@@ -2,7 +2,7 @@ from django_cron import CronJobBase, Schedule
 
 from django.core.management import call_command
 
-from subscription_manager.subscription.models import Subscription
+from subscription_manager.subscription.tasks import send_expiration_emails
 from subscription_manager.user.models import Token
 
 
@@ -15,8 +15,8 @@ class SendEmails(CronJobBase):
         Send notification emails to users whose subscriptions are
         expiring within 30 days or whose subscription end in 1 day.
         """
-        Subscription.objects.send_expiration_emails(remaining_days=30)
-        Subscription.objects.send_expiration_emails(remaining_days=1)
+        send_expiration_emails(remaining_days=30)
+        send_expiration_emails(remaining_days=1)
 
 
 class CleanDatabase(CronJobBase):
