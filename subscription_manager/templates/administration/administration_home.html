@@ -24,6 +24,17 @@
         </li>
 
         <li>
+            <h3>Statistik</h3>
+
+            <h4>Aktive Abos</h4>
+            <p>
+                <em class="success" style="font-size: 2em">{{ active_subscriptions }}</em>
+            </p>
+
+            <a class="button info" href="{% url 'administration_statistics' %}">Statistik anzeigen</a>
+        </li>
+
+        <li>
             <h3>Erweiterte Verwaltung</h3>
             <p>In der erweiterten Verwaltung kannst du alle gespeicherten Daten einsehen, bearbeiten und löschen.</p>
 

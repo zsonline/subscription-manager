@@ -1,0 +1,217 @@
+{% extends 'base.html' %}
+
+{% block title %}Statistik{% endblock %}
+
+{% block description %}
+    Beobachte die Entwicklungen der letzten zwei Jahre.
+    Die Daten werden jeden Monat aktualisiert.
+{% endblock %}
+
+{% block content %}
+    <div class="action-bar">
+        <a class="button grey" href="{% url 'administration_home' %}">Zurück zur Verwaltungsübersicht</a>
+    </div>
+
+    <ul class="list">
+        <li>
+            <h3>Aktive Abos</h3>
+            <canvas id="chart-active" class="chart loading" width="100%" height="50px"></canvas>
+        </li>
+
+        <li>
+            <h3>Veränderungen</h3>
+            <canvas id="chart-changes" class="chart loading" width="100%" height="75px"></canvas>
+        </li>
+
+        <li>
+            <h3>Erneuerte Abos</h3>
+            <canvas id="chart-renewed" class="chart loading" width="100%" height="50px"></canvas>
+        </li>
+    </ul>
+
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@2.8.0"></script>
+    <script>
+        const options = {
+            legend : {
+                display: false
+            },
+            scales : {
+                xAxes : [{
+                    stacked : true
+                }],
+                yAxes : [{
+                    stacked : true,
+                    ticks : {
+                        display: false,
+                        beginAtZero : true
+                    },
+                }]
+            },
+            tooltips : {
+                enabled : false
+            }
+        };
+
+        async function getData() {
+            const today = new Date();
+            let startYear, startMonth, endYear, endMonth;
+            if(today.getMonth() > 0) {
+                startYear = today.getFullYear()-2;
+                startMonth = String(today.getMonth()+1).padStart(2, '0');
+                endYear = today.getFullYear();
+                endMonth = String(today.getMonth()).padStart(2, '0');
+            } else {
+                startYear = today.getFullYear()-1;
+                startMonth = '01';
+                endYear = today.getFullYear();
+                endMonth = '12';
+            }
+            const start = startYear + '-' + startMonth,
+                end = endYear + '-' + endMonth;
+
+            const url = '{% url 'administration_statistics_data' %}?start=' + start + '&end=' + end;
+            const data = await fetch(url);
+            return data.json();
+        }
+
+        async function drawGraphs() {
+            let data;
+            try {
+                data = await getData();
+            } catch(err) {
+                console.error('Could not fetch statistics data:', err);
+                return;
+            }
+
+            drawGraph(
+                'chart-active',
+                'line',
+                data.time,
+                [{
+                    borderColor: 'rgba(64, 117, 191)',
+                    data: data.active,
+                    fill: false,
+                    lineTension: 0,
+                }]
+            );
+            drawGraph(
+                'chart-changes',
+                'bar',
+                data.time,
+                [
+                    {
+                        backgroundColor: 'rgb(99, 185, 70)',
+                        data: data.new
+                    },
+                    {
+                        backgroundColor: 'rgb(230, 60, 26)',
+                        data: data.expired.map(value => value > 0 ? -value : value)
+                    }
+                ],
+            );
+            drawGraph(
+                'chart-renewed',
+                'bar',
+                data.time,
+                [{
+                    backgroundColor: 'rgba(64, 117, 191)',
+                    data: data.renewed
+                }],
+            );
+        }
+
+        function drawGraph(id, type, labels, data) {
+            const element = document.getElementById(id),
+                ctx = element.getContext('2d');
+
+            element.classList.remove('loading');
+
+            if(type === 'line') {
+                drawLineGraph(ctx, labels, data);
+            } else if(type === 'bar') {
+                drawBarGraph(ctx, labels, data);
+            }
+        }
+
+        function drawLineGraph(ctx, labels, datasets) {
+            new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: labels,
+                    datasets: datasets
+                },
+                options: options
+            });
+        }
+
+        function drawBarGraph(ctx, labels, datasets) {
+            new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: labels,
+                    datasets: datasets
+                },
+                options: options
+            });
+        }
+
+        Chart.plugins.register({
+            afterDatasetsDraw: function(chart, easing) {
+                const ctx = chart.ctx;
+
+                ctx.fillStyle = 'rgb(127, 127, 127)';
+                ctx.font = Chart.helpers.fontString(12, 'normal', 'Arial');
+                ctx.textBaseline = 'middle';
+
+                const yAxis = chart.scales['y-axis-0'];
+                const ratioTopToYAxis = yAxis.ticksAsNumbers.indexOf(0) / yAxis.ticksAsNumbers.length;
+                const yOriginPosition = yAxis.top + ratioTopToYAxis * (yAxis.bottom - yAxis.top);
+
+                chart.data.datasets.forEach(function (dataset, i) {
+                    const meta = chart.getDatasetMeta(i);
+                    if(!meta.hidden) {
+                        meta.data.forEach(function(element, index) {
+                            const data = dataset.data[index],
+                                position = element.tooltipPosition();
+
+                            if(data === 0) {
+                                return;
+                            }
+
+                            ctx.save();
+
+                            if(data > 0) {
+                                ctx.textAlign = 'left';
+                                if(position.y < yOriginPosition - 35) {
+                                    if(chart.config.type === 'bar') {
+                                        ctx.fillStyle = 'rgb(255, 255, 255)';
+                                    }
+                                    ctx.translate(position.x, position.y+35);
+                                } else {
+                                    ctx.translate(position.x, position.y-5);
+                                }
+                            } else {
+                                ctx.textAlign = 'right';
+                                if(position.y < yOriginPosition + 35) {
+                                    ctx.translate(position.x, position.y+5);
+                                } else {
+                                    if(chart.config.type === 'bar') {
+                                        ctx.fillStyle = 'rgb(255, 255, 255)';
+                                    }
+                                    ctx.translate(position.x, position.y-35);
+                                }
+                            }
+
+                            ctx.rotate(-Math.PI/2);
+                            ctx.fillText(data.toString(), 0, 0);
+
+                            ctx.restore();
+                        });
+                    }
+                });
+            }
+        });
+
+        drawGraphs();
+    </script>
+{% endblock %}

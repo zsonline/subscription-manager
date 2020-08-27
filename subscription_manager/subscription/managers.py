@@ -1,9 +1,11 @@
+import calendar
+import datetime
+
 from django.apps import apps
 from django.conf import settings
 from django.core.mail import send_mass_mail
 from django.db import models
-from django.db.models import BooleanField, Case, DateField, IntegerField, Max, Min, Sum, When
-from django.shortcuts import reverse
+from django.db.models import BooleanField, Case, DateField, IntegerField, Q, Max, Min, Sum, When
 from django.template.loader import render_to_string
 from django.utils import timezone
 
@@ -147,6 +149,80 @@ class SubscriptionManager(models.Manager):
         )
         return queryset
 
+    def get_active_by_month(self, year, month):
+        """
+        Returns all subscriptions that were active in the given month.
+        """
+        start_date = datetime.datetime(year, month, 1).date()
+
+        end_day = calendar.monthrange(year, month)[1]
+        end_date = datetime.datetime(year, month, end_day).date()
+
+        return self.filter(
+            start_date__lte=end_date,
+            end_date__gte=start_date
+        )
+
+    def get_new_by_month(self, year, month):
+        """
+        Returns all subscriptions that were newly created in the given month.
+        """
+        return self.filter(
+            start_date__year=year,
+            start_date__month=month
+        )
+
+    def get_renewed_by_month(self, year, month):
+        """
+        Returns all subscriptions that were renewed in the given month.
+        """
+        return self.annotate(
+            active_periods_in_month_sum=Sum(
+                Case(
+                    When(
+                        Q(
+                            period__start_date__isnull=False,
+                            period__end_date__isnull=False,
+                            period__start_date__year=year,
+                            period__start_date__month=month,
+                            period__payment__paid_at__isnull=False
+                        ) |
+                        Q(
+                            period__start_date__isnull=False,
+                            period__end_date__isnull=False,
+                            period__end_date__year=year,
+                            period__end_date__month=month,
+                            period__payment__paid_at__isnull=False
+                        ),
+                        then=1
+                    ),
+                    default=0,
+                    output_field=IntegerField()
+                )
+            ),
+        ).filter(
+            active_periods_in_month_sum=2
+        )
+
+    def get_expired_by_month(self, year, month):
+        """
+        Returns all subscriptions that expired in the given month.
+        """
+        return self.filter(
+            canceled_at__isnull=True,
+            end_date__year=year,
+            end_date__month=month
+        )
+
+    def get_canceled_by_month(self, year, month):
+        """
+        Returns all subscriptions that were canceled in the given month.
+        """
+        return self.filter(
+            canceled_at__year=year,
+            canceled_at__month=month
+        )
+
     def get_expiring(self, timedelta=timezone.timedelta(days=30)):
         """
         Returns all subscriptions that expire.
@@ -155,54 +231,6 @@ class SubscriptionManager(models.Manager):
         end_date = (timezone.now() + timedelta).date()
         expiring_subscriptions = self.filter(is_canceled=False, end_date=end_date)
         return expiring_subscriptions
-
-    def send_expiration_emails(self, queryset=None, remaining_days=None):
-        """
-        Sends an email to users whose subscriptions expire.
-        """
-        if remaining_days is None and queryset is None:
-            return
-        # Get all expiring subscriptions which are renewable
-        if queryset is None:
-            queryset = self.get_expiring(timezone.timedelta(days=remaining_days)).filter(plan__is_renewable=True)
-
-        # Loop through subscriptions and send an reminder email to all users
-        token_model = apps.get_model('user', 'Token')
-        messages = []
-        for subscription in queryset:
-            # If subscription is not owned by a user, skip
-            user = subscription.user
-            if user is None:
-                continue
-
-            # Create login token
-            token = token_model.objects.create(email_address=user.primary_email(), purpose='login')
-
-            # Add expiration email message
-            if remaining_days is None:
-                subject = settings.EMAIL_SUBJECT_PREFIX + 'Abo verlängern'
-                remaining_days_text = 'bald'
-            elif remaining_days == 1:
-                subject = settings.EMAIL_SUBJECT_PREFIX + 'Abo endet heute'
-                remaining_days_text = 'heute'
-            else:
-                subject = settings.EMAIL_SUBJECT_PREFIX + 'Abo verlängern'
-                remaining_days_text = 'in {} Tagen'.format(remaining_days)
-
-            messages.append((
-                subject,
-                render_to_string('emails/subscription_expiration.txt', {
-                    'to_name': user.first_name,
-                    'subscription_id': subscription.id,
-                    'token': token,
-                    'remaining_days': remaining_days_text
-                }),
-                settings.DEFAULT_FROM_EMAIL,
-                [user.email]
-            ))
-
-        # Send all expiration emails
-        send_mass_mail(tuple(messages), fail_silently=False)
 
 
 class PeriodManager(models.Manager):

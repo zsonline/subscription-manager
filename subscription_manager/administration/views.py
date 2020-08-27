@@ -1,24 +1,44 @@
+import calendar
+import datetime
 import re
 
 from django.contrib import messages
 from django.contrib.admin.views.decorators import staff_member_required
+from django.core.exceptions import ValidationError
 from django.db.models import Q
+from django.http import JsonResponse
 from django.shortcuts import get_object_or_404, redirect, HttpResponse, Http404
 from django.utils.decorators import method_decorator
+from django.views.decorators.cache import cache_page
 from django.views.generic import ListView, TemplateView, View
 from django.utils import timezone
 
 from subscription_manager.payment.models import Payment
+from subscription_manager.subscription.models import Subscription, Period
 from subscription_manager.subscription.admin import ActiveSubscriptionResource
-
 
 @method_decorator(staff_member_required(login_url='login'), name='dispatch')
 class AdministrationHomeView(TemplateView):
+    """
+    Administration overview page containing key statistics and links
+    to maintenance sub pages.
+    """
     template_name = 'administration/administration_home.html'
+
+    def get_context_data(self, **kwargs):
+        """
+        Adds number of active subscriptions to the context.
+        """
+        kwargs['active_subscriptions'] = Subscription.objects.filter(is_active=True).count()
+
+        return super().get_context_data(**kwargs)
 
 
 @method_decorator(staff_member_required(login_url='login'), name='dispatch')
 class AdministrationPaymentListView(ListView):
+    """
+    Lists all unpaid payments, which then can be confirmed.
+    """
     context_object_name = 'payments'
     template_name = 'administration/administration_payment_list.html'
     ordering = '-created_at'
@@ -66,8 +86,8 @@ def payment_confirm(request, payment_id):
 @method_decorator(staff_member_required(login_url='login'), name='dispatch')
 class AdministrationSubscriptionExportView(View):
     """
-    Supports the export of active subscriptions' addresses
-    as .csv, .ods, and .xlsx documents.
+    Exports active subscriptions' addresses as .csv,
+    .ods, and .xlsx documents.
     """
     format = 'csv'  # Default format is .csv
 
@@ -123,3 +143,135 @@ class AdministrationSubscriptionExportView(View):
             self.format
         )
         return response
+
+
+@method_decorator(staff_member_required(login_url='login'), name='dispatch')
+class AdministrationStatisticsView(TemplateView):
+    """
+    Displays statistics data, consumed from the statistics data view,
+    in charts.
+    """
+    template_name = 'administration/administration_statistics.html'
+
+
+@method_decorator(staff_member_required(login_url='login'), name='dispatch')
+@method_decorator(cache_page(24*60*60), name='dispatch')
+class AdministrationStatisticsDataView(View):
+    """
+    Returns statistics data in JSON format.
+    """
+    lower_bound_date = datetime.date.min
+    upper_bound_date = datetime.date.max
+
+    def get(self, request, *args, **kwargs):
+        """
+        Returns a JSON response containing all the statistics data
+        of the requested time frame. If an error occurs, a json response
+        containing only and error field is returned.
+        """
+        # Validate parameters
+        try:
+            start_year, start_month, end_year, end_month = self.validate_parameters(request)
+        except ValidationError as e:
+            return JsonResponse({
+                'error': e.message
+            })
+
+        # Store the lower and upper bound of subscription periods in order to
+        # not unnecessarily query the database
+        periods = Period.objects.filter(start_date__isnull=False, end_date__isnull=False).order_by('start_date')
+        if periods is not None:
+            self.lower_bound_date = periods.first().start_date
+            self.upper_bound_date = periods.last().end_date
+
+        # Get data
+        data_list_of_dicts = self.get_data(start_year, start_month, end_year, end_month)
+
+        # Rearrange data
+        data_dict_of_lists = {k: [dic[k] for dic in list(data_list_of_dicts.values())] for k in list(data_list_of_dicts.values())[0]}
+        data_dict_of_lists['time'] = list(data_list_of_dicts.keys())
+
+        return JsonResponse(data_dict_of_lists)
+
+    def validate_parameters(self, request):
+        """
+        Checks whether the start and end parameter are in a valid
+        format. If they are, it trims them to the period in which
+        subscriptions exist.
+        """
+        start_arg = request.GET.get('start')
+        end_arg = request.GET.get('end')
+
+        if start_arg is None or end_arg is None:
+            raise ValidationError('Start and end parameters need to be specified')
+
+        # Validate start parameter
+        matches = re.match('^(\d\d\d\d)-(\d\d)$', start_arg)
+        if matches is None:
+            raise ValidationError('Invalid start parameter')
+        start_year = int(matches.groups()[0])
+        start_month = int(matches.groups()[1])
+
+        # Validate end parameter
+        matches = re.match('^(\d\d\d\d)-(\d\d)$', end_arg)
+        if matches is None:
+            raise ValidationError('Invalid end parameter')
+        end_year = int(matches.groups()[0])
+        end_month = int(matches.groups()[1])
+
+        # Start date must be before end date
+        if start_year > end_year or (start_year == end_year and start_month >= end_month):
+            raise ValidationError('Start date must be before end date')
+
+        return start_year, start_month, end_year, end_month
+
+    def get_data(self, start_year, start_month, end_year, end_month):
+        """
+        Loops over each month, gathers the relevant data and
+        arranges it into a dictionary.
+        """
+        data = dict()
+
+        if start_year == end_year:
+            year = start_year
+            for month in range(start_month, end_month + 1):
+                data.update(self.get_data_by_month(year, month))
+        else:
+            for year in range(start_year, end_year + 1):
+                if year == start_year:
+                    for month in range(start_month, 12 + 1):
+                        data.update(self.get_data_by_month(year, month))
+                elif year == end_year:
+                    for month in range(1, end_month + 1):
+                        data.update(self.get_data_by_month(year, month))
+                else:
+                    for month in range(1, 12 + 1):
+                        data.update(self.get_data_by_month(year, month))
+
+        return data
+
+    def get_data_by_month(self, year, month):
+        """
+        Returns a dictionary containing the aggregated values of the
+        requested month.
+        """
+        if self.lower_bound_date.year > year or (self.lower_bound_date.year == year and self.lower_bound_date.month > month) \
+                or self.upper_bound_date.year < year or (self.upper_bound_date.year == year and self.lower_bound_date.month < month):
+            # If request month is out of range, return zero values.
+            return {
+                '{} {}'.format(calendar.month_abbr[month], year % 100): {
+                    'active': 0,
+                    'new': 0,
+                    'renewed': 0,
+                    'expired': 0,
+                }
+            }
+
+        return {
+            '{} {}'.format(calendar.month_abbr[month], year % 100): {
+                'active': Subscription.objects.get_active_by_month(year, month).count(),
+                'new': Subscription.objects.get_new_by_month(year, month).count(),
+                'renewed': Subscription.objects.get_renewed_by_month(year, month).count(),
+                'expired': Subscription.objects.get_expired_by_month(year, month).count() + Subscription.objects.get_canceled_by_month(year, month).count(),
+            }
+        }

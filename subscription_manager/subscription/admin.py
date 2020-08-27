@@ -6,6 +6,7 @@ from import_export import resources
 from import_export.admin import ExportMixin
 
 from .models import Period, Plan, Subscription
+from .tasks import send_expiration_emails
 
 
 class SubscriptionResource(resources.ModelResource):
@@ -162,7 +163,7 @@ class SubscriptionAdmin(ExportMixin, admin.ModelAdmin):
     end_date_field.admin_order_field = 'end_date'
 
     def send_renewal_notification(self, request, queryset):
-        Subscription.objects.send_expiration_emails(queryset=queryset)
+        send_expiration_emails(queryset=queryset)
     send_renewal_notification.short_description = 'Verlängerungserinnerung senden'
 
 
