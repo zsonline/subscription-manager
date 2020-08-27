@@ -7,15 +7,15 @@ _Subscription manager_ is the subscription management system of the student news
 
 ### Requirements
 
-Before installing this project check that [Python](https://www.python.org/) is installed. You should also install a package manager for installing this project's dependencies. It is recommended to use [Poetry](https://python-poetry.org/). Poetry will also create a virtual environment for you, which separates this project's Python environment from your system's Python environment.
+Before installing this project check that [Python](https://www.python.org/) is installed. You should also install a package manager for installing this project's dependencies. It is recommended to use [Pip](https://pypi.org/project/pip/). In order to separate this project's Python environment from your system's Python environment, use a virtual environment. You can create one by typing: `python -m venv .venv`.
 
-Make sure that your virtual environment is activated when working on this project. To activate it type `poetry shell`. To deactivate it afterwards again type `exit`.
+Make sure that your virtual environment is activated when working on this project. To activate it type `source .venv/bin/activate`. To deactivate it afterwards again type `deactivate`.
 
-If you want to use this project in production, make sure you have [Postgres](https://www.postgresql.org/) installed and access to a mail server such as [Postfix](http://www.postfix.org/) for sending emails. Both are not needed for development, though. Emails are not sent asynchronously. Therefore, the mail server should ideally be running on the same hardware.
+If you want to use this project in production, make sure you have [Postgres](https://www.postgresql.org/) installed and access to a mail server such as [Postfix](http://www.postfix.org/) for sending emails. Both are not necessarily needed for development, though. Emails are not sent asynchronously. Therefore, the mail server should ideally be running on the same hardware to ensure that the application feels responsive.
 
 ### Dependencies
 
-This project is based on a number of other packages. The full list can be found in [pyproject.toml](pyproject.toml). Install all packages in your environment by typing `poetry install`.
+This project is based on a number of other packages. The full list can be found in [requirements.txt](requirements.txt). Install all packages in your environment by typing `pip install -r requirements.txt`.
 
 ## Getting started
 
