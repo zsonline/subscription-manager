@@ -3,6 +3,6 @@
 Öffne dafür diesen Link: {{ token.url }}.
 Er ist gültig bis am {{ token.valid_until|date:'j. F Y, G.i \U\h\r' }}.
 
-Nach der Verifizierung kannst ein Abo bestellen.
+Nach der Verifizierung kannst du ein Abo bestellen.
 
 Die Zürcher Studierendenzeitung
